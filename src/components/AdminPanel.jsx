@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useInventory } from '../hooks/useInventory';
 import { db } from '../lib/firebase';
-import { doc, updateDoc, deleteDoc, addDoc, collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { doc, updateDoc, deleteDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp } from 'firebase/firestore';
 import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User } from 'lucide-react';
 
 export default function AdminPanel() {
     const { products, loading: inventoryLoading, error } = useInventory();
-    const [newItem, setNewItem] = useState({ name: '', brand: '', price: '', stock: 100, imageUrl: '' });
+    const [newItem, setNewItem] = useState({ name: '', brand: '', price: '', stock: 100, imageUrl: '', description: '', features: '' });
     const [saving, setSaving] = useState(null);
 
     // Orders State
@@ -64,9 +64,12 @@ export default function AdminPanel() {
                 price: parseFloat(newItem.price),
                 stock: parseInt(newItem.stock),
                 // Use a default image if none provided
-                imageUrl: newItem.imageUrl || `https://placehold.co/600x400/1e293b/38bdf8?text=${encodeURIComponent(newItem.name)}`
+                imageUrl: newItem.imageUrl || `https://placehold.co/600x400/1e293b/38bdf8?text=${encodeURIComponent(newItem.name)}`,
+                description: newItem.description || "No description provided.",
+                features: newItem.features ? newItem.features.split(',').map(f => f.trim()).filter(f => f) : [],
+                createdAt: serverTimestamp()
             });
-            setNewItem({ name: '', brand: '', price: '', stock: 100, imageUrl: '' });
+            setNewItem({ name: '', brand: '', price: '', stock: 100, imageUrl: '', description: '', features: '' });
             alert("Product Added!");
         } catch (e) {
             alert("Error adding: " + e.message);
@@ -183,6 +186,16 @@ export default function AdminPanel() {
                                 <label className="form-label">Image URL (Optional)</label>
                                 <input className="form-input" placeholder="https://images.unsplash.com/..."
                                     value={newItem.imageUrl} onChange={e => setNewItem({ ...newItem, imageUrl: e.target.value })} />
+                            </div>
+                            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                                <label className="form-label">Description</label>
+                                <textarea className="form-input" placeholder="Product details..." rows="3"
+                                    value={newItem.description} onChange={e => setNewItem({ ...newItem, description: e.target.value })} />
+                            </div>
+                            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                                <label className="form-label">Features (comma separated)</label>
+                                <input className="form-input" placeholder="Polarized, UV Protection, Hard Case"
+                                    value={newItem.features} onChange={e => setNewItem({ ...newItem, features: e.target.value })} />
                             </div>
                             <button type="submit" className="btn btn-primary" style={{ gridColumn: '1 / -1' }}>Add Product</button>
                         </form>

@@ -16,7 +16,7 @@ export function useInventory() {
         }
 
         try {
-            const q = query(collection(db, "products"), orderBy("id"));
+            const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
 
             const unsubscribe = onSnapshot(q, (snapshot) => {
                 const items = [];
