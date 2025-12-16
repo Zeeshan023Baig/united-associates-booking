@@ -1,4 +1,4 @@
-import { collection, writeBatch, doc, getDocs } from "firebase/firestore";
+import { collection, writeBatch, doc, getDocs, serverTimestamp } from "firebase/firestore";
 import { db } from "../lib/firebase";
 
 const SAMPLE_SPECS = [
@@ -153,13 +153,14 @@ export const seedDatabase = async () => {
             id: item.id,
             name: item.name,
             brand: item.brand,
-            description: `Authentic ${item.brand} eyewear. Premium optical quality with durable frames. Model: ${item.name}.`,
+            description: item.description,
             price: item.price,
             stock: 100, // Default 100 stock
             maxStock: 100,
             imageUrl: item.image,
             images: item.images || [item.image],
-            features: item.features || []
+            features: item.features || [],
+            createdAt: serverTimestamp()
         });
     });
 

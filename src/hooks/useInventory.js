@@ -16,13 +16,22 @@ export function useInventory() {
         }
 
         try {
-            const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+            const q = query(collection(db, "products"));
 
             const unsubscribe = onSnapshot(q, (snapshot) => {
                 const items = [];
                 snapshot.forEach((doc) => {
                     items.push({ firebaseId: doc.id, ...doc.data() });
                 });
+
+                // Client-side sort: Newest first (checked via createdAt)
+                // Fallback: If no createdAt, put at the end
+                items.sort((a, b) => {
+                    const timeA = a.createdAt?.seconds || 0;
+                    const timeB = b.createdAt?.seconds || 0;
+                    return timeB - timeA;
+                });
+
                 setProducts(items);
                 setLoading(false);
             }, (err) => {
