@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
+import Home from './components/Home'
 import ModelCatalog from './components/ModelCatalog'
 import BookingForm from './components/BookingForm'
 import Confirmation from './components/Confirmation'
+import AdminPanel from './components/AdminPanel'
+import ProductDetails from './components/ProductDetails'
 import './styles/index.css'
 
 function App() {
@@ -57,7 +60,8 @@ function App() {
     <Router>
       <Header cartCount={cart.reduce((a, b) => a + b.quantity, 0)} />
       <Routes>
-        <Route path="/" element={<ModelCatalog addToCart={addToCart} />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/catalog" element={<ModelCatalog addToCart={addToCart} cart={cart} />} />
         <Route path="/booking" element={
           <BookingForm
             cart={cart}
@@ -67,6 +71,8 @@ function App() {
           />
         } />
         <Route path="/confirmation" element={<Confirmation />} />
+        <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} cart={cart} />} />
+        <Route path="/admin" element={<AdminPanel />} />
       </Routes>
     </Router>
   )

@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { db } from '../lib/firebase';
 import { collection, addDoc, runTransaction, doc, serverTimestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import { Trash2, CheckCircle } from 'lucide-react';
+import { Trash2, CheckCircle, ShoppingBag } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 export default function BookingForm({ cart, updateQuantity, removeFromCart, clearCart }) {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [bookingError, setBookingError] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
         company: '',
@@ -18,74 +20,207 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
     const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
     const totalPrice = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
+    // DEMO MODE: Set to true if you want to bypass Razorpay for testing/demo without keys
+    const DEMO_MODE = true;
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (cart.length === 0) return;
+
+        // Validate Phone
+        if (formData.phone.length !== 10) {
+            setBookingError("Phone number must be exactly 10 digits.");
+            return;
+        }
+
         setLoading(true);
+        setBookingError(null);
 
         try {
             if (!db) throw new Error("Database not connected");
 
+            let bookingId = "";
+
+            // 1. Create Pending Booking
             await runTransaction(db, async (transaction) => {
-                // 1. Check stock for all items
+                // Check stock
+                const snapshots = [];
                 for (const item of cart) {
                     const sfDocRef = doc(db, "products", item.firebaseId);
                     const sfDoc = await transaction.get(sfDocRef);
-
-                    if (!sfDoc.exists()) {
-                        throw new Error(`Product ${item.name} does not exist!`);
-                    }
+                    if (!sfDoc.exists()) throw new Error(`Product ${item.name} does not exist!`);
 
                     const currentStock = sfDoc.data().stock;
                     if (currentStock < item.quantity) {
                         throw new Error(`Insufficient stock for ${item.name}. Only ${currentStock} left.`);
                     }
-
-                    // 2. Deduct stock
-                    transaction.update(sfDocRef, { stock: currentStock - item.quantity });
+                    snapshots.push({ ref: sfDocRef, currentStock, quantity: item.quantity });
                 }
 
-                // 3. Create booking record
+                // Deduct Stock
+                for (const snap of snapshots) {
+                    transaction.update(snap.ref, { stock: snap.currentStock - snap.quantity });
+                }
+
+                // Create Booking Doc
                 const bookingRef = doc(collection(db, "bookings"));
+                bookingId = bookingRef.id;
                 transaction.set(bookingRef, {
                     ...formData,
                     items: cart,
                     totalPrice,
                     createdAt: serverTimestamp(),
-                    status: 'pending'
+                    status: 'pending_payment' // Initial status
                 });
             });
 
-            // alert("Booking confirmed successfully and stock updated!");
-            clearCart();
-            // Navigate to success page with the booking reference ID and details
-            navigate('/confirmation', {
-                state: {
-                    booking: {
-                        id: bookingRef.id,
-                        ...formData,
-                        items: cart,
-                        totalPrice
+            // If in DEMO_MODE, bypass Razorpay
+            if (DEMO_MODE) {
+                // Simulate a short delay for realism
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Pretend we got a payment ID
+                const mockPaymentId = "pay_demo_" + Math.random().toString(36).substr(2, 9);
+                await finalizeBooking(bookingId, mockPaymentId);
+                return;
+            }
+
+            // 3. Open Razorpay (Only if NOT in Demo Mode)
+            const options = {
+                key: "rzp_test_PLACEHOLDER", // REPLACE THIS WITH YOUR RAZORPAY KEY ID
+                amount: totalPrice * 100, // Amount in paise
+                currency: "INR",
+                name: "United Associates",
+                description: "Purchase of Sunglasses",
+                image: window.location.origin + "/logo.jpg",
+                order_id: "", // For backend generation, but accessing purely frontend here for demo
+                handler: async function (response) {
+                    // Payment Success!
+                    // console.log(response.razorpay_payment_id);
+
+                    try {
+                        // Update Booking to Paid
+                        // Note: In a real app, verify signature on backend.
+                        // Here we just update firestore.
+                        /* 
+                           We need to update the doc we just created. 
+                           Since we are inside callback, we need reference to it.
+                           However, 'runTransaction' above is complete.
+                        */
+                        // We will need to import 'updateDoc' and 'doc' (already imported)
+
+                        // NOTIFICATION & NAVIGATION
+                        await finalizeBooking(bookingId, response.razorpay_payment_id);
+
+                    } catch (err) {
+                        alert("Payment successful but failed to update order: " + err.message);
                     }
+                },
+                prefill: {
+                    name: formData.name,
+                    email: formData.email,
+                    contact: formData.phone
+                },
+                theme: {
+                    color: "#38bdf8"
                 }
+            };
+
+            const rzp1 = new window.Razorpay(options);
+            rzp1.on('payment.failed', function (response) {
+                alert("Payment Failed: " + response.error.description);
+                // Optionally revert stock here if critical
             });
+            rzp1.open();
+
+            setLoading(false); // Stop generic loading, let Razorpay handle UI
 
         } catch (e) {
             console.error("Booking Error: ", e);
-            alert("Booking Failed: " + e.message);
-        } finally {
+            setBookingError("Failed: " + e.message);
             setLoading(false);
         }
     };
 
+    const finalizeBooking = async (bookingId, paymentId) => {
+        try {
+            clearCart();
+
+            // Send Email Notification
+            const itemDetails = cart.map(item => `${item.name} (x${item.quantity}) - ₹${item.price}`).join('\n');
+            const emailParams = {
+                to_email: 'zeeshan.baig.1323@gmail.com', // Admin email
+                customer_name: formData.name,
+                customer_email: formData.email,
+                customer_phone: formData.phone,
+                order_id: bookingId, // or paymentId
+                items_list: itemDetails,
+                total_price: totalPrice,
+                date: new Date().toLocaleString()
+            };
+
+            try {
+                await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', emailParams, '67tQVXleuagb_m66p');
+                console.log("Email sent successfully!");
+            } catch (emailErr) {
+                console.error("Email failed to send:", emailErr);
+            }
+
+            // Navigate
+            navigate('/confirmation', {
+                state: {
+                    booking: {
+                        id: bookingId,
+                        ...formData,
+                        items: cart,
+                        totalPrice,
+                        paymentId
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error("Finalize error", error);
+        }
+    }
+
+    /* ... render ... */
+
+    // Returning the button part specifically to update text
+    /*
+        <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} disabled={loading}>
+            {loading ? 'Processing...' : `Pay ₹${totalPrice.toLocaleString()}`}
+        </button>
+    */
+
     if (cart.length === 0) {
         return (
-            <div className="container" style={{ paddingTop: '4rem', textAlign: 'center' }}>
-                <div className="glass-panel">
-                    <h2>Your Booking Request is Empty</h2>
-                    <button onClick={() => navigate('/')} className="btn btn-outline" style={{ marginTop: '1rem' }}>
-                        Browse Catalog
+            <div className="container" style={{ paddingTop: '6rem', textAlign: 'center', minHeight: '60vh', display: 'flex', alignItems: 'center', justifyItems: 'center' }}>
+                <div className="glass-panel" style={{ width: '100%', maxWidth: '600px', margin: '0 auto', padding: '4rem 2rem', position: 'relative', overflow: 'hidden' }}>
+
+                    {/* Background blob for visual interest */}
+                    <div style={{ position: 'absolute', top: '-20%', right: '-20%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(56,189,248,0.1) 0%, rgba(0,0,0,0) 70%)', pointerEvents: 'none' }}></div>
+
+                    <div style={{ marginBottom: '2rem', display: 'inline-flex', padding: '1.5rem', borderRadius: '50%', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+                        <ShoppingBag size={48} color="#38bdf8" />
+                    </div>
+
+                    <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', background: 'linear-gradient(to right, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                        Your Collection Awaits
+                    </h2>
+
+                    <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '400px', margin: '0 auto 2.5rem auto', lineHeight: '1.6' }}>
+                        Your booking request is currently empty. Explore our premium catalog to find your next signature look.
+                    </p>
+
+                    <button onClick={() => navigate('/catalog')} className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.1rem' }}>
+                        Discover Catalog
                     </button>
+
+                    <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '2rem', justifyContent: 'center', opacity: 0.6 }}>
+                        <span style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Authentication Guaranteed</span>
+                        <span style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Premium Fulfillment</span>
+                    </div>
                 </div>
             </div>
         );
@@ -105,7 +240,7 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                                 <div key={item.firebaseId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.5rem' }}>
                                     <div>
                                         <div style={{ fontWeight: '600' }}>{item.name}</div>
-                                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>${item.price} x {item.quantity}</div>
+                                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>₹{item.price} x {item.quantity}</div>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -121,7 +256,7 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                             ))}
                         </div>
                         <div style={{ marginTop: '1.5rem', textAlign: 'right' }}>
-                            <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Total: ${totalPrice.toLocaleString()}</div>
+                            <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Total: ₹{totalPrice.toLocaleString()}</div>
                         </div>
                     </div>
                 </div>
@@ -146,13 +281,33 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                                 value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
                         </div>
                         <div className="form-group">
-                            <label className="form-label">Phone</label>
-                            <input required type="tel" className="form-input"
-                                value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
+                            <label className="form-label">Phone (10 digits)</label>
+                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.05)', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)' }}>+91</span>
+                                <input
+                                    required
+                                    type="tel"
+                                    className="form-input"
+                                    placeholder="9876543210"
+                                    value={formData.phone}
+                                    onChange={e => {
+                                        // Only allow numbers and max 10 digits
+                                        const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                        setFormData({ ...formData, phone: val })
+                                    }}
+                                />
+                            </div>
                         </div>
 
+                        {bookingError && (
+                            <div style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#fca5a5', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1rem', border: '1px solid #f87171' }}>
+                                {bookingError} <br />
+                                <small>Tip: Check your Firestore Database Rules.</small>
+                            </div>
+                        )}
+
                         <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} disabled={loading}>
-                            {loading ? 'Processing...' : `Confirm Booking`}
+                            {loading ? 'Processing...' : `Pay ₹${totalPrice.toLocaleString()}`}
                         </button>
                     </form>
                 </div>

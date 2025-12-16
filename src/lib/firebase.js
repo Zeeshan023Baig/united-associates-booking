@@ -1,19 +1,16 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCPqAresxV9OciDMhTftMRojmiddZ5mTvo",
-  authDomain: "unitedassociatesagencies-aa019.firebaseapp.com",
-  projectId: "unitedassociatesagencies-aa019",
-  storageBucket: "unitedassociatesagencies-aa019.firebasestorage.app",
-  messagingSenderId: "97262620754",
-  appId: "1:97262620754:web:e41882433fbe968635cf8b",
-  measurementId: "G-Y9WJKHERMN"
+  apiKey: "AIzaSyDt73jiw7T1KldzzL8T9QtM3IeLUJhp3cs",
+  authDomain: "unitder-booking-v2.firebaseapp.com",
+  projectId: "unitder-booking-v2",
+  storageBucket: "unitder-booking-v2.firebasestorage.app",
+  messagingSenderId: "43698396696",
+  appId: "1:43698396696:web:fc3a99975ab913edd5ad6d"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app); // Initialized as requested
 export const db = getFirestore(app); // Exported for the app to use

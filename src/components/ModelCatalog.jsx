@@ -1,9 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useInventory } from '../hooks/useInventory';
 import { seedDatabase, clearDatabase } from '../utils/seed';
 import { ShoppingCart, AlertCircle, RefreshCw } from 'lucide-react';
 
-export default function ModelCatalog({ addToCart }) {
+export default function ModelCatalog({ addToCart, cart = [] }) {
+    const navigate = useNavigate();
     const { products, loading, error } = useInventory();
 
     if (loading) return <div className="container" style={{ paddingTop: '2rem' }}>Loading inventory...</div>;
@@ -55,7 +57,7 @@ export default function ModelCatalog({ addToCart }) {
     return (
         <div className="container" style={{ paddingBottom: '4rem' }}>
             <header style={{ padding: '4rem 0 2rem 0', textAlign: 'center', position: 'relative' }}>
-                <h1>Unitder Associates</h1>
+                <h1>United Associates Agencies</h1>
                 <p style={{ fontSize: '1.2rem' }}>Premium Optical Collection</p>
 
                 <button onClick={handleReset} className="btn btn-outline" style={{ position: 'absolute', top: '1rem', right: '0', fontSize: '0.8rem' }}>
@@ -67,11 +69,16 @@ export default function ModelCatalog({ addToCart }) {
                 {products.map(product => {
                     const isSoldOut = product.stock <= 0;
                     return (
-                        <div key={product.firebaseId} className="glass-panel" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0', overflow: 'hidden' }}>
+                        <div
+                            key={product.firebaseId}
+                            onClick={() => navigate(`/product/${product.firebaseId}`)}
+                            className="glass-panel product-card"
+                            style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0', overflow: 'hidden' }}
+                        >
                             {/* Image Area */}
                             <div style={{ width: '100%', height: '200px', overflow: 'hidden', background: '#000' }}>
                                 {product.imageUrl ? (
-                                    <img src={product.imageUrl} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    <img src={product.imageUrl} alt={product.name} className="product-image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 ) : (
                                     <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333' }}>No Image</div>
                                 )}
@@ -91,10 +98,20 @@ export default function ModelCatalog({ addToCart }) {
                                 <p style={{ flex: 1, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{product.description}</p>
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)' }}>
-                                    <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>${product.price}</span>
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>₹{product.price}</span>
+                                        {cart.find(c => c.firebaseId === product.firebaseId)?.quantity > 0 && (
+                                            <span style={{ fontSize: '0.8rem', color: '#38bdf8' }}>
+                                                In Cart: {cart.find(c => c.firebaseId === product.firebaseId).quantity}
+                                            </span>
+                                        )}
+                                    </div>
 
                                     <button
-                                        onClick={() => addToCart(product)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            addToCart(product);
+                                        }}
                                         disabled={isSoldOut}
                                         className="btn btn-primary"
                                         style={{ opacity: isSoldOut ? 0.5 : 1 }}
