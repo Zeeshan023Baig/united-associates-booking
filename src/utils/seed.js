@@ -2,139 +2,155 @@ import { collection, writeBatch, doc, getDocs, serverTimestamp } from "firebase/
 import { db } from "../lib/firebase";
 
 const SAMPLE_SPECS = [
+    // --- INTERNATIONAL BRANDS ---
     {
         id: "rb-aviator",
+        category: "brand",
+        origin: "international",
         brand: "Ray-Ban",
         name: "Ray-Ban Aviator Classic",
         price: 13999,
         image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=800",
         images: [
             "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1625591348636-e6a8a446990d?auto=format&fit=crop&q=80&w=800",
-            "https://plus.unsplash.com/premium_photo-1675806622830-4e58b1933c02?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=800"
+            "https://images.unsplash.com/photo-1625591348636-e6a8a446990d?auto=format&fit=crop&q=80&w=800"
         ],
-        description: "Currently one of the most iconic sunglass models in the world, Ray-Ban Aviator Classic sunglasses were originally designed for U.S. Aviators in 1937.\n\nAviator Classic sunglasses are a timeless model that combines great aviator styling with exceptional quality, performance and comfort. The metal frame is lightweight yet durable, ensuring long-lasting wear.\n\nWith a classic pilot shape, these sunglasses offer optimum visual clarity and 100% UV protection.",
-        features: ["Frame material: Metal", "Lens technology: G-15", "Shape: Pilot", "Polarized: Yes"]
-    },
-    {
-        id: "rb-wayfarer",
-        brand: "Ray-Ban",
-        name: "Ray-Ban Original Wayfarer",
-        price: 14790,
-        image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=800",
-        images: [
-            "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?auto=format&fit=crop&q=80&w=800"
-        ],
-        description: "Ray-Ban Original Wayfarer Classics are the most recognizable style in the history of sunglasses. Since its initial design in 1952, Wayfarer Classics gained popularity among celebrities, musicians, artists and those with an impeccable fashion sense.\n\nThe acetate frame offers a comfortable fit and a glossy finish that stands out.\n\nMake a statement with the iconic Wayfarer, symbol of youth, fashion, and creativity for over 50 years.",
-        features: ["Frame material: Acetate", "Classic G-15 Lenses", "Iconic Style", "100% UV Protection"]
-    },
-    {
-        id: "rb-clubmaster",
-        brand: "Ray-Ban",
-        name: "Ray-Ban Clubmaster",
-        price: 13999,
-        image: "https://images.unsplash.com/photo-1532715088550-62f09305f765?auto=format&fit=crop&q=80&w=800",
-        images: [
-            "https://images.unsplash.com/photo-1532715088550-62f09305f765?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=800"
-        ],
-        description: "Clubmaster styles are retro and timeless. Inspired by the 50s, the design of the Clubmaster Classic is worn by cultural intellectuals, those who lead the changed tomorrow.\n\nChoose the iconic Clubmaster Classic sunglasses design in black or brown frames with a crystal green lens treatment.\n\nWearing Ray-Ban Clubmaster Classic® sunglasses allows you to make a statement of sophisticated design.",
-        features: ["Retro Design", "Half-Rim Frame", "Adjustable nose pads", "Crystal Lenses"]
+        description: "Timeless aviator styling with exceptional quality, performance and comfort.",
+        features: ["Frame material: Metal", "Lens technology: G-15", "Shape: Pilot"],
+        faceShape: "oval",
+        frameShape: "aviator",
+        size: "medium"
     },
     {
         id: "mj-peahi",
+        category: "brand",
+        origin: "international",
         brand: "Maui Jim",
         name: "Maui Jim Peahi",
         price: 23690,
         image: "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=800",
-        images: [
-            "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1614715838608-dd527c46231d?auto=format&fit=crop&q=80&w=800"
-        ],
-        description: "Peahi is a wrap style that offers full coverage for protection against wind and blowing debris.\n\nInspired by a legendary surf break on Maui's North Shore, these sunglasses are designed to withstand the elements while providing unparalleled clarity.\n\nThe SuperThin Glass lenses provide the absolute crispest optics available, 20% to 32% thinner and lighter than standard glass.",
-        features: ["PolarizedPlus2® technology", "SuperThin Glass", "Wrap frame", "Saltwater Safe"]
-    },
-    {
-        id: "mj-red-sands",
-        brand: "Maui Jim",
-        name: "Maui Jim Red Sands",
-        price: 21190,
-        image: "https://images.unsplash.com/photo-1625591348636-e6a8a446990d?auto=format&fit=crop&q=80&w=800",
-        images: [
-            "https://images.unsplash.com/photo-1625591348636-e6a8a446990d?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1532715088550-62f09305f765?auto=format&fit=crop&q=80&w=800"
-        ],
-        description: "Red Sands has a rectangular lens shape that gives it a distinct look and feel.\n\nLightweight, durable, and comfortable, this frame is made from nylon which can easily be adjusted for a personal fit.\n\nIdeal for round, oval, and heart-shaped faces, Red Sands brings a modern touch to a classic silhouette.",
-        features: ["MauiPure Lens", "Lightweight", "Rectangular", "Nylon Frame"]
+        images: ["https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=800"],
+        description: "Designed to withstand the elements while providing unparalleled clarity.",
+        features: ["PolarizedPlus2®", "SuperThin Glass", "Wrap frame"]
     },
     {
         id: "ok-holbrook",
+        category: "brand",
+        origin: "international",
         brand: "Oakley",
         name: "Oakley Holbrook",
         price: 12900,
         image: "https://images.unsplash.com/photo-1629814138092-233c70669298?auto=format&fit=crop&q=80&w=800",
-        images: [
-            "https://images.unsplash.com/photo-1629814138092-233c70669298?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=800"
-        ],
-        description: "Holbrook is a timeless, classic design fused with modern Oakley technology.\n\nInspired by the screen heroes from the 1940s, 50s, and 60s, this design epitomizes the spirit of exploration and adventure.\n\nThe iconic American frame design is accented by metal rivets and Oakley icons, perfect for those who seek equal parts performance and style.",
-        features: ["O Matter™ frame material", "Prizm™ lenses", "Plutonite® Lenses", "HDO® Optics"]
+        images: ["https://images.unsplash.com/photo-1629814138092-233c70669298?auto=format&fit=crop&q=80&w=800"],
+        description: "Classic design fused with modern Oakley technology. Spirit of exploration.",
+        features: ["O Matter™ frame", "Prizm™ lenses", "HDO® Optics"]
+    },
+
+    // --- INDIAN BRANDS ---
+    {
+        id: "tt-voyager",
+        category: "brand",
+        origin: "indian",
+        brand: "Titan Eye+",
+        name: "Titan Voyager",
+        price: 4999,
+        image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=800",
+        images: ["https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=800"],
+        description: "Reliable Indian craftsmanship meeting modern style needs.",
+        features: ["Durable Acetate", "UV Protection", "Comfort Fit"]
     },
     {
-        id: "ok-gascan",
-        brand: "Oakley",
-        name: "Oakley Gascan",
-        price: 11200,
+        id: "ft-sport",
+        category: "brand",
+        origin: "indian",
+        brand: "Fastrack",
+        name: "Fastrack Sport Edge",
+        price: 2499,
         image: "https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&q=80&w=800",
-        images: [
-            "https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1614715838608-dd527c46231d?auto=format&fit=crop&q=80&w=800"
-        ],
-        description: "The Gascan lenses are cut from the curve of a single lens shield, then mounted in the frame to maintain the continuous contour.\n\nThe look is so unique, we customized our corporate logo just for this eyewear.\n\nLightweight O Matter™ frame material offers premium comfort while the Three-Point Fit holds lenses in precise optical alignment.",
-        features: ["Two lenses cut from single shield", "Three-Point Fit", "Lightweight", "Impact Protection"]
+        images: ["https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&q=80&w=800"],
+        description: "Dynamic styling for the active youth of India.",
+        features: ["Polycarbonate Lens", "Sporty Design", "Impact Resistant"]
+    },
+
+    // --- IN-HOUSE BRANDS ---
+    {
+        id: "uaa-signature-1",
+        category: "brand",
+        origin: "in-house",
+        brand: "UA Signature",
+        name: "UA Classic Way",
+        price: 1999,
+        image: "https://plus.unsplash.com/premium_photo-1675806622830-4e58b1933c02?auto=format&fit=crop&q=80&w=800",
+        images: ["https://plus.unsplash.com/premium_photo-1675806622830-4e58b1933c02?auto=format&fit=crop&q=80&w=800"],
+        description: "Our proprietary design offering premium aesthetics at an unbeatable value.",
+        features: ["Hand-polished", "CR-39 Lenses", "5-Barrel Hinges"]
     },
     {
-        id: "ok-sutro",
-        brand: "Oakley",
-        name: "Oakley Sutro",
-        price: 15500,
-        image: "https://images.unsplash.com/photo-1614715838608-dd527c46231d?auto=format&fit=crop&q=80&w=800",
-        images: [
-            "https://images.unsplash.com/photo-1614715838608-dd527c46231d?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=800"
-        ],
-        description: "Designed with performance in mind, Sutro gives cyclists a bold and versatile look that they can confidently wear on and off the bike.\n\nThe high-wrap shield protects from the elements and enhances vision with Prizm™ Lens Technology.\n\nInspiring athletes to move confidently through their day.",
-        features: ["High Wrap Shield", "Unobtainium® nosepads", "Prizm™ lenses", "Cycling Optimized"]
-    },
-    {
-        id: "meta-wayfarer",
-        brand: "Meta",
-        name: "Ray-Ban Meta Wayfarer",
-        price: 25499,
-        image: "https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?auto=format&fit=crop&q=80&w=800",
-        images: [
-            "https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1509695507497-903c140c43b0?auto=format&fit=crop&q=80&w=800"
-        ],
-        description: "The next generation of smart glasses. Listen, call, capture and livestream.\n\nThe new ultra-wide 12 MP camera and five-mic system let you capture whatever you see and hear.\n\nIntegrated with Meta AI, these glasses allow you to ask questions and get information without pulling out your phone.",
-        features: ["12MP Camera", "Open Ear Speakers", "Meta AI", "Touch Controls"]
-    },
-    {
-        id: "meta-headliner",
-        brand: "Meta",
-        name: "Ray-Ban Meta Headliner",
-        price: 27999,
+        id: "uaa-elite",
+        category: "brand",
+        origin: "in-house",
+        brand: "UA Elite",
+        name: "UA Elite Aviator",
+        price: 2499,
         image: "https://images.unsplash.com/photo-1509695507497-903c140c43b0?auto=format&fit=crop&q=80&w=800",
-        images: [
-            "https://images.unsplash.com/photo-1509695507497-903c140c43b0?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?auto=format&fit=crop&q=80&w=800"
-        ],
-        description: "A new hybrid shape that combines the best of the Wayfarer and Round styles.\n\nRay-Ban Meta Headliner offers the same powerful smart features in a fresh, unique silhouette.\n\nLive stream directly to Facebook and Instagram, and enjoy high-quality audio with improved bass and higher maximum volume.",
-        features: ["Hybrid Shape", "Livestreaming", "Voice Control", "Charging Case"]
+        images: ["https://images.unsplash.com/photo-1509695507497-903c140c43b0?auto=format&fit=crop&q=80&w=800"],
+        description: "Sophisticated metal frames designed in-house for the discerning professional.",
+        features: ["Stainless Steel", "Polarized", "Silicone Nosepads"]
     },
+
+    // --- INTERNATIONAL LENSES ---
+    {
+        id: "lens-zeiss-drive",
+        category: "lens",
+        origin: "international",
+        brand: "Zeiss",
+        name: "Zeiss DriveSafe",
+        price: 8000,
+        image: "https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&q=80&w=800",
+        images: ["https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&q=80&w=800"],
+        description: "Optimized for driving. Better vision in low light and reduced glare.",
+        features: ["Luminance Design®", "DuraVision® DriveSafe", "UV Protection"]
+    },
+    {
+        id: "lens-essilor-varilux",
+        category: "lens",
+        origin: "international",
+        brand: "Essilor",
+        name: "Varilux Comfort Max",
+        price: 12000,
+        image: "https://images.unsplash.com/photo-1564222256577-45e3536033d5?auto=format&fit=crop&q=80&w=800",
+        images: ["https://images.unsplash.com/photo-1564222256577-45e3536033d5?auto=format&fit=crop&q=80&w=800"],
+        description: "Progressive lenses that provide natural vision at every distance.",
+        features: ["Flex Optim™", "W.A.V.E. 2.0", "Blue Light Protection"]
+    },
+
+    // --- INDIAN LENSES ---
+    {
+        id: "lens-prime-clear",
+        category: "lens",
+        origin: "indian",
+        brand: "Prime Lens",
+        name: "Prime HD Clear",
+        price: 1500,
+        image: "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=800",
+        images: ["https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=800"],
+        description: "High-definition clarity from a trusted Indian manufacturer.",
+        features: ["Anti-Glare", "Scratch Resistant", "Water Repellent"]
+    },
+
+    // --- IN-HOUSE LENSES ---
+    {
+        id: "uaa-lens-std",
+        category: "lens",
+        origin: "in-house",
+        brand: "UA Optics",
+        name: "UA Standard Digital",
+        price: 999,
+        image: "https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?auto=format&fit=crop&q=80&w=800",
+        images: ["https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?auto=format&fit=crop&q=80&w=800"],
+        description: "Our reliable everyday lenses with digital blue light protection.",
+        features: ["Blue Cut", "Anti-Reflective", "1-Year Warranty"]
+    }
 ];
 
 export const seedDatabase = async () => {
@@ -143,33 +159,34 @@ export const seedDatabase = async () => {
     const batch = writeBatch(db);
     const productsRef = collection(db, "products");
 
-    // Optional: Delete existing documents first (for clean slate) if needed
-    // But for now, we just overwrite/add. 
-
-    // Create 10 specific brand items
+    // We rely on "Clear Database" button to wipe old schema items
     SAMPLE_SPECS.forEach((item) => {
         const docRef = doc(productsRef, item.id);
         batch.set(docRef, {
             id: item.id,
+            category: item.category, // brand | lens
+            origin: item.origin,     // international | indian | in-house
             name: item.name,
             brand: item.brand,
             description: item.description,
             price: item.price,
-            stock: 100, // Default 100 stock
+            stock: 100,
             maxStock: 100,
             imageUrl: item.image,
             images: item.images || [item.image],
             features: item.features || [],
+            faceShape: item.faceShape || "oval",
+            frameShape: item.frameShape || "wayfarer",
+            size: item.size || "medium",
             createdAt: serverTimestamp()
         });
     });
 
     await batch.commit();
-    console.log("Database seeded with 10 brand examples!");
-    return "Seeding Complete! Refresh to see changes.";
+    console.log("Database seeded with structured catalog data!");
+    return "Seeding Complete!";
 };
 
-// Helper to clear DB (optional usage)
 export const clearDatabase = async () => {
     if (!db) return;
     const q = collection(db, "products");

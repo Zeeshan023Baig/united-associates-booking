@@ -6,8 +6,24 @@ import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User } from 'lucide-react';
 
 export default function AdminPanel() {
     const { products, loading: inventoryLoading, error } = useInventory();
-    const [newItem, setNewItem] = useState({ name: '', brand: '', price: '', stock: 100, imageUrl: '', description: '', features: '' });
+    const [newItem, setNewItem] = useState({
+        name: '', brand: '', price: '', stock: 100, imageUrl: '', description: '', features: '',
+        category: 'brand', origin: 'international',
+        faceShape: 'oval', frameShape: 'wayfarer', size: 'medium'
+    });
     const [saving, setSaving] = useState(null);
+    const fileInputRef = React.useRef(null);
+
+    const handleFileSelect = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setNewItem(prev => ({ ...prev, imageUrl: reader.result }));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     // Orders State
     const [orders, setOrders] = useState([]);
@@ -58,18 +74,34 @@ export default function AdminPanel() {
     const handleAdd = async (e) => {
         e.preventDefault();
         if (!newItem.name || !newItem.price) return;
+
+        // Process Image URL: Allow local paths or full URLs
+        let finalImageUrl = newItem.imageUrl;
+        if (finalImageUrl && !finalImageUrl.startsWith('http') && !finalImageUrl.startsWith('data:')) {
+            // It's likely a local file path. Ensure it starts with '/'
+            if (!finalImageUrl.startsWith('/')) {
+                finalImageUrl = '/' + finalImageUrl;
+            }
+        } else if (!finalImageUrl) {
+            // Default placeholder if empty
+            finalImageUrl = `https://placehold.co/600x400/1e293b/38bdf8?text=${encodeURIComponent(newItem.name)}`;
+        }
+
         try {
             await addDoc(collection(db, "products"), {
                 ...newItem,
                 price: parseFloat(newItem.price),
                 stock: parseInt(newItem.stock),
-                // Use a default image if none provided
-                imageUrl: newItem.imageUrl || `https://placehold.co/600x400/1e293b/38bdf8?text=${encodeURIComponent(newItem.name)}`,
+                imageUrl: finalImageUrl,
                 description: newItem.description || "No description provided.",
                 features: newItem.features ? newItem.features.split(',').map(f => f.trim()).filter(f => f) : [],
                 createdAt: serverTimestamp()
             });
-            setNewItem({ name: '', brand: '', price: '', stock: 100, imageUrl: '', description: '', features: '' });
+            setNewItem({
+                name: '', brand: '', price: '', stock: 100, imageUrl: '', description: '', features: '',
+                category: 'brand', origin: 'international',
+                faceShape: 'oval', frameShape: 'wayfarer', size: 'medium'
+            });
             alert("Product Added!");
         } catch (e) {
             alert("Error adding: " + e.message);
@@ -163,12 +195,71 @@ export default function AdminPanel() {
                         </h3>
                         <form onSubmit={handleAdd} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', alignItems: 'end' }}>
                             <div className="form-group">
+                                <label className="form-label">Category</label>
+                                <select className="form-input"
+                                    value={newItem.category}
+                                    onChange={e => setNewItem({ ...newItem, category: e.target.value })}
+                                >
+                                    <option value="brand">Brand (Frame)</option>
+                                    <option value="lens">Lens</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Origin</label>
+                                <select className="form-input"
+                                    value={newItem.origin}
+                                    onChange={e => setNewItem({ ...newItem, origin: e.target.value })}
+                                >
+                                    <option value="international">International</option>
+                                    <option value="indian">Indian</option>
+                                    <option value="in-house">In-House</option>
+                                </select>
+                            </div>
+
+                            {/* New Filter Fields */}
+                            <div className="form-group">
+                                <label className="form-label">Face Shape</label>
+                                <select className="form-input"
+                                    value={newItem.faceShape}
+                                    onChange={e => setNewItem({ ...newItem, faceShape: e.target.value })}
+                                >
+                                    <option value="oval">Oval</option>
+                                    <option value="round">Round</option>
+                                    <option value="square">Square</option>
+                                    <option value="heart">Heart</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Frame Shape</label>
+                                <select className="form-input"
+                                    value={newItem.frameShape}
+                                    onChange={e => setNewItem({ ...newItem, frameShape: e.target.value })}
+                                >
+                                    <option value="wayfarer">Wayfarer</option>
+                                    <option value="aviator">Aviator</option>
+                                    <option value="round">Round</option>
+                                    <option value="cat-eye">Cat Eye</option>
+                                    <option value="rectangle">Rectangle</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Size</label>
+                                <select className="form-input"
+                                    value={newItem.size}
+                                    onChange={e => setNewItem({ ...newItem, size: e.target.value })}
+                                >
+                                    <option value="small">Small</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="large">Large</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
                                 <label className="form-label">Name</label>
                                 <input className="form-input" placeholder="e.g. Ray-Ban Hexagonal" required
                                     value={newItem.name} onChange={e => setNewItem({ ...newItem, name: e.target.value })} />
                             </div>
                             <div className="form-group">
-                                <label className="form-label">Brand</label>
+                                <label className="form-label">Brand Label</label>
                                 <input className="form-input" placeholder="e.g. Ray-Ban" required
                                     value={newItem.brand} onChange={e => setNewItem({ ...newItem, brand: e.target.value })} />
                             </div>
@@ -184,8 +275,28 @@ export default function AdminPanel() {
                             </div>
                             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                                 <label className="form-label">Image URL (Optional)</label>
-                                <input className="form-input" placeholder="https://images.unsplash.com/..."
-                                    value={newItem.imageUrl} onChange={e => setNewItem({ ...newItem, imageUrl: e.target.value })} />
+                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                    <input className="form-input" placeholder="https://..., assets/..., or select file"
+                                        value={newItem.imageUrl} onChange={e => setNewItem({ ...newItem, imageUrl: e.target.value })}
+                                        style={{ flex: 1 }}
+                                    />
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        style={{ display: 'none' }}
+                                        accept="image/*"
+                                        onChange={handleFileSelect}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="btn btn-outline"
+                                        onClick={() => fileInputRef.current.click()}
+                                        title="Upload from Desktop"
+                                        style={{ padding: '0.6rem 1rem' }}
+                                    >
+                                        <Plus size={20} />
+                                    </button>
+                                </div>
                             </div>
                             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                                 <label className="form-label">Description</label>
@@ -208,6 +319,7 @@ export default function AdminPanel() {
                                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                                     <th style={{ padding: '1rem' }}>Image</th>
                                     <th style={{ padding: '1rem' }}>Product</th>
+                                    <th style={{ padding: '1rem' }}>Type</th>
                                     <th style={{ padding: '1rem' }}>Price</th>
                                     <th style={{ padding: '1rem' }}>Stock Level</th>
                                     <th style={{ padding: '1rem' }}>Actions</th>
@@ -224,6 +336,12 @@ export default function AdminPanel() {
                                         <td style={{ padding: '1rem' }}>
                                             <div style={{ fontWeight: 'bold' }}>{product.name}</div>
                                             <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{product.brand}</div>
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                            <div style={{ fontSize: '0.8rem', textTransform: 'capitalize' }}>
+                                                {product.origin || 'N/A'} <br />
+                                                <span style={{ color: 'var(--text-secondary)' }}>{product.category || 'N/A'}</span>
+                                            </div>
                                         </td>
                                         <td style={{ padding: '1rem' }}>₹{product.price}</td>
                                         <td style={{ padding: '1rem' }}>

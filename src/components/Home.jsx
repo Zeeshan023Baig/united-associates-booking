@@ -234,6 +234,51 @@ export default function Home({ addToCart, cart }) {
                 <ModelCatalog addToCart={addToCart} cart={cart} />
             </div>
 
+            {/* NEW: Our Technology Section - Moved after Catalog */}
+            <section className="container" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
+                <h2 style={{ fontSize: '2.5rem', marginBottom: '3rem' }}>Precision Engineered</h2>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                    <div className="glass-panel" style={{ padding: '2rem' }}>
+                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🛡️</div>
+                        <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: '#38bdf8' }}>Surgical Grade Steel</h3>
+                        <p style={{ color: 'var(--text-secondary)' }}>Ultra-lightweight yet practically indestructible frames designed for longevity.</p>
+                    </div>
+                    <div className="glass-panel" style={{ padding: '2rem' }}>
+                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💎</div>
+                        <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: '#a78bfa' }}>HD Polarized Lenses</h3>
+                        <p style={{ color: 'var(--text-secondary)' }}>100% UV400 protection with advanced anti-glare coating for crystal clear vision.</p>
+                    </div>
+                    <div className="glass-panel" style={{ padding: '2rem' }}>
+                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔧</div>
+                        <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: '#34d399' }}>Screwless Hinges</h3>
+                        <p style={{ color: 'var(--text-secondary)' }}>Patented hinge technology that never loosens, ensuring a perfect fit forever.</p>
+                    </div>
+                </div>
+            </section>
+
+            {/* NEW: Customer Reviews Section - Moved after Catalog */}
+            <section style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.03))', padding: '6rem 0' }}>
+                <div className="container" style={{ padding: '0 2rem' }}>
+                    <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '3rem' }}>Trusted by Visionaries</h2>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                        {[
+                            { name: "Aditya R.", role: "Architect", text: "The most comfortable frames I've ever worn. The lens clarity is unmatched.", rating: 5 },
+                            { name: "Priya S.", role: "Designer", text: "Absolutely love the aesthetic. Fits my face shape perfectly and feels premium.", rating: 5 },
+                            { name: "Vikram M.", role: "Tech Lead", text: "Great service and fast delivery. The computer glasses have saved my eyes.", rating: 4 }
+                        ].map((review, i) => (
+                            <div key={i} className="glass-panel" style={{ padding: '2rem' }}>
+                                <div style={{ color: '#fbbf24', marginBottom: '1rem' }}>{"★".repeat(review.rating)}</div>
+                                <p style={{ fontStyle: 'italic', marginBottom: '1.5rem', color: '#e5e5e5' }}>"{review.text}"</p>
+                                <div>
+                                    <div style={{ fontWeight: 'bold' }}>{review.name}</div>
+                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{review.role}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             <style>{`
                 @keyframes bounce {
                     0%, 20%, 50%, 80%, 100% {transform: translateY(0);}

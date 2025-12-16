@@ -92,7 +92,7 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                 currency: "INR",
                 name: "United Associates",
                 description: "Purchase of Sunglasses",
-                image: window.location.origin + "/logo.jpg",
+                image: window.location.origin + "/logo_uaa.png",
                 order_id: "", // For backend generation, but accessing purely frontend here for demo
                 handler: async function (response) {
                     // Payment Success!

@@ -7,9 +7,11 @@ import BookingForm from './components/BookingForm'
 import Confirmation from './components/Confirmation'
 import AdminPanel from './components/AdminPanel'
 import ProductDetails from './components/ProductDetails'
+import StoreLocator from './components/StoreLocator'
+import WhatsAppWidget from './components/WhatsAppWidget'
 import './styles/index.css'
 
-import CustomCursor from './components/CustomCursor'
+
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -60,7 +62,8 @@ function App() {
 
   return (
     <Router>
-      <CustomCursor />
+      <WhatsAppWidget />
+
       <Header cartCount={cart.reduce((a, b) => a + b.quantity, 0)} />
       <Routes>
         <Route path="/" element={<Home addToCart={addToCart} cart={cart} />} />
@@ -75,6 +78,7 @@ function App() {
         } />
         <Route path="/confirmation" element={<Confirmation />} />
         <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} cart={cart} />} />
+        <Route path="/stores" element={<StoreLocator />} />
         <Route path="/admin" element={<AdminPanel />} />
       </Routes>
     </Router>
