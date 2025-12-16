@@ -9,6 +9,8 @@ import AdminPanel from './components/AdminPanel'
 import ProductDetails from './components/ProductDetails'
 import './styles/index.css'
 
+import CustomCursor from './components/CustomCursor'
+
 function App() {
   const [cart, setCart] = useState([]);
 
@@ -58,9 +60,10 @@ function App() {
 
   return (
     <Router>
+      <CustomCursor />
       <Header cartCount={cart.reduce((a, b) => a + b.quantity, 0)} />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home addToCart={addToCart} cart={cart} />} />
         <Route path="/catalog" element={<ModelCatalog addToCart={addToCart} cart={cart} />} />
         <Route path="/booking" element={
           <BookingForm
