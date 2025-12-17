@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import ModelCatalog from './ModelCatalog';
 import FeatureHighlights from './FeatureHighlights';
 import { ChevronDown } from 'lucide-react';
@@ -9,6 +9,22 @@ export default function Home({ addToCart, cart }) {
     const scrollToCatalog = () => {
         catalogRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
+
+    // Scroll Animation Observer
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const sections = document.querySelectorAll('.fade-in-section');
+        sections.forEach(section => observer.observe(section));
+
+        return () => sections.forEach(section => observer.unobserve(section));
+    }, []);
 
     return (
         <div style={{ paddingBottom: '4rem' }}>
@@ -227,15 +243,17 @@ export default function Home({ addToCart, cart }) {
             </div>
 
             {/* Feature Highlights Section */}
-            <FeatureHighlights />
+            <div className="fade-in-section">
+                <FeatureHighlights />
+            </div>
 
             {/* Embedded Catalog */}
-            <div ref={catalogRef} style={{ paddingTop: '4rem' }}>
+            <div ref={catalogRef} style={{ paddingTop: '4rem' }} className="fade-in-section">
                 <ModelCatalog addToCart={addToCart} cart={cart} />
             </div>
 
             {/* NEW: Our Technology Section - Moved after Catalog */}
-            <section className="container" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
+            <section className="container fade-in-section" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
                 <h2 style={{ fontSize: '2.5rem', marginBottom: '3rem' }}>Precision Engineered</h2>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
                     <div className="glass-panel" style={{ padding: '2rem' }}>
@@ -257,7 +275,7 @@ export default function Home({ addToCart, cart }) {
             </section>
 
             {/* NEW: Customer Reviews Section - Moved after Catalog */}
-            <section style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.03))', padding: '6rem 0' }}>
+            <section className="fade-in-section" style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.03))', padding: '6rem 0' }}>
                 <div className="container" style={{ padding: '0 2rem' }}>
                     <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '3rem' }}>Trusted by Visionaries</h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
