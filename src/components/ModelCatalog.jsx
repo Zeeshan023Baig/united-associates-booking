@@ -269,6 +269,18 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                                                 <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                                                     {product.faceShape && <span style={{ marginRight: '0.5rem' }}>Face: {product.faceShape}</span>}
                                                 </div>
+
+                                                {/* Stock & Cart Status */}
+                                                <div style={{ fontSize: '0.75rem', marginTop: '0.5rem', display: 'flex', gap: '1rem' }}>
+                                                    <span style={{ color: product.stock < 10 ? '#f87171' : '#4ade80' }}>
+                                                        {product.stock} in stock
+                                                    </span>
+                                                    {cart.find(c => c.firebaseId === product.firebaseId)?.quantity > 0 && (
+                                                        <span style={{ color: 'var(--accent-color)' }}>
+                                                            In Cart: {cart.find(c => c.firebaseId === product.firebaseId).quantity}
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <div style={{ marginTop: 'auto', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                     <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>₹{product.price}</span>
                                                     <button
