@@ -9,6 +9,7 @@ import AdminPanel from './components/AdminPanel'
 import ProductDetails from './components/ProductDetails'
 import StoreLocator from './components/StoreLocator'
 import WhatsAppWidget from './components/WhatsAppWidget'
+import Footer from './components/Footer'
 import './styles/index.css'
 
 
@@ -62,25 +63,30 @@ function App() {
 
   return (
     <Router>
-      <WhatsAppWidget />
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <WhatsAppWidget />
 
-      <Header cartCount={cart.reduce((a, b) => a + b.quantity, 0)} />
-      <Routes>
-        <Route path="/" element={<Home addToCart={addToCart} cart={cart} />} />
-        <Route path="/catalog" element={<ModelCatalog addToCart={addToCart} cart={cart} />} />
-        <Route path="/booking" element={
-          <BookingForm
-            cart={cart}
-            updateQuantity={updateQuantity}
-            removeFromCart={removeFromCart}
-            clearCart={clearCart}
-          />
-        } />
-        <Route path="/confirmation" element={<Confirmation />} />
-        <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} cart={cart} />} />
-        <Route path="/stores" element={<StoreLocator />} />
-        <Route path="/admin" element={<AdminPanel />} />
-      </Routes>
+        <Header cartCount={cart.reduce((a, b) => a + b.quantity, 0)} />
+        <main style={{ flex: 1 }}>
+          <Routes>
+            <Route path="/" element={<Home addToCart={addToCart} cart={cart} />} />
+            <Route path="/catalog" element={<ModelCatalog addToCart={addToCart} cart={cart} />} />
+            <Route path="/booking" element={
+              <BookingForm
+                cart={cart}
+                updateQuantity={updateQuantity}
+                removeFromCart={removeFromCart}
+                clearCart={clearCart}
+              />
+            } />
+            <Route path="/confirmation" element={<Confirmation />} />
+            <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} cart={cart} />} />
+            <Route path="/stores" element={<StoreLocator />} />
+            <Route path="/admin" element={<AdminPanel />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </Router>
   )
 }
