@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useInventory } from '../hooks/useInventory';
 import { seedDatabase, clearDatabase } from '../utils/seed';
 import { ShoppingCart, AlertCircle, RefreshCw, ChevronRight, ArrowLeft } from 'lucide-react';
 
 export default function ModelCatalog({ addToCart, cart = [] }) {
     const navigate = useNavigate();
+    const location = useLocation();
     const { products, loading, error } = useInventory();
 
     // Navigation State
@@ -17,6 +18,17 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
     // Advanced Filters
     const [filters, setFilters] = useState({ faceShape: '', frameShape: '', size: '' });
 
+    // Handle incoming navigation from Home
+    useEffect(() => {
+        if (location.state?.startCategory) {
+            setSelectedCategory(location.state.startCategory);
+            setViewMode('subcategory');
+            // Clean up state to prevent stuck navigation if needed, 
+            // but React Router handles this mostly fine.
+            // window.history.replaceState({}, document.title) // valid JS way to clear state if annoying
+        }
+    }, [location]);
+
     // Reset view when products change or on mount
     useEffect(() => {
         if (!loading && products.length === 0) {
@@ -25,8 +37,13 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
     }, [products, loading]);
 
     const handleCategorySelect = (category) => {
-        setSelectedCategory(category);
-        setViewMode('subcategory');
+        if (location.pathname === '/') {
+            navigate('/catalog', { state: { startCategory: category } });
+            window.scrollTo(0, 0);
+        } else {
+            setSelectedCategory(category);
+            setViewMode('subcategory');
+        }
     };
 
     const handleOriginSelect = (origin) => {
