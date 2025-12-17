@@ -1,16 +1,83 @@
-# React + Vite
+# United Associates Agencies
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A premium optical e-commerce web application designed for **United Associates Agencies**, showcasing a curated collection of eyewear brands, lenses, and optical solutions.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Modern & Premium UI**: Features a dark-themed, glassmorphic design for a luxurious user experience.
+- **Dynamic Product Catalog**: Browse products categorised by Brands, Lenses, and Origins (In-House, Indian, International).
+- **Responsive Navigation**: Smooth navigation between Home, Catalog, and Booking flows.
+- **Inventory Management**: Real-time stock tracking with visual indicators for low stock.
+- **Shopping Cart**: Persistent cart functionality (saved to local storage) with "Add to Cart" and quantity management.
+- **Smart Booking System**:
+    - Stock validation before booking.
+    - Integrated **Razorpay** payment gateway for secure transactions.
+    - **Email Notifications** via EmailJS upon successful orders.
+    - **Firebase Firestore** backend to store bookings and manage inventory.
+- **Store Locator**: Find physical store locations easily.
+- **WhatsApp Integration**: Instant customer support via a floating WhatsApp widget.
 
-## React Compiler
+## 🛠 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### **Frontend**
+- **Framework**: [React v19](https://react.dev/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Styling**: Vanilla CSS (Modern features: Variables, Flexbox/Grid, Glassmorphism)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Routing**: [React Router v7](https://reactrouter.com/)
 
-## Expanding the ESLint configuration
+### **Backend & Services**
+- **Database**: [Firebase Firestore](https://firebase.google.com/docs/firestore) (NoSQL)
+- **Payment Gateway**: [Razorpay](https://razorpay.com/)
+- **Email Service**: [EmailJS](https://www.emailjs.com/)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📂 Project Structure
+
+```bash
+src/
+├── assets/         # Static assets
+├── components/     # Reusable UI components
+│   ├── Header.jsx
+│   ├── Footer.jsx
+│   ├── ModelCatalog.jsx
+│   ├── BookingForm.jsx
+│   ├── ...
+├── hooks/          # Custom React hooks (e.g., useInventory)
+├── lib/            # External library configurations (Firebase)
+├── styles/         # Global CSS styles
+├── utils/          # Utility functions (Seeding scripts)
+├── App.jsx         # Main application layout
+└── main.jsx        # Entry point
+```
+
+## ⚙️ Installation & Setup
+
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/Zeeshan023Baig/united-associates-booking.git
+    cd united-associates-booking
+    ```
+
+2.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Setup**:
+    - Configure your Firebase keys in `src/lib/firebase.js`.
+    - Configure EmailJS keys in `src/components/BookingForm.jsx`.
+    - Configure Razorpay key in `src/components/BookingForm.jsx`.
+
+4.  **Run Development Server**:
+    ```bash
+    npm run dev
+    ```
+
+5.  **Build for Production**:
+    ```bash
+    npm run build
+    ```
+
+## © License
+
+© 2025 United Associates Agencies. All rights reserved.
