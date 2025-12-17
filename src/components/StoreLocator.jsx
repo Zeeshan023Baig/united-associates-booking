@@ -13,7 +13,7 @@ export default function StoreLocator() {
         {
             name: "United Associates Agencies - Journalist Colony",
             address: "No:9, Journalist Colony 1st street, Tiruvanmaiyur, Chennai - 600041",
-            phone: "+91 44 1234 5678",
+            phone: "+91 94440 58453",
             hours: "10:00 AM - 9:00 PM",
             mapQuery: "No:9, Journalist Colony 1st street, Tiruvanmaiyur, Chennai - 600041"
         }
