@@ -2,10 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useInventory } from '../hooks/useInventory';
 import { db } from '../lib/firebase';
 import { doc, updateDoc, deleteDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp } from 'firebase/firestore';
-import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User } from 'lucide-react';
+import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User, Lock, CheckCircle, XCircle } from 'lucide-react';
 
 export default function AdminPanel() {
     const { products, loading: inventoryLoading, error } = useInventory();
+
+    // Auth State
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loginError, setLoginError] = useState('');
+
     const [newItem, setNewItem] = useState({
         name: '', brand: '', price: '', stock: 100, imageUrl: '', description: '', features: '',
         category: 'brand', origin: 'international',
@@ -28,9 +35,11 @@ export default function AdminPanel() {
     // Orders State
     const [orders, setOrders] = useState([]);
     const [ordersLoading, setOrdersLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('inventory'); // 'inventory' or 'orders'
+    const [activeTab, setActiveTab] = useState('orders'); // 'inventory' or 'orders'
 
     useEffect(() => {
+        if (!isAuthenticated) return;
+
         const fetchOrders = async () => {
             try {
                 const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
@@ -39,6 +48,7 @@ export default function AdminPanel() {
                     id: doc.id,
                     ...doc.data()
                 }));
+                // Sort locally if needed to ensure completed ones don't just disappear or move unexpectedly if we change sort logic
                 setOrders(ordersData);
             } catch (error) {
                 console.error("Error fetching orders:", error);
@@ -48,7 +58,17 @@ export default function AdminPanel() {
         };
 
         fetchOrders();
-    }, []);
+    }, [isAuthenticated]);
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        setLoginError('');
+        if (email === 'unitedassociates.official@gmail.com' && password === 'United14@chennai') {
+            setIsAuthenticated(true);
+        } else {
+            setLoginError('Invalid credentials. Please try again.');
+        }
+    };
 
     const handleUpdateStock = async (id, newStock) => {
         setSaving(id);
@@ -68,6 +88,23 @@ export default function AdminPanel() {
             await deleteDoc(doc(db, "products", id));
         } catch (e) {
             alert("Error deleting: " + e.message);
+        }
+    };
+
+    const handleToggleOrderStatus = async (orderId, currentStatus) => {
+        const newStatus = currentStatus === 'completed' ? 'pending' : 'completed';
+
+        // Optimistic UI update
+        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+
+        try {
+            const ref = doc(db, "bookings", orderId);
+            await updateDoc(ref, { status: newStatus });
+        } catch (e) {
+            console.error("Error updating order status:", e);
+            alert("Failed to update status");
+            // Revert optimistic update
+            setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: currentStatus } : o));
         }
     };
 
@@ -108,6 +145,55 @@ export default function AdminPanel() {
         }
     };
 
+    if (!isAuthenticated) {
+        return (
+            <div className="container" style={{ paddingTop: '8rem', paddingBottom: '4rem', display: 'flex', justifyContent: 'center' }}>
+                <div className="glass-panel" style={{ width: '100%', maxWidth: '400px', padding: '2.5rem' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                        <div style={{ width: '60px', height: '60px', background: 'rgba(56, 189, 248, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
+                            <Lock size={30} className="text-accent" style={{ color: '#38bdf8' }} />
+                        </div>
+                        <h2>Admin Access</h2>
+                        <p>Please enter your credentials</p>
+                    </div>
+
+                    <form onSubmit={handleLogin}>
+                        <div className="form-group">
+                            <label className="form-label">Email</label>
+                            <input
+                                type="email"
+                                className="form-input"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="admin@example.com"
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Password</label>
+                            <input
+                                type="password"
+                                className="form-input"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="••••••••"
+                                required
+                            />
+                        </div>
+                        {loginError && (
+                            <div style={{ color: '#f87171', fontSize: '0.9rem', marginBottom: '1rem', textAlign: 'center' }}>
+                                {loginError}
+                            </div>
+                        )}
+                        <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
+                            Login
+                        </button>
+                    </form>
+                </div>
+            </div>
+        );
+    }
+
     if (inventoryLoading) return <div className="container" style={{ paddingTop: '4rem' }}>Loading Admin...</div>;
 
     return (
@@ -138,44 +224,58 @@ export default function AdminPanel() {
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                         <thead>
                             <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                                <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Status</th>
                                 <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Date</th>
                                 <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Customer</th>
                                 <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Items</th>
                                 <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Total</th>
-                                <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {orders.map(order => (
-                                <tr key={order.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                    <td style={{ padding: '1rem', whiteSpace: 'nowrap' }}>
-                                        {order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}
-                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                                            {order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleTimeString() : ''}
-                                        </div>
-                                    </td>
-                                    <td style={{ padding: '1rem' }}>
-                                        <div style={{ fontWeight: 600 }}>{order.name}</div>
-                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{order.email}</div>
-                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{order.phone}</div>
-                                    </td>
-                                    <td style={{ padding: '1rem' }}>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                                            {order.items?.map((item, idx) => (
-                                                <div key={idx} style={{ fontSize: '0.9rem' }}>
-                                                    <span style={{ color: '#38bdf8' }}>{item.quantity}x</span> {item.name}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </td>
-                                    <td style={{ padding: '1rem', fontWeight: 'bold' }}>
-                                        ₹{order.totalPrice?.toLocaleString()}
-                                    </td>
-                                    <td style={{ padding: '1rem' }}>
-                                        <span className="badge badge-success">Completed</span>
-                                    </td>
-                                </tr>
-                            ))}
+                            {orders.map(order => {
+                                const isCompleted = order.status === 'completed';
+                                return (
+                                    <tr key={order.id} style={{
+                                        borderBottom: '1px solid rgba(255,255,255,0.05)',
+                                        opacity: isCompleted ? 0.6 : 1
+                                    }}>
+                                        <td style={{ padding: '1rem' }}>
+                                            <button
+                                                onClick={() => handleToggleOrderStatus(order.id, order.status)}
+                                                className={`badge ${isCompleted ? 'badge-success' : 'badge-warning'}`}
+                                                style={{ border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                                                title="Toggle Status"
+                                            >
+                                                {isCompleted ? <CheckCircle size={14} /> : <div style={{ width: 14, height: 14, border: '2px solid currentColor', borderRadius: '50%' }}></div>}
+                                                {isCompleted ? 'Done' : 'Pending'}
+                                            </button>
+                                        </td>
+                                        <td style={{ padding: '1rem', whiteSpace: 'nowrap', textDecoration: isCompleted ? 'line-through' : 'none' }}>
+                                            {order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}
+                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                                                {order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleTimeString() : ''}
+                                            </div>
+                                        </td>
+                                        <td style={{ padding: '1rem', textDecoration: isCompleted ? 'line-through' : 'none' }}>
+                                            <div style={{ fontWeight: 600 }}>{order.name}</div>
+                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{order.email}</div>
+                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{order.phone}</div>
+                                        </td>
+                                        <td style={{ padding: '1rem', textDecoration: isCompleted ? 'line-through' : 'none' }}>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                                {order.items?.map((item, idx) => (
+                                                    <div key={idx} style={{ fontSize: '0.9rem' }}>
+                                                        <span style={{ color: isCompleted ? 'inherit' : '#38bdf8' }}>{item.quantity}x</span> {item.name}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </td>
+                                        <td style={{ padding: '1rem', fontWeight: 'bold', textDecoration: isCompleted ? 'line-through' : 'none' }}>
+                                            ₹{order.totalPrice?.toLocaleString()}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                             {orders.length === 0 && (
                                 <tr>
                                     <td colSpan="5" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
