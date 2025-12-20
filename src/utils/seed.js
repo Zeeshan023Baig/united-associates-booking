@@ -46,7 +46,417 @@ const SAMPLE_SPECS = [
         features: ["O Matter™ frame", "Prizm™ lenses", "HDO® Optics"]
     },
 
-    // --- INDIAN BRANDS ---
+    // --- LUXURY INTERNATIONAL COLLECTION ---
+    // Ray-Ban (Italy)
+    {
+        id: "rb-wayfarer-classic",
+        category: "brand",
+        origin: "international",
+        brand: "Ray-Ban",
+        name: "Ray-Ban Original Wayfarer",
+        price: 10500,
+        image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=800",
+        description: "The most recognizable style in the history of sunglasses. iconic styling.",
+        features: ["Acetate Frame", "G-15 Lenses", "100% UV Protection"],
+        faceShape: "oval",
+        frameShape: "wayfarer"
+    },
+    {
+        id: "rb-clubmaster",
+        category: "brand",
+        origin: "international",
+        brand: "Ray-Ban",
+        name: "Ray-Ban Clubmaster Classic",
+        price: 11500,
+        image: "https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&q=80&w=800",
+        description: "Retro and timeless. Inspired by the 50s.",
+        features: ["Browline Design", "Green Classic G-15", "Adjustable Nosepads"],
+        faceShape: "round",
+        frameShape: "square"
+    },
+    {
+        id: "rb-round-metal",
+        category: "brand",
+        origin: "international",
+        brand: "Ray-Ban",
+        name: "Ray-Ban Round Metal",
+        price: 12500,
+        image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=800",
+        description: "A retro look that has been worn by legendary musicians.",
+        features: ["Curved Brow Bar", "Crystal Lenses", "Thin Metal Temples"],
+        faceShape: "square",
+        frameShape: "round"
+    },
+
+    // Oakley (USA)
+    {
+        id: "oak-sutro",
+        category: "brand",
+        origin: "international",
+        brand: "Oakley",
+        name: "Oakley Sutro",
+        price: 14500,
+        image: "https://images.unsplash.com/photo-1629814138092-233c70669298?auto=format&fit=crop&q=80&w=800",
+        description: "Designed with performance in mind, giving a bold, versatile look.",
+        features: ["Prizm™ Lenses", "High Wrap Shield", "Unobtainium® Nosepads"],
+        faceShape: "oval",
+        frameShape: "rectangle"
+    },
+    {
+        id: "oak-jawbreaker",
+        category: "brand",
+        origin: "international",
+        brand: "Oakley",
+        name: "Oakley Jawbreaker",
+        price: 18000,
+        image: "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=800",
+        description: "The ultimate sport design for the cycling obsession.",
+        features: ["Switchlock™ Technology", "Surge Ports", "Helmet Compatible"],
+        faceShape: "round",
+        frameShape: "sport"
+    },
+    {
+        id: "oak-frogskins",
+        category: "brand",
+        origin: "international",
+        brand: "Oakley",
+        name: "Oakley Frogskins",
+        price: 9500,
+        image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=800",
+        description: "In pop culture, it was a time like no other. The 80s made a comeback.",
+        features: ["O Matter™ Frame", "4 Base Lens Geometry", "Classic Logo"],
+        faceShape: "square",
+        frameShape: "wayfarer"
+    },
+
+    // Persol (Italy)
+    {
+        id: "persol-649",
+        category: "brand",
+        origin: "international",
+        brand: "Persol",
+        name: "Persol 649 Original",
+        price: 19000,
+        image: "https://images.unsplash.com/photo-1509695507497-903c140c43b0?auto=format&fit=crop&q=80&w=800",
+        description: "Designed in 1957 for Turin tram drivers, it became a legend.",
+        features: ["Meflecto System", "Crystal Lenses", "Acetate"],
+        faceShape: "oval",
+        frameShape: "aviator"
+    },
+    {
+        id: "persol-714",
+        category: "brand",
+        origin: "international",
+        brand: "Persol",
+        name: "Persol 714 Steve McQueen",
+        price: 28000,
+        image: "https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&q=80&w=800",
+        description: "The first ever folding glasses, made famous by the King of Cool.",
+        features: ["Folding System", "Arrow Symbol", "Handmade in Italy"],
+        faceShape: "square",
+        frameShape: "aviator"
+    },
+    {
+        id: "persol-3048",
+        category: "brand",
+        origin: "international",
+        brand: "Persol",
+        name: "Persol PO3048S",
+        price: 16500,
+        image: "https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?auto=format&fit=crop&q=80&w=800",
+        description: "A modern evolution of the classic wayfarer style.",
+        features: ["Flex Temples", "Polarized Options", "Comfort Fit"],
+        faceShape: "round",
+        frameShape: "wayfarer"
+    },
+
+    // Prada (Italy)
+    {
+        id: "prada-symbole",
+        category: "brand",
+        origin: "international",
+        brand: "Prada",
+        name: "Prada Symbole",
+        price: 38000,
+        image: "https://images.unsplash.com/photo-1546180245-c59500ad14d0?auto=format&fit=crop&q=80&w=800",
+        description: "Geometric acetate sunglasses with a bold, contemporary attitude.",
+        features: ["Faceted Design", "Triangle Logo", "100% UVA/UVB"],
+        faceShape: "oval",
+        frameShape: "cat-eye"
+    },
+    {
+        id: "prada-linea-rossa",
+        category: "brand",
+        origin: "international",
+        brand: "Prada",
+        name: "Prada Linea Rossa Impavid",
+        price: 26000,
+        image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=800",
+        description: "Sport-inspired dynamic design with avant-garde aesthetics.",
+        features: ["Nylon Fibre", "Rubber Finish", "Wraparound"],
+        faceShape: "square",
+        frameShape: "sport"
+    },
+    {
+        id: "prada-runway",
+        category: "brand",
+        origin: "international",
+        brand: "Prada",
+        name: "Prada Runway",
+        price: 45000,
+        image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=800",
+        description: "Exclusive design straight from the fashion show.",
+        features: ["Metal Frame", "Distinctive Bridge", "Logo Engraving"],
+        faceShape: "heart",
+        frameShape: "rectangle"
+    },
+
+    // Gucci (Italy)
+    {
+        id: "gucci-horsebit",
+        category: "brand",
+        origin: "international",
+        brand: "Gucci",
+        name: "Gucci Horsebit",
+        price: 32000,
+        image: "https://images.unsplash.com/photo-1509695507497-903c140c43b0?auto=format&fit=crop&q=80&w=800",
+        description: "Vintage allure meets modern sophistication.",
+        features: ["Horsebit Detail", "Gold-tone Metal", "Gradient Lenses"],
+        faceShape: "square",
+        frameShape: "square"
+    },
+    {
+        id: "gucci-aviator",
+        category: "brand",
+        origin: "international",
+        brand: "Gucci",
+        name: "Gucci Web Aviator",
+        price: 35000,
+        image: "https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&q=80&w=800",
+        description: "Classic aviator shape enriched with the House's web colors.",
+        features: ["Enamel Web", "Interlocking G", "Adjustable Fit"],
+        faceShape: "oval",
+        frameShape: "aviator"
+    },
+    {
+        id: "gucci-oversized",
+        category: "brand",
+        origin: "international",
+        brand: "Gucci",
+        name: "Gucci Oversized Mask",
+        price: 52000,
+        image: "https://images.unsplash.com/photo-1546180245-c59500ad14d0?auto=format&fit=crop&q=80&w=800",
+        description: "A bold mask shape for a fashion-forward statement.",
+        features: ["Star Rivets", "Gucci Logo", "Shield Lens"],
+        faceShape: "round",
+        frameShape: "mask"
+    },
+
+    // Tom Ford (USA/Italy)
+    {
+        id: "tf-snowdon",
+        category: "brand",
+        origin: "international",
+        brand: "Tom Ford",
+        name: "Tom Ford Snowdon",
+        price: 29000,
+        image: "https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?auto=format&fit=crop&q=80&w=800",
+        description: "Thick vintage details worn by elite icons.",
+        features: ["T Logo", "Acetate", "Tinted Lenses"],
+        faceShape: "square",
+        frameShape: "wayfarer"
+    },
+    {
+        id: "tf-jennifer",
+        category: "brand",
+        origin: "international",
+        brand: "Tom Ford",
+        name: "Tom Ford Jennifer",
+        price: 31000,
+        image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=800",
+        description: "Soft square shape with signature cut-away lenses.",
+        features: ["Open Temple", "Gradient Lens", "Italian Made"],
+        faceShape: "curved",
+        frameShape: "square"
+    },
+    {
+        id: "tf-ft5555",
+        category: "brand",
+        origin: "international",
+        brand: "Tom Ford",
+        name: "Tom Ford Blue Block",
+        price: 27500,
+        image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=800",
+        description: "Refined optical frames with blue light protection.",
+        features: ["Blue Block Lenses", "Metal T", "Sophisticated Look"],
+        faceShape: "oval",
+        frameShape: "rectangle"
+    },
+
+    // Dior (France)
+    {
+        id: "dior-club",
+        category: "brand",
+        origin: "international",
+        brand: "Dior",
+        name: "Dior Club M1U",
+        price: 48000,
+        image: "https://images.unsplash.com/photo-1546180245-c59500ad14d0?auto=format&fit=crop&q=80&w=800",
+        description: "Rectangular mask shape with a sportswear appeal.",
+        features: ["Dior Oblique", "Adjustable Strap", "Mask Shape"],
+        faceShape: "oval",
+        frameShape: "mask"
+    },
+    {
+        id: "dior-30montaigne",
+        category: "brand",
+        origin: "international",
+        brand: "Dior",
+        name: "Dior 30Montaigne",
+        price: 42000,
+        image: "https://images.unsplash.com/photo-1509695507497-903c140c43b0?auto=format&fit=crop&q=80&w=800",
+        description: "Oversized square shape adorned with the CD signature.",
+        features: ["Gold-Finish Metal", "CD Hinge", "Statement Piece"],
+        faceShape: "round",
+        frameShape: "square"
+    },
+    {
+        id: "dior-blacksuit",
+        category: "brand",
+        origin: "international",
+        brand: "Dior",
+        name: "Dior BlackSuit",
+        price: 39000,
+        image: "https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?auto=format&fit=crop&q=80&w=800",
+        description: "Contemporary elegance inspired by couture suiting stitching.",
+        features: ["Signature Hinge", "Pantoplastic", "Modern Classic"],
+        faceShape: "heart",
+        frameShape: "round"
+    },
+
+    // Burberry (UK)
+    {
+        id: "bur-check",
+        category: "brand",
+        origin: "international",
+        brand: "Burberry",
+        name: "Burberry Check Detail",
+        price: 21000,
+        image: "https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&q=80&w=800",
+        description: "Frames featuring the iconic House check pattern.",
+        features: ["Vintage Check", "Bio-Acetate", "British Design"],
+        faceShape: "square",
+        frameShape: "square"
+    },
+    {
+        id: "bur-be4291",
+        category: "brand",
+        origin: "international",
+        brand: "Burberry",
+        name: "Burberry BE4291",
+        price: 19500,
+        image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=800",
+        description: "Modern shield sunglasses for a futuristic look.",
+        features: ["Monogram Motif", "Shield Lens", "Rubberised"],
+        faceShape: "oval",
+        frameShape: "mask"
+    },
+    {
+        id: "bur-pilot",
+        category: "brand",
+        origin: "international",
+        brand: "Burberry",
+        name: "Burberry Pilot Frame",
+        price: 22000,
+        image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=800",
+        description: "A refined interpretation of the pilot shape.",
+        features: ["Leather Details", "Light Gold", "Gradient"],
+        faceShape: "heart",
+        frameShape: "aviator"
+    },
+
+    // Versace (Italy)
+    {
+        id: "ver-medusa",
+        category: "brand",
+        origin: "international",
+        brand: "Versace",
+        name: "Versace Medusa Biggie",
+        price: 28500,
+        image: "https://images.unsplash.com/photo-1546180245-c59500ad14d0?auto=format&fit=crop&q=80&w=800",
+        description: "Iconic style made famous in the 90s hip-hop culture.",
+        features: ["Gold Medusa", "Wide Temples", "Bold Acetate"],
+        faceShape: "oval",
+        frameShape: "hexagon"
+    },
+    {
+        id: "ver-ve2199",
+        category: "brand",
+        origin: "international",
+        brand: "Versace",
+        name: "Versace VE2199",
+        price: 24000,
+        image: "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=800",
+        description: "Statement metal frames with side shields.",
+        features: ["Side Shields", "Greek Key", "Rimless Look"],
+        faceShape: "square",
+        frameShape: "aviator"
+    },
+    {
+        id: "ver-pilot",
+        category: "brand",
+        origin: "international",
+        brand: "Versace",
+        name: "Versace Pilot",
+        price: 26000,
+        image: "https://images.unsplash.com/photo-1509695507497-903c140c43b0?auto=format&fit=crop&q=80&w=800",
+        description: "Classic pilot shape with glamorous Versace detailing.",
+        features: ["Medusa Studs", "Double Bridge", "Metal"],
+        faceShape: "heart",
+        frameShape: "aviator"
+    },
+
+    // Cartier (France)
+    {
+        id: "cartier-santos",
+        category: "brand",
+        origin: "international",
+        brand: "Cartier",
+        name: "Cartier Santos de Cartier",
+        price: 85000,
+        image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=800",
+        description: "Inspired by the aviator Santos-Dumont. Bold and fearless.",
+        features: ["Screw Details", "Champagne Gold", "Leather Bridge"],
+        faceShape: "square",
+        frameShape: "aviator"
+    },
+    {
+        id: "cartier-panthere",
+        category: "brand",
+        origin: "international",
+        brand: "Cartier",
+        name: "Panthère de Cartier",
+        price: 110000,
+        image: "https://images.unsplash.com/photo-1546180245-c59500ad14d0?auto=format&fit=crop&q=80&w=800",
+        description: "Ultra-feminine eyewear featuring the iconic panther.",
+        features: ["Panther Heads", "Gold Finish", "Jewelry Inspiration"],
+        faceShape: "round",
+        frameShape: "cat-eye"
+    },
+    {
+        id: "cartier-premiere",
+        category: "brand",
+        origin: "international",
+        brand: "Cartier",
+        name: "Première de Cartier",
+        price: 95000,
+        image: "https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?auto=format&fit=crop&q=80&w=800",
+        description: "Modern lines combined with the Maison's traditional savoir-faire.",
+        features: ["Ruthenium Finish", "Titanium", "Lightweight"],
+        faceShape: "oval",
+        frameShape: "rectangle"
+    },
+
     {
         id: "tt-voyager",
         category: "brand",
