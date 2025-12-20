@@ -38,7 +38,7 @@ export default function Header({ cartCount }) {
                     <Link to="/stores" className="btn btn-outline" style={{ border: 'none', fontSize: '1.3rem', fontWeight: '700' }}>
                         Stores
                     </Link>
-                    <Link to="/booking" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', border: 'none', fontSize: '1.3rem', fontWeight: '700' }}>
+                    <Link to="/booking" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', border: 'none', fontSize: '1.3rem', fontWeight: '700', whiteSpace: 'nowrap' }}>
                         <ShoppingBag size={26} />
                         <span>Booking Request ({cartCount})</span>
                     </Link>
