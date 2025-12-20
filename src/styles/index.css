@@ -219,3 +219,40 @@ p {
 .product-card:hover .product-image {
   transform: scale(1.1);
 }
+
+/* Mobile Responsiveness & Utilities */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .grid-stack-mobile {
+    grid-template-columns: 1fr !important;
+  }
+
+  .flex-stack-mobile {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  .w-full-mobile {
+    width: 100% !important;
+  }
+
+  .pad-top-mobile-adjust {
+    padding-top: 5rem !important;
+    /* Adjust for smaller header/nav */
+  }
+}

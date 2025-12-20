@@ -195,9 +195,9 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
 
             {/* LEVEL 3: PRODUCT GRID */}
             {viewMode === 'products' && (
-                <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem' }}>
+                <div className="flex-stack-mobile" style={{ display: 'flex', gap: '2rem', marginTop: '2rem' }}>
                     {/* Filter Sidebar */}
-                    <div className="glass-panel" style={{ width: '250px', padding: '1.5rem', height: 'fit-content', alignSelf: 'start' }}>
+                    <div className="glass-panel w-full-mobile" style={{ width: '250px', padding: '1.5rem', height: 'fit-content', alignSelf: 'start' }}>
                         <h3 style={{ marginBottom: '1.5rem', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             Filters
                             {/* Clear Filters Button */}

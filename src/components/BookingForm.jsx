@@ -230,7 +230,7 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
         <div className="container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
             <h2>Complete Your Booking</h2>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '1rem' }}>
+            <div className="grid-stack-mobile" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '1rem' }}>
                 {/* Cart Review */}
                 <div>
                     <div className="glass-panel">

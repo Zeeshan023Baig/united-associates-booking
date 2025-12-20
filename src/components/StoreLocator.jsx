@@ -26,7 +26,7 @@ export default function StoreLocator() {
             <div className="container" style={{ padding: '0 2rem' }}>
                 <h1 style={{ fontSize: '3rem', marginBottom: '2rem', textAlign: 'center' }}>Visit Our Boutiques</h1>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem' }}>
                     {/* Store List */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', height: '100%' }}>
                         {stores.map((store, i) => (
@@ -50,7 +50,7 @@ export default function StoreLocator() {
                     </div>
 
                     {/* Map Placeholder */}
-                    <div className="glass-panel" style={{ padding: '0', overflow: 'hidden', height: '100%' }}>
+                    <div className="glass-panel map-container" style={{ padding: '0', overflow: 'hidden', height: '100%', minHeight: '400px' }}>
                         <iframe
                             key={activeStore.address}
                             src={`https://maps.google.com/maps?q=${encodeURIComponent(activeStore.mapQuery)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}

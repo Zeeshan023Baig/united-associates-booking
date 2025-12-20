@@ -255,7 +255,7 @@ export default function Home({ addToCart, cart }) {
             {/* NEW: Our Technology Section - Moved after Catalog */}
             <section className="container fade-in-section" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
                 <h2 style={{ fontSize: '2.5rem', marginBottom: '3rem' }}>Precision Engineered</h2>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
                     <div className="glass-panel" style={{ padding: '2rem' }}>
                         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🛡️</div>
                         <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: '#38bdf8' }}>Surgical Grade Steel</h3>
@@ -278,7 +278,7 @@ export default function Home({ addToCart, cart }) {
             <section className="fade-in-section" style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.03))', padding: '6rem 0' }}>
                 <div className="container" style={{ padding: '0 2rem' }}>
                     <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '3rem' }}>Trusted by Visionaries</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
                         {[
                             { name: "Aditya R.", role: "Architect", text: "The most comfortable frames I've ever worn. The lens clarity is unmatched.", rating: 5 },
                             { name: "Priya S.", role: "Designer", text: "Absolutely love the aesthetic. Fits my face shape perfectly and feels premium.", rating: 5 },
