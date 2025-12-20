@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useInventory } from '../hooks/useInventory';
-import { seedDatabase, clearDatabase } from '../utils/seed';
-import { ShoppingCart, AlertCircle, RefreshCw, ChevronRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, Star, ShoppingCart, Filter, Search, RotateCcw, AlertCircle, ArrowLeft } from 'lucide-react';
+import { DATA_VERSION, clearDatabase, seedDatabase } from '../utils/seed';
 
 export default function ModelCatalog({ addToCart, cart = [] }) {
     const navigate = useNavigate();
@@ -17,6 +17,23 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
 
     // Advanced Filters
     const [filters, setFilters] = useState({ faceShape: '', frameShape: '', size: '' });
+    const [filterBrand, setFilterBrand] = useState('all');
+    const [searchQuery, setSearchQuery] = useState('');
+
+    // Auto-refresh data if version changes
+    useEffect(() => {
+        const checkDataVersion = async () => {
+            const currentVersion = localStorage.getItem('catalog_version');
+            if (currentVersion !== DATA_VERSION) {
+                console.log("New catalog version detected. Refreshing data...");
+                await clearDatabase();
+                await seedDatabase();
+                localStorage.setItem('catalog_version', DATA_VERSION);
+                window.location.reload();
+            }
+        };
+        checkDataVersion();
+    }, []);
 
     // Handle incoming navigation from Home
     useEffect(() => {
@@ -128,14 +145,30 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                     {viewMode === 'products' && (selectedOrigin === 'in-house' ? "In-House Collection" : selectedOrigin === 'international' ? "International Collection" : "Indian Collection")}
                 </h1>
 
-                {/* Admin Reset (Corner) */}
-                <button onClick={async () => {
-                    if (confirm("This will clear all products and reload the new luxury catalog. Continue?")) {
-                        await clearDatabase(); await seedDatabase(); window.location.reload();
-                    }
-                }} style={{ position: 'absolute', top: 0, right: 0, opacity: 1, color: '#f87171', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'none', border: '1px solid #f87171', padding: '0.5rem', borderRadius: '4px', cursor: 'pointer' }} title="Reset Catalog Data">
-                    <RefreshCw size={16} /> <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>Refresh Catalog Data</span>
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', position: 'absolute', top: 0, right: 0 }}>
+                    <div style={{ position: 'relative' }}>
+                        <ShoppingCart size={24} style={{ cursor: 'pointer' }} onClick={() => navigate('/booking')} />
+                        {cart.length > 0 && (
+                            <span style={{
+                                position: 'absolute',
+                                top: -8,
+                                right: -8,
+                                background: '#38bdf8',
+                                color: '#000',
+                                borderRadius: '50%',
+                                width: '18px',
+                                height: '18px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '0.7rem',
+                                fontWeight: 'bold'
+                            }}>
+                                {cart.length}
+                            </span>
+                        )}
+                    </div>
+                </div>
             </header>
 
             {/* LEVEL 1: MAIN SELECTION */}

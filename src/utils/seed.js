@@ -563,6 +563,9 @@ const SAMPLE_SPECS = [
     }
 ];
 
+// Version control for seeding data
+export const DATA_VERSION = "1.2"; // Increment this to force a re-seed
+
 export const seedDatabase = async () => {
     if (!db) return;
 
