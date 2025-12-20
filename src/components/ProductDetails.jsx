@@ -122,7 +122,7 @@ export default function ProductDetails({ addToCart, cart = [] }) {
                                 className="btn btn-primary"
                                 style={{ flex: 1, padding: '1rem', fontSize: '1.1rem', justifyContent: 'center' }}
                             >
-                                <ShoppingCart size={20} /> {isSoldOut ? 'Unavailable' : 'Add to Booking'}
+                                <ShoppingCart size={20} /> {isSoldOut ? 'Unavailable' : 'Add to Cart'}
                             </button>
 
                             {inCartQty > 0 && (

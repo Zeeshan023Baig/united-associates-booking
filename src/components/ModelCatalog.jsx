@@ -130,9 +130,11 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
 
                 {/* Admin Reset (Corner) */}
                 <button onClick={async () => {
-                    await clearDatabase(); await seedDatabase(); window.location.reload();
-                }} style={{ position: 'absolute', top: 0, right: 0, opacity: 0.3 }} title="Reset DB (No Confirm)">
-                    <RefreshCw size={14} />
+                    if (confirm("This will clear all products and reload the new luxury catalog. Continue?")) {
+                        await clearDatabase(); await seedDatabase(); window.location.reload();
+                    }
+                }} style={{ position: 'absolute', top: 0, right: 0, opacity: 1, color: '#f87171', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'none', border: '1px solid #f87171', padding: '0.5rem', borderRadius: '4px', cursor: 'pointer' }} title="Reset Catalog Data">
+                    <RefreshCw size={16} /> <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>Refresh Catalog Data</span>
                 </button>
             </header>
 
