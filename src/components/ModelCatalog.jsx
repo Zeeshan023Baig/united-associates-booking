@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useInventory } from '../hooks/useInventory';
-import { ArrowRight, Star, ShoppingCart, Filter, Search, RotateCcw, AlertCircle, ArrowLeft } from 'lucide-react';
+import { ArrowRight, Star, ShoppingCart, Filter, Search, RotateCcw, AlertCircle, ArrowLeft, ChevronRight } from 'lucide-react';
 import { DATA_VERSION, clearDatabase, seedDatabase } from '../utils/seed';
 
 export default function ModelCatalog({ addToCart, cart = [] }) {
