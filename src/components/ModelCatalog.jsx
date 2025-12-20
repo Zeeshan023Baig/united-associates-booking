@@ -56,8 +56,12 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
             setViewMode('subcategory');
             setSelectedOrigin(null);
         } else if (viewMode === 'subcategory') {
-            setViewMode('main');
-            setSelectedCategory(null);
+            if (location.state?.startCategory) {
+                navigate('/');
+            } else {
+                setViewMode('main');
+                setSelectedCategory(null);
+            }
         }
     };
 
