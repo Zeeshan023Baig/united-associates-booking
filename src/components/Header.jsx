@@ -30,7 +30,7 @@ export default function Header({ cartCount }) {
                     transform: 'translateX(-50%)',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '3rem'
+                    gap: '6rem'
                 }}>
                     <Link to="/catalog" className="btn btn-outline" style={{ border: 'none', fontSize: '1.3rem', fontWeight: '700' }}>
                         Catalog
