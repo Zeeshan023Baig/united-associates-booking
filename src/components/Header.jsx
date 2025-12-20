@@ -10,8 +10,8 @@ export default function Header({ cartCount }) {
 
     return (
         <nav className="navbar">
-            <div className="container nav-content" style={{ position: 'relative' }}>
-                <Link to="/" className="nav-brand" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 101 }}>
+            <div className="container nav-content" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '90px' }}>
+                <Link to="/" className="nav-brand" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', zIndex: 101, marginLeft: '-1rem' }}>
                     <img src="/logo_uaa.png" alt="United Associates Agencies" style={{ height: '70px' }} />
                     <span style={{
                         fontSize: '0.7rem',
@@ -19,23 +19,34 @@ export default function Header({ cartCount }) {
                         letterSpacing: '0.05em',
                         marginTop: '2px',
                         fontWeight: '400',
-                        textTransform: 'uppercase'
+                        textTransform: 'uppercase',
+                        paddingLeft: '5px'
                     }}>Your Vision, Elevated.</span>
                 </Link>
 
-                {/* Desktop Navigation */}
-                <div className="desktop-nav hide-on-mobile" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                    <Link to="/catalog" className="btn btn-outline" style={{ border: 'none' }}>
+                {/* Desktop Navigation - Centered Absolute */}
+                <div className="desktop-nav hide-on-mobile" style={{
+                    position: 'absolute',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2.5rem'
+                }}>
+                    <Link to="/catalog" className="btn btn-outline" style={{ border: 'none', fontSize: '1.1rem', fontWeight: '600' }}>
                         Catalog
                     </Link>
-                    <Link to="/stores" className="btn btn-outline" style={{ border: 'none' }}>
+                    <Link to="/stores" className="btn btn-outline" style={{ border: 'none', fontSize: '1.1rem', fontWeight: '600' }}>
                         Stores
                     </Link>
-                    <Link to="/booking" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', border: 'none' }}>
-                        <ShoppingBag size={20} />
+                    <Link to="/booking" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', border: 'none', fontSize: '1.1rem', fontWeight: '600' }}>
+                        <ShoppingBag size={22} />
                         <span>Booking Request ({cartCount})</span>
                     </Link>
                 </div>
+
+                {/* Spacer for right side layout balance or Account/Cart if needed later */}
+                <div className="desktop-nav hide-on-mobile" style={{ width: '70px' }}></div>
 
                 {/* Mobile Menu Toggle */}
                 <div className="mobile-toggle" style={{ display: 'none' }}>
