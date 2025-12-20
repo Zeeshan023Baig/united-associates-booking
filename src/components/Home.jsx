@@ -29,7 +29,7 @@ export default function Home({ addToCart, cart }) {
     return (
         <div style={{ paddingBottom: '4rem' }}>
             {/* Full Screen Hero with Dark Premium Gradient */}
-            <div style={{ position: 'relative', height: '100vh', width: '100%', overflow: 'hidden', background: '#0a0a0a' }}>
+            <div style={{ position: 'relative', minHeight: '100vh', width: '100%', overflow: 'hidden', background: '#0a0a0a' }}>
 
                 {/* Deep Dark Glows */}
                 <div style={{

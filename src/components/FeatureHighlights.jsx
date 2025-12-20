@@ -71,7 +71,10 @@ export default function FeatureHighlights() {
     return (
         <div style={{
             width: '100%',
-            maxWidth: '1400px',
+            maxWidth: '100%',
+            margin: '0 auto',
+            padding: '4rem 2rem',
+            overflow: 'hidden', // Safety clip
             margin: '0 auto',
             padding: '4rem 2rem',
             display: 'grid',
