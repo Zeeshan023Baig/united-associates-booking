@@ -35,14 +35,20 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
         checkDataVersion();
     }, []);
 
-    // Handle incoming navigation from Home
+    // Handle incoming navigation from Home OR Back from Product Details
     useEffect(() => {
-        if (location.state?.startCategory) {
-            setSelectedCategory(location.state.startCategory);
-            setViewMode('subcategory');
-            // Clean up state to prevent stuck navigation if needed, 
-            // but React Router handles this mostly fine.
-            // window.history.replaceState({}, document.title) // valid JS way to clear state if annoying
+        if (location.state) {
+            if (location.state.startCategory) {
+                // From Home
+                setSelectedCategory(location.state.startCategory);
+                setViewMode('subcategory');
+            } else if (location.state.viewMode) {
+                // Back from Product Details
+                setViewMode(location.state.viewMode);
+                if (location.state.selectedCategory) setSelectedCategory(location.state.selectedCategory);
+                if (location.state.selectedOrigin) setSelectedOrigin(location.state.selectedOrigin);
+                if (location.state.filters) setFilters(location.state.filters);
+            }
         }
     }, [location]);
 
@@ -312,7 +318,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                                     return (
                                         <div
                                             key={product.id} // use id or firebaseId depending on what useInventory returns. useInventory usually maps doc.id to firebaseId
-                                            onClick={() => navigate(`/product/${product.firebaseId || product.id}`)}
+                                            onClick={() => navigate(`/product/${product.firebaseId || product.id}`, { state: { viewMode, selectedCategory, selectedOrigin, filters } })}
                                             className="glass-panel product-card"
                                             style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0', overflow: 'hidden' }}
                                         >

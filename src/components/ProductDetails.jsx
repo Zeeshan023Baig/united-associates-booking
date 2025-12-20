@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useInventory } from '../hooks/useInventory';
 import { ArrowLeft, Check, AlertCircle, ShoppingCart } from 'lucide-react';
 
 export default function ProductDetails({ addToCart, cart = [] }) {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation(); // Add hook
     const { products, loading } = useInventory();
     const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+    // Capture previous catalog state
+    const previousState = location.state || {}; // { viewMode, selectedCategory, selectedOrigin, filters }
 
     if (loading) return <div className="container" style={{ paddingTop: '6rem' }}>Loading details...</div>;
 
@@ -17,7 +21,10 @@ export default function ProductDetails({ addToCart, cart = [] }) {
         return (
             <div className="container" style={{ paddingTop: '6rem', textAlign: 'center' }}>
                 <h2 style={{ marginBottom: '1rem' }}>Product Not Found</h2>
-                <button onClick={() => navigate('/catalog')} className="btn btn-outline">
+                <button
+                    onClick={() => navigate('/catalog', { state: previousState })}
+                    className="btn btn-outline"
+                >
                     <ArrowLeft size={16} /> Back to Catalog
                 </button>
             </div>
@@ -32,7 +39,7 @@ export default function ProductDetails({ addToCart, cart = [] }) {
     return (
         <div className="container" style={{ paddingTop: '6rem', paddingBottom: '4rem' }}>
             <button
-                onClick={() => navigate('/catalog')}
+                onClick={() => navigate('/catalog', { state: previousState })}
                 className="btn btn-outline"
                 style={{ marginBottom: '2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
             >
