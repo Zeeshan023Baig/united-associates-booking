@@ -97,7 +97,7 @@ export default function Home({ addToCart, cart }) {
 
                         {/* Dark Mode Title */}
                         <h1 style={{
-                            fontSize: 'clamp(3rem, 5vw, 5.5rem)',
+                            fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
                             fontWeight: '800',
                             lineHeight: 1.1,
                             marginBottom: '1.5rem',
