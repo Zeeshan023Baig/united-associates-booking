@@ -31,16 +31,16 @@ export default function Header({ cartCount }) {
                     transform: 'translateX(-50%)',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '2.5rem'
+                    gap: '3rem'
                 }}>
-                    <Link to="/catalog" className="btn btn-outline" style={{ border: 'none', fontSize: '1.1rem', fontWeight: '600' }}>
+                    <Link to="/catalog" className="btn btn-outline" style={{ border: 'none', fontSize: '1.3rem', fontWeight: '700' }}>
                         Catalog
                     </Link>
-                    <Link to="/stores" className="btn btn-outline" style={{ border: 'none', fontSize: '1.1rem', fontWeight: '600' }}>
+                    <Link to="/stores" className="btn btn-outline" style={{ border: 'none', fontSize: '1.3rem', fontWeight: '700' }}>
                         Stores
                     </Link>
-                    <Link to="/booking" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', border: 'none', fontSize: '1.1rem', fontWeight: '600' }}>
-                        <ShoppingBag size={22} />
+                    <Link to="/booking" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', border: 'none', fontSize: '1.3rem', fontWeight: '700' }}>
+                        <ShoppingBag size={26} />
                         <span>Booking Request ({cartCount})</span>
                     </Link>
                 </div>
