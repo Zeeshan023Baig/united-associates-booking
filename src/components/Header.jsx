@@ -11,7 +11,7 @@ export default function Header({ cartCount }) {
     return (
         <nav className="navbar">
             <div className="container nav-content" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '90px' }}>
-                <Link to="/" className="nav-brand" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', zIndex: 101, marginLeft: '-1rem' }}>
+                <Link to="/" className="nav-brand" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 101, marginLeft: '-1rem' }}>
                     <img src="/logo_uaa.png" alt="United Associates Agencies" style={{ height: '70px' }} />
                     <span style={{
                         fontSize: '0.7rem',
@@ -19,8 +19,7 @@ export default function Header({ cartCount }) {
                         letterSpacing: '0.05em',
                         marginTop: '2px',
                         fontWeight: '400',
-                        textTransform: 'uppercase',
-                        paddingLeft: '5px'
+                        textTransform: 'uppercase'
                     }}>Your Vision, Elevated.</span>
                 </Link>
 
