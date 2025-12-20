@@ -78,6 +78,10 @@ export default function Header({ cartCount }) {
             </div>
 
             <style>{`
+                .mobile-nav-overlay {
+                    display: none;
+                }
+
                 @media (max-width: 768px) {
                     .desktop-nav {
                         display: none !important;
@@ -89,6 +93,7 @@ export default function Header({ cartCount }) {
                     }
                     
                     .mobile-nav-overlay {
+                        display: flex;
                         position: fixed;
                         top: 0;
                         left: 0;
