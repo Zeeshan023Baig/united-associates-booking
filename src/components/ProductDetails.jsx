@@ -22,7 +22,7 @@ export default function ProductDetails({ addToCart, cart = [] }) {
             <div className="container" style={{ paddingTop: '6rem', textAlign: 'center' }}>
                 <h2 style={{ marginBottom: '1rem' }}>Product Not Found</h2>
                 <button
-                    onClick={() => navigate('/catalog', { state: previousState })}
+                    onClick={() => navigate('/catalog')}
                     className="btn btn-outline"
                 >
                     <ArrowLeft size={16} /> Back to Catalog
@@ -39,7 +39,7 @@ export default function ProductDetails({ addToCart, cart = [] }) {
     return (
         <div className="container" style={{ paddingTop: '6rem', paddingBottom: '4rem' }}>
             <button
-                onClick={() => navigate('/catalog', { state: previousState })}
+                onClick={() => navigate('/catalog')}
                 className="btn btn-outline"
                 style={{ marginBottom: '2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
             >

@@ -9,16 +9,35 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
     const location = useLocation();
     const { products, loading, error } = useInventory();
 
-    // Navigation State
-    // viewMode: 'main' | 'subcategory' | 'products'
-    const [viewMode, setViewMode] = useState('main');
-    const [selectedCategory, setSelectedCategory] = useState(null); // 'brand' | 'lens'
-    const [selectedOrigin, setSelectedOrigin] = useState(null);     // 'in-house' | 'international' | 'indian'
+    // Navigation State - Initialize from SessionStorage
+    const [viewMode, setViewMode] = useState(() => {
+        try {
+            const saved = sessionStorage.getItem('catalog_state');
+            return saved ? JSON.parse(saved).viewMode : 'main';
+        } catch { return 'main'; }
+    });
+
+    // Helper to safe-parse storage
+    const getSavedState = (key) => {
+        try {
+            const saved = sessionStorage.getItem('catalog_state');
+            return saved ? JSON.parse(saved)[key] : null;
+        } catch { return null; }
+    };
+
+    const [selectedCategory, setSelectedCategory] = useState(() => getSavedState('selectedCategory'));
+    const [selectedOrigin, setSelectedOrigin] = useState(() => getSavedState('selectedOrigin'));
 
     // Advanced Filters
-    const [filters, setFilters] = useState({ faceShape: '', frameShape: '', size: '' });
+    const [filters, setFilters] = useState(() => getSavedState('filters') || { faceShape: '', frameShape: '', size: '' });
     const [filterBrand, setFilterBrand] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
+
+    // Persist State Changes
+    useEffect(() => {
+        const stateToSave = { viewMode, selectedCategory, selectedOrigin, filters };
+        sessionStorage.setItem('catalog_state', JSON.stringify(stateToSave));
+    }, [viewMode, selectedCategory, selectedOrigin, filters]);
 
     // Auto-refresh data if version changes
     useEffect(() => {
@@ -35,20 +54,11 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
         checkDataVersion();
     }, []);
 
-    // Handle incoming navigation from Home OR Back from Product Details
+    // Handle incoming navigation from Home (Deep Links Override Storage)
     useEffect(() => {
-        if (location.state) {
-            if (location.state.startCategory) {
-                // From Home
-                setSelectedCategory(location.state.startCategory);
-                setViewMode('subcategory');
-            } else if (location.state.viewMode) {
-                // Back from Product Details
-                setViewMode(location.state.viewMode);
-                if (location.state.selectedCategory) setSelectedCategory(location.state.selectedCategory);
-                if (location.state.selectedOrigin) setSelectedOrigin(location.state.selectedOrigin);
-                if (location.state.filters) setFilters(location.state.filters);
-            }
+        if (location.state?.startCategory) {
+            setSelectedCategory(location.state.startCategory);
+            setViewMode('subcategory');
         }
     }, [location]);
 
@@ -318,7 +328,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                                     return (
                                         <div
                                             key={product.id} // use id or firebaseId depending on what useInventory returns. useInventory usually maps doc.id to firebaseId
-                                            onClick={() => navigate(`/product/${product.firebaseId || product.id}`, { state: { viewMode, selectedCategory, selectedOrigin, filters } })}
+                                            onClick={() => navigate(`/product/${product.firebaseId || product.id}`)}
                                             className="glass-panel product-card"
                                             style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0', overflow: 'hidden' }}
                                         >
