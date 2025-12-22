@@ -10,7 +10,9 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
     const { products, loading, error } = useInventory();
 
     // Navigation State - Initialize from SessionStorage
+    // Navigation State
     const [viewMode, setViewMode] = useState(() => {
+        if (location.pathname === '/') return 'main'; // Always show main categories on Home
         try {
             const saved = sessionStorage.getItem('catalog_state');
             return saved ? JSON.parse(saved).viewMode : 'main';
