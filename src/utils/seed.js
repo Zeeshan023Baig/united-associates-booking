@@ -48,6 +48,113 @@ const SAMPLE_SPECS = [
         features: ["O Matter™ frame", "Prizm™ lenses", "HDO® Optics"]
     },
 
+    // --- NEW LUXURY ARRIVALS ---
+    {
+        id: "cartier-santos",
+        category: "brand",
+        origin: "international",
+        brand: "Cartier",
+        name: "Cartier Santos Navigator",
+        price: 85000,
+        image: "/assets/new_arrivals/cartier_navigator.jpg",
+        images: ["/assets/new_arrivals/cartier_navigator.jpg"],
+        description: "A tribute to the intrepid aviator Santos-Dumont. Screws borrowed from the iconic watch.",
+        features: ["Gold Finish", "Navigator Shape", "Santos Signature"],
+        faceShape: "oval",
+        frameShape: "aviator",
+        size: "large"
+    },
+    {
+        id: "cartier-decor-wood",
+        category: "brand",
+        origin: "international",
+        brand: "Cartier",
+        name: "Cartier C Décor Wood",
+        price: 120000,
+        image: "/assets/new_arrivals/cartier_rimless_wood.jpg",
+        images: ["/assets/new_arrivals/cartier_rimless_wood.jpg"],
+        description: "Precious woods and gold finishes define this rimless masterpiece.",
+        features: ["Exotic Wood", "Rimless", "C Signature"],
+        faceShape: "square",
+        frameShape: "rectangle",
+        size: "medium"
+    },
+    {
+        id: "cartier-prem-gold",
+        category: "brand",
+        origin: "international",
+        brand: "Cartier",
+        name: "Première de Cartier",
+        price: 95000,
+        image: "/assets/new_arrivals/cartier_rimless_gold.jpg",
+        images: ["/assets/new_arrivals/cartier_rimless_gold.jpg"],
+        description: "Modern rimless design with distinct Cartier aesthetic.",
+        features: ["Titanium", "Gold Finish", "Lightweight"],
+        faceShape: "oval",
+        frameShape: "rectangle",
+        size: "medium"
+    },
+    {
+        id: "dior-club-mask",
+        category: "brand",
+        origin: "international",
+        brand: "Dior",
+        name: "DiorClub M1U",
+        price: 45000,
+        image: "/assets/new_arrivals/dior_monogram_mask.jpg",
+        images: ["/assets/new_arrivals/dior_monogram_mask.jpg"],
+        description: "A rectangular mask with the iconic Dior Oblique motif.",
+        features: ["Sportswear Look", "Blue Oblique", "Mask Shape"],
+        faceShape: "round",
+        frameShape: "rectangle",
+        size: "Extra large"
+    },
+    {
+        id: "dior-sostellaire",
+        category: "brand",
+        origin: "international",
+        brand: "Dior",
+        name: "DiorSoStellaire",
+        price: 38000,
+        image: "/assets/new_arrivals/dior_square.jpg",
+        images: ["/assets/new_arrivals/dior_square.jpg"],
+        description: "Oversized square shape with an elegant acetate frame.",
+        features: ["Oversized", "Acetate", "100% UV Protection"],
+        faceShape: "oval",
+        frameShape: "square",
+        size: "large"
+    },
+    {
+        id: "burberry-shield",
+        category: "brand",
+        origin: "international",
+        brand: "Burberry",
+        name: "Burberry Daisy Shield",
+        price: 28000,
+        image: "/assets/new_arrivals/burberry_shield.jpg",
+        images: ["/assets/new_arrivals/burberry_shield.jpg"],
+        description: "Bold shield design featuring the Burberry logo.",
+        features: ["Shield Lens", "Nylon Fiber", "Modern Look"],
+        faceShape: "heart",
+        frameShape: "rectangle",
+        size: "large"
+    },
+    {
+        id: "lux-aviator-gold",
+        category: "brand",
+        origin: "international",
+        brand: "Tom Ford",
+        name: "Tom Ford Classic Aviator",
+        price: 32000,
+        image: "/assets/new_arrivals/luxury_aviator.jpg",
+        images: ["/assets/new_arrivals/luxury_aviator.jpg"],
+        description: "Timeless aviator silhouette with signature T-temple detail.",
+        features: ["Metal Frame", "Gradient Lens", "Italian Made"],
+        faceShape: "square",
+        frameShape: "aviator",
+        size: "medium"
+    },
+
     // --- LUXURY INTERNATIONAL COLLECTION ---
     // Ray-Ban (Italy)
     {
@@ -568,7 +675,7 @@ const SAMPLE_SPECS = [
 ];
 
 // Version control for seeding data
-export const DATA_VERSION = "1.3"; // Increment this to force a re-seed
+export const DATA_VERSION = "1.4"; // Increment this to force a re-seed
 
 export const seedDatabase = async () => {
     if (!db) return;
