@@ -34,6 +34,14 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
             return;
         }
 
+        // Validate Email
+        // Rules: Start with small letter, no numbers after @, valid TLD
+        const emailRegex = /^[a-z][a-z0-9._%+-]*@[a-z]+\.[a-z]{2,}$/;
+        if (!emailRegex.test(formData.email)) {
+            setBookingError("Invalid email: Must start with a lowercase letter, contain no numbers after '@', and end with a valid domain (e.g. .com).");
+            return;
+        }
+
         setLoading(true);
         setBookingError(null);
 

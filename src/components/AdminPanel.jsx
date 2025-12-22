@@ -65,7 +65,7 @@ export default function AdminPanel() {
     const [ordersLoading, setOrdersLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('orders'); // 'inventory' or 'orders'
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 20;
+    const itemsPerPage = 10;
 
     const [fetchError, setFetchError] = useState(null);
 
@@ -351,7 +351,7 @@ export default function AdminPanel() {
                                             </button>
                                         </td>
                                         <td style={{ padding: '1rem', whiteSpace: 'nowrap', textDecoration: isCompleted ? 'line-through' : 'none' }}>
-                                            {order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}
+                                            {order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleDateString('en-GB') : 'N/A'}
                                             <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                                                 {order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleTimeString() : ''}
                                             </div>
