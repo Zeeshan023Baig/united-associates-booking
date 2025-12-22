@@ -76,24 +76,7 @@ export default function Home({ addToCart, cart }) {
                         paddingRight: '2rem',
                         zIndex: 2
                     }}>
-                        {/* Premium Glass Badge */}
-                        <div style={{
-                            background: 'rgba(255, 255, 255, 0.05)',
-                            backdropFilter: 'blur(10px)',
-                            padding: '0.4rem 1.2rem',
-                            borderRadius: '50px',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            marginBottom: '2rem',
-                            fontSize: '0.8rem',
-                            fontWeight: '600',
-                            color: 'rgba(255, 255, 255, 0.9)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.1em',
-                            animation: 'fadeInUp 0.8s ease-out',
-                            boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
-                        }}>
-                            New Collection 2025
-                        </div>
+                        {/* Premium Glass Badge Removed */}
 
                         {/* Dark Mode Title */}
                         <h1 style={{
