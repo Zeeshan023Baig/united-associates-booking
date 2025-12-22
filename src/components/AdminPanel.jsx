@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useInventory } from '../hooks/useInventory';
 import { db } from '../lib/firebase';
 import { doc, updateDoc, deleteDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp } from 'firebase/firestore';
-import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User, Lock, CheckCircle, XCircle, Upload, Pencil, X } from 'lucide-react';
+import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User, Lock, CheckCircle, XCircle, Upload, Pencil, X, Database } from 'lucide-react';
+import { seedDatabase, clearDatabase } from '../utils/seed';
 
 export default function AdminPanel() {
     const { products, loading: inventoryLoading, error } = useInventory();
@@ -267,10 +268,31 @@ export default function AdminPanel() {
 
     if (inventoryLoading) return <div className="container" style={{ paddingTop: '4rem' }}>Loading Admin...</div>;
 
+    const handleReset = async () => {
+        if (!confirm("WARNING: This will delete ALL current products and orders, then reload the default catalog. Are you sure?")) return;
+
+        try {
+            await clearDatabase();
+            await seedDatabase();
+            alert("Catalog successfully reset! Page will reload.");
+            window.location.reload();
+        } catch (e) {
+            alert("Error resetting catalog: " + e.message);
+        }
+    };
+
     return (
         <div className="container" style={{ paddingTop: '6rem', paddingBottom: '4rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h1>Admin Dashboard</h1>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <h1 style={{ marginBottom: 0 }}>Admin Dashboard</h1>
+                    <button
+                        onClick={handleReset}
+                        style={{ background: 'none', border: 'none', color: '#f87171', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem', padding: 0, marginTop: '0.5rem', width: 'fit-content' }}
+                    >
+                        <Database size={14} /> Reset Catalog Data
+                    </button>
+                </div>
                 <div style={{ display: 'flex', gap: '1rem' }}>
                     <button
                         onClick={() => setActiveTab('inventory')}
