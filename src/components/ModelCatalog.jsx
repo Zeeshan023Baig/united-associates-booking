@@ -139,11 +139,10 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
         const matchCategory = p.category === selectedCategory && p.origin === selectedOrigin;
         if (!matchCategory) return false;
 
-        const matchFace = !filters.faceShape || p.faceShape === filters.faceShape;
-        const matchFrame = !filters.frameShape || p.frameShape === filters.frameShape;
+        const matchShape = !filters.faceShape || p.faceShape === filters.faceShape || p.frameShape === filters.faceShape;
         const matchSize = !filters.size || p.size === filters.size;
 
-        return matchFace && matchFrame && matchSize;
+        return matchShape && matchSize;
     });
 
     return (
@@ -269,7 +268,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                         </h3>
 
                         <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Face Shape</label>
+                            <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Shape</label>
                             <select
                                 value={filters.faceShape}
                                 onChange={e => setFilters({ ...filters, faceShape: e.target.value })}
@@ -281,20 +280,8 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                                 <option value="round">Round</option>
                                 <option value="square">Square</option>
                                 <option value="heart">Heart</option>
-                            </select>
-                        </div>
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Frame Shape</label>
-                            <select
-                                value={filters.frameShape}
-                                onChange={e => setFilters({ ...filters, frameShape: e.target.value })}
-                                className="form-input"
-                                style={{ width: '100%', fontSize: '0.9rem', padding: '0.5rem' }}
-                            >
-                                <option value="">All</option>
                                 <option value="wayfarer">Wayfarer</option>
                                 <option value="aviator">Aviator</option>
-                                <option value="round">Round</option>
                                 <option value="cat-eye">Cat Eye</option>
                                 <option value="rectangle">Rectangle</option>
                             </select>
@@ -308,9 +295,11 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                                 style={{ width: '100%', fontSize: '0.9rem', padding: '0.5rem' }}
                             >
                                 <option value="">All</option>
-                                <option value="small">Small</option>
-                                <option value="medium">Medium</option>
-                                <option value="large">Large</option>
+                                <option value="Extra small">Extra Small (Below 42mm)</option>
+                                <option value="Small">Small (42mm - 48mm)</option>
+                                <option value="Medium">Medium (49mm - 52mm)</option>
+                                <option value="Large">Large (53mm - 58mm)</option>
+                                <option value="Extra large">Extra Large (Above 59mm)</option>
                             </select>
                         </div>
                     </div>
