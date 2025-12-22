@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useInventory } from '../hooks/useInventory';
 import { db } from '../lib/firebase';
-import { doc, updateDoc, deleteDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp } from 'firebase/firestore';
-import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User, Lock, CheckCircle, XCircle, Upload, Pencil, X, Database } from 'lucide-react';
-import { seedDatabase, clearDatabase } from '../utils/seed';
+import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User, Lock, CheckCircle, XCircle, Upload, Pencil, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function AdminPanel() {
     const { products, loading: inventoryLoading, error } = useInventory();
@@ -62,10 +60,11 @@ export default function AdminPanel() {
         }
     };
 
-    // Orders State
     const [orders, setOrders] = useState([]);
     const [ordersLoading, setOrdersLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('orders'); // 'inventory' or 'orders'
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
 
     useEffect(() => {
         if (!isAuthenticated) return;
@@ -268,31 +267,12 @@ export default function AdminPanel() {
 
     if (inventoryLoading) return <div className="container" style={{ paddingTop: '4rem' }}>Loading Admin...</div>;
 
-    const handleReset = async () => {
-        if (!confirm("WARNING: This will delete ALL current products and orders, then reload the default catalog. Are you sure?")) return;
 
-        try {
-            await clearDatabase();
-            await seedDatabase();
-            alert("Catalog successfully reset! Page will reload.");
-            window.location.reload();
-        } catch (e) {
-            alert("Error resetting catalog: " + e.message);
-        }
-    };
 
     return (
         <div className="container" style={{ paddingTop: '6rem', paddingBottom: '4rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <h1 style={{ marginBottom: 0 }}>Admin Dashboard</h1>
-                    <button
-                        onClick={handleReset}
-                        style={{ background: 'none', border: 'none', color: '#f87171', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem', padding: 0, marginTop: '0.5rem', width: 'fit-content' }}
-                    >
-                        <Database size={14} /> Reset Catalog Data
-                    </button>
-                </div>
+                <h1>Admin Dashboard</h1>
                 <div style={{ display: 'flex', gap: '1rem' }}>
                     <button
                         onClick={() => setActiveTab('inventory')}
@@ -325,7 +305,8 @@ export default function AdminPanel() {
                             </tr>
                         </thead>
                         <tbody>
-                            {orders.map(order => {
+
+                            {orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(order => {
                                 const isCompleted = order.status === 'completed';
                                 return (
                                     <tr key={order.id} style={{
@@ -378,6 +359,31 @@ export default function AdminPanel() {
                             )}
                         </tbody>
                     </table>
+
+                    {/* Pagination Controls */}
+                    {orders.length > itemsPerPage && (
+                        <div style={{ padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                            <button
+                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                disabled={currentPage === 1}
+                                className="btn btn-outline"
+                                style={{ padding: '0.5rem', opacity: currentPage === 1 ? 0.5 : 1 }}
+                            >
+                                <ChevronLeft size={20} />
+                            </button>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                                Page {currentPage} of {Math.ceil(orders.length / itemsPerPage)}
+                            </span>
+                            <button
+                                onClick={() => setCurrentPage(p => Math.min(Math.ceil(orders.length / itemsPerPage), p + 1))}
+                                disabled={currentPage >= Math.ceil(orders.length / itemsPerPage)}
+                                className="btn btn-outline"
+                                style={{ padding: '0.5rem', opacity: currentPage >= Math.ceil(orders.length / itemsPerPage) ? 0.5 : 1 }}
+                            >
+                                <ChevronRight size={20} />
+                            </button>
+                        </div>
+                    )}
                 </div>
             ) : (
                 <>
