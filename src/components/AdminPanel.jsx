@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useInventory } from '../hooks/useInventory';
 import { db } from '../lib/firebase';
 import { doc, updateDoc, deleteDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp } from 'firebase/firestore';
-import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User, Lock, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User, Lock, CheckCircle, XCircle, Upload } from 'lucide-react';
 
 export default function AdminPanel() {
     const { products, loading: inventoryLoading, error } = useInventory();
@@ -20,6 +20,8 @@ export default function AdminPanel() {
     });
     const [saving, setSaving] = useState(null);
     const fileInputRef = React.useRef(null);
+    const updateFileInputRef = React.useRef(null);
+    const [updatingImageId, setUpdatingImageId] = useState(null);
 
     const handleFileSelect = (e) => {
         const file = e.target.files[0];
@@ -27,6 +29,32 @@ export default function AdminPanel() {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setNewItem(prev => ({ ...prev, imageUrl: reader.result }));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleUpdateImageClick = (id) => {
+        setUpdatingImageId(id);
+        if (updateFileInputRef.current) {
+            updateFileInputRef.current.value = ''; // Reset file input
+            updateFileInputRef.current.click();
+        }
+    };
+
+    const handleUpdateFileSelect = (e) => {
+        const file = e.target.files[0];
+        if (file && updatingImageId) {
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const newImageUrl = reader.result;
+                try {
+                    const ref = doc(db, "products", updatingImageId);
+                    await updateDoc(ref, { imageUrl: newImageUrl });
+                    setUpdatingImageId(null);
+                } catch (e) {
+                    alert("Error updating image: " + e.message);
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -318,18 +346,6 @@ export default function AdminPanel() {
 
                             {/* New Filter Fields */}
                             <div className="form-group">
-                                <label className="form-label">Face Shape</label>
-                                <select className="form-input"
-                                    value={newItem.faceShape}
-                                    onChange={e => setNewItem({ ...newItem, faceShape: e.target.value })}
-                                >
-                                    <option value="oval">Oval</option>
-                                    <option value="round">Round</option>
-                                    <option value="square">Square</option>
-                                    <option value="heart">Heart</option>
-                                </select>
-                            </div>
-                            <div className="form-group">
                                 <label className="form-label">Frame Shape</label>
                                 <select className="form-input"
                                     value={newItem.frameShape}
@@ -340,6 +356,10 @@ export default function AdminPanel() {
                                     <option value="round">Round</option>
                                     <option value="cat-eye">Cat Eye</option>
                                     <option value="rectangle">Rectangle</option>
+                                    <option value="oval">Oval</option>
+                                    <option value="round">Round</option>
+                                    <option value="square">Square</option>
+                                    <option value="heart">Heart</option>
                                 </select>
                             </div>
                             <div className="form-group">
@@ -348,20 +368,17 @@ export default function AdminPanel() {
                                     value={newItem.size}
                                     onChange={e => setNewItem({ ...newItem, size: e.target.value })}
                                 >
-                                    <option value="small">Small</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="large">Large</option>
+                                    <option value="Extra small (below 42mm)"> ExtraSmall</option>
+                                    <option value="small 42-48mm">Small</option>
+                                    <option value="medium (49-52mm)">Medium</option>
+                                    <option value="large (53-58mm)">Large</option>
+                                    <option value="Extra large (59mm and above)">ExtraLarge</option>
                                 </select>
                             </div>
                             <div className="form-group">
-                                <label className="form-label">Name</label>
+                                <label className="form-label">Brand Name</label>
                                 <input className="form-input" placeholder="e.g. Ray-Ban Hexagonal" required
                                     value={newItem.name} onChange={e => setNewItem({ ...newItem, name: e.target.value })} />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label">Brand Label</label>
-                                <input className="form-input" placeholder="e.g. Ray-Ban" required
-                                    value={newItem.brand} onChange={e => setNewItem({ ...newItem, brand: e.target.value })} />
                             </div>
                             <div className="form-group">
                                 <label className="form-label">Price (₹)</label>
@@ -412,6 +429,15 @@ export default function AdminPanel() {
                         </form>
                     </div>
 
+                    {/* Hidden input for updating images */}
+                    <input
+                        type="file"
+                        ref={updateFileInputRef}
+                        style={{ display: 'none' }}
+                        accept="image/*"
+                        onChange={handleUpdateFileSelect}
+                    />
+
                     {/* Inventory Table */}
                     <div className="glass-panel" style={{ overflowX: 'auto' }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
@@ -429,8 +455,24 @@ export default function AdminPanel() {
                                 {products.map(product => (
                                     <tr key={product.firebaseId} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                                         <td style={{ padding: '1rem' }}>
-                                            <div style={{ width: '50px', height: '50px', background: '#000', borderRadius: '4px', overflow: 'hidden' }}>
-                                                <img src={product.imageUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
+                                            <div style={{ position: 'relative', width: '50px', height: '50px' }}>
+                                                <div style={{ width: '100%', height: '100%', background: '#000', borderRadius: '4px', overflow: 'hidden' }}>
+                                                    <img src={product.imageUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
+                                                </div>
+                                                <button
+                                                    onClick={() => handleUpdateImageClick(product.firebaseId)}
+                                                    className="btn-outline"
+                                                    style={{
+                                                        position: 'absolute', bottom: -10, right: -10,
+                                                        padding: '4px', background: 'var(--background)',
+                                                        border: '1px solid var(--border)', borderRadius: '50%',
+                                                        cursor: 'pointer', zIndex: 10,
+                                                        display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                                    }}
+                                                    title="Change Image"
+                                                >
+                                                    <Upload size={12} />
+                                                </button>
                                             </div>
                                         </td>
                                         <td style={{ padding: '1rem' }}>
