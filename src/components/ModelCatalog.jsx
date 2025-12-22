@@ -156,7 +156,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                     </button>
                 )}
 
-                <h1>
+                <h1 style={{ margin: 0 }}>
                     {viewMode === 'main' && "United Collections"}
                     {viewMode === 'subcategory' && (selectedCategory === 'brand' ? "Brands" : "Lenses")}
                     {viewMode === 'products' && (selectedOrigin === 'in-house' ? "In-House Collection" : selectedOrigin === 'international' ? "International Collection" : "Indian Collection")}
