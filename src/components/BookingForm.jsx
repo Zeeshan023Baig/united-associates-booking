@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { db } from '../lib/firebase';
-import { collection, addDoc, runTransaction, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, runTransaction, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
+
 import { useNavigate } from 'react-router-dom';
 import { Trash2, CheckCircle, ShoppingBag } from 'lucide-react';
 import emailjs from '@emailjs/browser';
@@ -48,7 +49,10 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                 for (const item of cart) {
                     const sfDocRef = doc(db, "products", item.firebaseId);
                     const sfDoc = await transaction.get(sfDocRef);
-                    if (!sfDoc.exists()) throw new Error(`Product ${item.name} does not exist!`);
+
+                    if (!sfDoc.exists()) {
+                        throw new Error(`STALE_CART: Product "${item.name}" no longer exists in catalog.`);
+                    }
 
                     const currentStock = sfDoc.data().stock;
                     if (currentStock < item.quantity) {
@@ -70,7 +74,7 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                     items: cart,
                     totalPrice,
                     createdAt: serverTimestamp(),
-                    status: 'pending_payment' // Initial status
+                    status: DEMO_MODE ? 'completed' : 'pending_payment' // Auto-complete if Demo
                 });
             });
 
@@ -93,25 +97,17 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                 name: "United Associates",
                 description: "Purchase of Sunglasses",
                 image: window.location.origin + "/logo_uaa.png",
-                order_id: "", // For backend generation, but accessing purely frontend here for demo
+                order_id: "",
                 handler: async function (response) {
-                    // Payment Success!
-                    // console.log(response.razorpay_payment_id);
-
                     try {
                         // Update Booking to Paid
-                        // Note: In a real app, verify signature on backend.
-                        // Here we just update firestore.
-                        /* 
-                           We need to update the doc we just created. 
-                           Since we are inside callback, we need reference to it.
-                           However, 'runTransaction' above is complete.
-                        */
-                        // We will need to import 'updateDoc' and 'doc' (already imported)
+                        const bookingRef = doc(db, "bookings", bookingId);
+                        await updateDoc(bookingRef, {
+                            status: 'completed',
+                            paymentId: response.razorpay_payment_id
+                        });
 
-                        // NOTIFICATION & NAVIGATION
                         await finalizeBooking(bookingId, response.razorpay_payment_id);
-
                     } catch (err) {
                         alert("Payment successful but failed to update order: " + err.message);
                     }
@@ -129,7 +125,6 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
             const rzp1 = new window.Razorpay(options);
             rzp1.on('payment.failed', function (response) {
                 alert("Payment Failed: " + response.error.description);
-                // Optionally revert stock here if critical
             });
             rzp1.open();
 
@@ -137,7 +132,14 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
 
         } catch (e) {
             console.error("Booking Error: ", e);
-            setBookingError("Failed: " + e.message);
+            if (e.message.includes("STALE_CART")) {
+                setBookingError("Items in your cart are outdated (Catalog was reset). Please clear your cart.");
+                if (confirm("Your cart contains outdated items from a previous catalog version. Clear cart now?")) {
+                    clearCart();
+                }
+            } else {
+                setBookingError("Failed: " + e.message);
+            }
             setLoading(false);
         }
     };
