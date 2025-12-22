@@ -368,11 +368,11 @@ export default function AdminPanel() {
                                     value={newItem.size}
                                     onChange={e => setNewItem({ ...newItem, size: e.target.value })}
                                 >
-                                    <option value="Extra small (below 42mm)"> ExtraSmall</option>
-                                    <option value="small 42-48mm">Small</option>
-                                    <option value="medium (49-52mm)">Medium</option>
-                                    <option value="large (53-58mm)">Large</option>
-                                    <option value="Extra large (59mm and above)">ExtraLarge</option>
+                                    <option value="Extra small (below 42mm)"> ExtraSmall(below 42mm)</option>
+                                    <option value="small 42-48mm">Small(42-48mm)</option>
+                                    <option value="medium (49-52mm)">Medium(49-52mm)</option>
+                                    <option value="large (53-58mm)">Large(53-58mm)</option>
+                                    <option value="Extra large (59mm and above)">ExtraLarge(59mm and above)</option>
                                 </select>
                             </div>
                             <div className="form-group">
