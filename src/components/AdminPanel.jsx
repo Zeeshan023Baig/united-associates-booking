@@ -66,26 +66,25 @@ export default function AdminPanel() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
 
+    const fetchOrders = async () => {
+        setOrdersLoading(true);
+        try {
+            const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+            const ordersData = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setOrders(ordersData);
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+        } finally {
+            setOrdersLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (!isAuthenticated) return;
-
-        const fetchOrders = async () => {
-            try {
-                const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
-                const ordersData = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                // Sort locally if needed to ensure completed ones don't just disappear or move unexpectedly if we change sort logic
-                setOrders(ordersData);
-            } catch (error) {
-                console.error("Error fetching orders:", error);
-            } finally {
-                setOrdersLoading(false);
-            }
-        };
-
         fetchOrders();
     }, [isAuthenticated]);
 
@@ -291,9 +290,14 @@ export default function AdminPanel() {
 
             {activeTab === 'orders' ? (
                 <div className="glass-panel" style={{ overflowX: 'auto' }}>
-                    <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <ShoppingBag size={20} /> Recent Sales
-                    </h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <ShoppingBag size={20} /> Recent Sales
+                        </h3>
+                        <button onClick={fetchOrders} className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', gap: '0.4rem' }}>
+                            <RefreshCw size={14} className={ordersLoading ? 'spin' : ''} /> Refresh List
+                        </button>
+                    </div>
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                         <thead>
                             <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
