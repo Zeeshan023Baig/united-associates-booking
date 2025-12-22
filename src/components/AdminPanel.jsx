@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useInventory } from '../hooks/useInventory';
 import { db } from '../lib/firebase';
 import { doc, updateDoc, deleteDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp } from 'firebase/firestore';
-import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User, Lock, CheckCircle, XCircle, Upload } from 'lucide-react';
+import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User, Lock, CheckCircle, XCircle, Upload, Pencil, X } from 'lucide-react';
 
 export default function AdminPanel() {
     const { products, loading: inventoryLoading, error } = useInventory();
@@ -22,6 +22,7 @@ export default function AdminPanel() {
     const fileInputRef = React.useRef(null);
     const updateFileInputRef = React.useRef(null);
     const [updatingImageId, setUpdatingImageId] = useState(null);
+    const [editingId, setEditingId] = useState(null);
 
     const handleFileSelect = (e) => {
         const file = e.target.files[0];
@@ -136,41 +137,83 @@ export default function AdminPanel() {
         }
     };
 
-    const handleAdd = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!newItem.name || !newItem.price) return;
 
-        // Process Image URL: Allow local paths or full URLs
-        let finalImageUrl = newItem.imageUrl;
-        if (finalImageUrl && !finalImageUrl.startsWith('http') && !finalImageUrl.startsWith('data:')) {
-            // It's likely a local file path. Ensure it starts with '/'
-            if (!finalImageUrl.startsWith('/')) {
-                finalImageUrl = '/' + finalImageUrl;
-            }
-        } else if (!finalImageUrl) {
-            // Default placeholder if empty
-            finalImageUrl = `https://placehold.co/600x400/1e293b/38bdf8?text=${encodeURIComponent(newItem.name)}`;
-        }
-
         try {
-            await addDoc(collection(db, "products"), {
-                ...newItem,
-                price: parseFloat(newItem.price),
-                stock: parseInt(newItem.stock),
-                imageUrl: finalImageUrl,
-                description: newItem.description || "No description provided.",
-                features: newItem.features ? newItem.features.split(',').map(f => f.trim()).filter(f => f) : [],
-                createdAt: serverTimestamp()
-            });
-            setNewItem({
-                name: '', brand: '', price: '', stock: 100, imageUrl: '', description: '', features: '',
-                category: 'brand', origin: 'international',
-                faceShape: 'oval', frameShape: 'wayfarer', size: 'medium'
-            });
-            alert("Product Added!");
+            // Process Image URL: Allow local paths or full URLs
+            let finalImageUrl = newItem.imageUrl;
+            if (finalImageUrl && !finalImageUrl.startsWith('http') && !finalImageUrl.startsWith('data:')) {
+                // It's likely a local file path. Ensure it starts with '/'
+                if (!finalImageUrl.startsWith('/')) {
+                    finalImageUrl = '/' + finalImageUrl;
+                }
+            } else if (!finalImageUrl && !editingId) {
+                // Default placeholder if empty and creating new
+                finalImageUrl = `https://placehold.co/600x400/1e293b/38bdf8?text=${encodeURIComponent(newItem.name)}`;
+            }
+
+            if (editingId) {
+                // UPDATE EXISTING
+                const ref = doc(db, "products", editingId);
+                await updateDoc(ref, {
+                    ...newItem,
+                    price: parseFloat(newItem.price),
+                    stock: parseInt(newItem.stock),
+                    imageUrl: finalImageUrl,
+                    description: newItem.description || "No description provided.",
+                    features: newItem.features ? (Array.isArray(newItem.features) ? newItem.features : newItem.features.split(',').map(f => f.trim()).filter(f => f)) : [],
+                });
+                alert("Product Updated!");
+            } else {
+                // CREATE NEW
+                await addDoc(collection(db, "products"), {
+                    ...newItem,
+                    price: parseFloat(newItem.price),
+                    stock: parseInt(newItem.stock),
+                    imageUrl: finalImageUrl,
+                    description: newItem.description || "No description provided.",
+                    features: newItem.features ? newItem.features.split(',').map(f => f.trim()).filter(f => f) : [],
+                    createdAt: serverTimestamp()
+                });
+                alert("Product Added!");
+            }
+
+            // Reset form
+            handleCancelEdit();
+
         } catch (e) {
-            alert("Error adding: " + e.message);
+            alert("Error saving: " + e.message);
         }
+    };
+
+    const handleEdit = (product) => {
+        setEditingId(product.firebaseId);
+        setNewItem({
+            name: product.name || '',
+            brand: product.brand || '',
+            price: product.price || '',
+            stock: product.stock || 100,
+            imageUrl: product.imageUrl || '',
+            description: product.description || '',
+            features: product.features ? (Array.isArray(product.features) ? product.features.join(', ') : product.features) : '',
+            category: product.category || 'brand',
+            origin: product.origin || 'international',
+            faceShape: product.faceShape || 'oval',
+            frameShape: product.frameShape || 'wayfarer',
+            size: product.size || 'medium'
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleCancelEdit = () => {
+        setEditingId(null);
+        setNewItem({
+            name: '', brand: '', price: '', stock: 100, imageUrl: '', description: '', features: '',
+            category: 'brand', origin: 'international',
+            faceShape: 'oval', frameShape: 'wayfarer', size: 'medium'
+        });
     };
 
     if (!isAuthenticated) {
@@ -318,10 +361,18 @@ export default function AdminPanel() {
                 <>
                     {/* Add New Product Form */}
                     <div className="glass-panel" style={{ marginBottom: '3rem' }}>
-                        <h3 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <Plus size={20} /> Add New Product
-                        </h3>
-                        <form onSubmit={handleAdd} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', alignItems: 'end' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                            <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                {editingId ? <Pencil size={20} /> : <Plus size={20} />}
+                                {editingId ? 'Edit Product' : 'Add New Product'}
+                            </h3>
+                            {editingId && (
+                                <button onClick={handleCancelEdit} className="btn btn-outline" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                    <X size={16} /> Cancel Edit
+                                </button>
+                            )}
+                        </div>
+                        <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', alignItems: 'end' }}>
                             <div className="form-group">
                                 <label className="form-label">Category</label>
                                 <select className="form-input"
@@ -414,6 +465,15 @@ export default function AdminPanel() {
                                         <Plus size={20} />
                                     </button>
                                 </div>
+                                {newItem.imageUrl && (
+                                    <div style={{ marginTop: '0.5rem', width: '100px', height: '100px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.2)' }}>
+                                        <img
+                                            src={newItem.imageUrl}
+                                            alt="Preview"
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
+                                    </div>
+                                )}
                             </div>
                             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                                 <label className="form-label">Description</label>
@@ -425,7 +485,9 @@ export default function AdminPanel() {
                                 <input className="form-input" placeholder="Polarized, UV Protection, Hard Case"
                                     value={newItem.features} onChange={e => setNewItem({ ...newItem, features: e.target.value })} />
                             </div>
-                            <button type="submit" className="btn btn-primary" style={{ gridColumn: '1 / -1' }}>Add Product</button>
+                            <button type="submit" className="btn btn-primary" style={{ gridColumn: '1 / -1' }}>
+                                {editingId ? 'Update Product' : 'Add Product'}
+                            </button>
                         </form>
                     </div>
 
@@ -503,8 +565,11 @@ export default function AdminPanel() {
                                             </div>
                                         </td>
                                         <td style={{ padding: '1rem' }}>
-                                            <button onClick={() => handleDelete(product.firebaseId)} className="btn btn-outline" style={{ border: 'none', color: '#f87171' }}>
+                                            <button onClick={() => handleDelete(product.firebaseId)} className="btn btn-outline" style={{ border: 'none', color: '#f87171' }} title="Delete">
                                                 <Trash2 size={18} />
+                                            </button>
+                                            <button onClick={() => handleEdit(product)} className="btn btn-outline" style={{ border: 'none', color: '#38bdf8' }} title="Edit">
+                                                <Pencil size={18} />
                                             </button>
                                         </td>
                                     </tr>
