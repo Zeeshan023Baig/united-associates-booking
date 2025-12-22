@@ -66,18 +66,36 @@ export default function AdminPanel() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
 
+    const [fetchError, setFetchError] = useState(null);
+
     const fetchOrders = async () => {
         setOrdersLoading(true);
+        setFetchError(null);
         try {
-            const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+            // Debug: Temporarily removed orderBy to rule out index issues
+            const q = collection(db, "bookings");
             const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                console.log("No orders found in 'bookings' collection.");
+            }
+
             const ordersData = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
+
+            // Sort client-side for now
+            ordersData.sort((a, b) => {
+                const dateA = a.createdAt?.seconds || 0;
+                const dateB = b.createdAt?.seconds || 0;
+                return dateB - dateA;
+            });
+
             setOrders(ordersData);
         } catch (error) {
             console.error("Error fetching orders:", error);
+            setFetchError("Failed to load orders: " + error.message);
         } finally {
             setOrdersLoading(false);
         }
@@ -294,9 +312,12 @@ export default function AdminPanel() {
                         <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             <ShoppingBag size={20} /> Recent Sales
                         </h3>
-                        <button onClick={fetchOrders} className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', gap: '0.4rem' }}>
-                            <RefreshCw size={14} className={ordersLoading ? 'spin' : ''} /> Refresh List
-                        </button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            {fetchError && <span style={{ color: '#f87171', fontSize: '0.8rem' }}>{fetchError}</span>}
+                            <button onClick={fetchOrders} className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', gap: '0.4rem' }}>
+                                <RefreshCw size={14} className={ordersLoading ? 'spin' : ''} /> Refresh List
+                            </button>
+                        </div>
                     </div>
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                         <thead>
