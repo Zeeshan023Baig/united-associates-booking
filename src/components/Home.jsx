@@ -5,10 +5,20 @@ import { ChevronDown } from 'lucide-react';
 
 export default function Home({ addToCart, cart }) {
     const catalogRef = useRef(null);
+    const videoRef = useRef(null);
 
     const scrollToCatalog = () => {
         catalogRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
+
+    // Ensure video plays on mobile
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.play().catch(error => {
+                console.log("Video autoplay failed:", error);
+            });
+        }
+    }, []);
 
     // Scroll Animation Observer
     useEffect(() => {
@@ -180,6 +190,7 @@ export default function Home({ addToCart, cart }) {
                             }}
                         >
                             <video
+                                ref={videoRef}
                                 src="https://india.ray-ban.com/discover/image/3sep-main-vdo.mp4"
                                 autoPlay
                                 loop
