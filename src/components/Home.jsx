@@ -83,7 +83,7 @@ export default function Home({ addToCart, cart }) {
                             fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
                             fontWeight: '800',
                             lineHeight: 1.1,
-                            marginBottom: '1.5rem',
+                            marginBottom: '0.5rem',
                             color: '#fff',
                             letterSpacing: '-0.03em',
                             animation: 'fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s forwards',
@@ -102,7 +102,7 @@ export default function Home({ addToCart, cart }) {
                             fontSize: '1.125rem',
                             color: 'rgba(255, 255, 255, 0.7)',
                             maxWidth: '500px',
-                            marginBottom: '2.5rem',
+                            marginBottom: '1.5rem',
                             lineHeight: 1.6,
                             opacity: 0,
                             animation: 'fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s forwards'
