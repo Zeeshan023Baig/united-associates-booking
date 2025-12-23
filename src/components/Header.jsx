@@ -82,6 +82,7 @@ export default function Header({ cartCount }) {
             {/* Mobile Navigation Overlay */}
             <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'open' : ''}`}>
                 <div className="mobile-nav-links">
+                    <Link to="/" onClick={closeMenu}>Home</Link>
                     <Link to="/about" onClick={closeMenu}>About Us</Link>
                     <Link to="/catalog" onClick={closeMenu}>Catalog</Link>
                     <Link to="/brands" onClick={closeMenu}>Brands</Link>
@@ -228,6 +229,7 @@ export default function Header({ cartCount }) {
                 .mobile-logo {
                     position: absolute;
                     right: 20px;
+                    z-index: 2001; /* Above overlay */
                 }
 
                 /* Responsive */
