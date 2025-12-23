@@ -234,9 +234,6 @@ export default function Header({ cartCount }) {
                     position: absolute;
                     right: 20px;
                     z-index: 2001; /* Above overlay */
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-end; /* Right align the tagline */
                 }
                 .mobile-brand {
                     display: flex;
@@ -264,6 +261,14 @@ export default function Header({ cartCount }) {
                      }
                      .nav-content {
                         justify-content: center; /* Center items for mobile too */
+                     }
+                     .mobile-logo {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                     }
+                     .mobile-brand {
+                        align-items: center;
                      }
                 }
 
