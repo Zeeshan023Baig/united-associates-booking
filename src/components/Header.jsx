@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
 import { Menu, X, ShoppingBag } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Header({ cartCount }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const navigate = useNavigate();
 
-    const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+    const toggleMenu = () => {
+        if (isMobileMenuOpen) {
+            // Closing functionality - Go to Home
+            setIsMobileMenuOpen(false);
+            navigate('/');
+        } else {
+            // Opening functionality
+            setIsMobileMenuOpen(true);
+        }
+    };
+
     const closeMenu = () => setIsMobileMenuOpen(false);
 
     return (
@@ -212,6 +223,7 @@ export default function Header({ cartCount }) {
                     cursor: pointer;
                     position: absolute; /* Position absolute to not affect centering if we had other elements, effectively left aligned here */
                     left: 20px;
+                    z-index: 2001; /* Above overlay */
                 }
                 .mobile-logo {
                     position: absolute;
