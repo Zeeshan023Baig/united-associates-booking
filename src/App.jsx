@@ -8,11 +8,12 @@ import Confirmation from './components/Confirmation'
 import AdminPanel from './components/AdminPanel'
 import ProductDetails from './components/ProductDetails'
 import StoreLocator from './components/StoreLocator'
+import AboutUs from './components/AboutUs'
+import WhyUs from './components/WhyUs'
+import Brands from './components/Brands'
+import './styles/index.css'
 import WhatsAppWidget from './components/WhatsAppWidget'
 import Footer from './components/Footer'
-import './styles/index.css'
-
-
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -20,7 +21,16 @@ function App() {
   // Persist cart to simple storage so refresh doesn't lose it (optional but nice)
   useEffect(() => {
     const saved = localStorage.getItem('unitder_cart');
-    if (saved) setCart(JSON.parse(saved));
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setCart(parsed);
+        }
+      } catch (e) {
+        console.error("Failed to parse cart", e);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -70,7 +80,10 @@ function App() {
         <main style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<Home addToCart={addToCart} cart={cart} />} />
+            <Route path="/about" element={<AboutUs />} />
             <Route path="/catalog" element={<ModelCatalog addToCart={addToCart} cart={cart} />} />
+            <Route path="/brands" element={<Brands />} />
+            <Route path="/why-us" element={<WhyUs />} />
             <Route path="/booking" element={
               <BookingForm
                 cart={cart}
@@ -82,6 +95,7 @@ function App() {
             <Route path="/confirmation" element={<Confirmation />} />
             <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} cart={cart} />} />
             <Route path="/stores" element={<StoreLocator />} />
+            <Route path="/contact" element={<StoreLocator />} />
             <Route path="/admin" element={<AdminPanel />} />
           </Routes>
         </main>

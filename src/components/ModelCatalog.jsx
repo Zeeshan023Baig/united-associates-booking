@@ -158,7 +158,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
 
                 <h1 style={{ margin: 0 }}>
                     {viewMode === 'main' && "United Collections"}
-                    {viewMode === 'subcategory' && (selectedCategory === 'brand' ? "Brands" : "Lenses")}
+                    {viewMode === 'subcategory' && (selectedCategory === 'Products' ? "Product" : "Lenses")}
                     {viewMode === 'products' && (selectedOrigin === 'in-house' ? "In-House Collection" : selectedOrigin === 'international' ? "International Collection" : "Indian Collection")}
                 </h1>
 
@@ -192,7 +192,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
             {viewMode === 'main' && (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
 
-                    {/* Brands Card */}
+                    {/* Products Card */}
                     <div
                         className="glass-panel"
                         onClick={() => handleCategorySelect('brand')}
@@ -200,7 +200,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                         onMouseOver={e => e.currentTarget.style.transform = 'translateY(-5px)'}
                         onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
                     >
-                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#38bdf8' }}>Brands</h2>
+                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#38bdf8' }}> Products</h2>
                         <p style={{ color: 'var(--text-secondary)' }}>Explore our curated collection of eyewear frames.</p>
                         <div style={{ marginTop: '2rem', display: 'inline-flex', alignItems: 'center', color: '#38bdf8' }}>
                             Browse Collection <ChevronRight size={20} />

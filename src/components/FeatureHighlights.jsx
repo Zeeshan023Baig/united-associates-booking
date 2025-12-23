@@ -75,8 +75,6 @@ export default function FeatureHighlights() {
             margin: '0 auto',
             padding: '4rem 2rem',
             overflow: 'hidden', // Safety clip
-            margin: '0 auto',
-            padding: '4rem 2rem',
             display: 'grid',
             gridTemplateColumns: 'repeat(12, 1fr)',
             gridTemplateRows: 'repeat(2, minmax(500px, auto))', // Smart height: at least 500px, grows if needed
