@@ -72,8 +72,9 @@ export default function Header({ cartCount }) {
                     </button>
                     {/* Mobile Logo for context */}
                     <div className="mobile-logo hide-on-desktop">
-                        <Link to="/">
+                        <Link to="/" className="mobile-brand">
                             <img src="/logo_uaa.png" alt="UAA" style={{ height: '40px' }} />
+                            <span className="mobile-tagline">Your Vision, Elevated.</span>
                         </Link>
                     </div>
                 </div>
@@ -81,6 +82,9 @@ export default function Header({ cartCount }) {
 
             {/* Mobile Navigation Overlay */}
             <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'open' : ''}`}>
+                <button className="mobile-close-btn" onClick={toggleMenu}>
+                    <X size={28} />
+                </button>
                 <div className="mobile-nav-links">
                     <Link to="/" onClick={closeMenu}>Home</Link>
                     <Link to="/about" onClick={closeMenu}>About Us</Link>
@@ -230,6 +234,24 @@ export default function Header({ cartCount }) {
                     position: absolute;
                     right: 20px;
                     z-index: 2001; /* Above overlay */
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end; /* Right align the tagline */
+                }
+                .mobile-brand {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    text-decoration: none;
+                }
+                .mobile-tagline {
+                    color: #fff;
+                    font-size: 0.5rem; /* Small for mobile */
+                    text-transform: uppercase;
+                    letter-spacing: 0.15em;
+                    font-weight: 500;
+                    margin-top: 2px;
+                    opacity: 0.9;
                 }
 
                 /* Responsive */
@@ -264,6 +286,16 @@ export default function Header({ cartCount }) {
                 .mobile-nav-overlay.open {
                     opacity: 1;
                     pointer-events: auto;
+                }
+                .mobile-close-btn {
+                     background: none;
+                    border: none;
+                    color: #fff;
+                    cursor: pointer;
+                    position: absolute;
+                    top: 25px; /* Adjust to match header height */
+                    left: 20px;
+                    z-index: 2002; /* Above everything inside */
                 }
                 .mobile-nav-links {
                     display: flex;
