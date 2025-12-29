@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Menu, X, ShoppingBag } from 'lucide-react';
+import { Menu, X, ShoppingBag, Moon, Sun } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Header({ cartCount }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
     const toggleMenu = () => {
@@ -66,10 +68,21 @@ export default function Header({ cartCount }) {
                         </Link>
                     </div>
 
-                    {/* Mobile Toggle (Visible on Mobile) */}
-                    <button className="mobile-toggle-btn hide-on-desktop" onClick={toggleMenu}>
-                        {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                    {/* Toggle Button */}
+                    <button className="theme-toggle-btn hide-on-mobile" onClick={toggleTheme} aria-label="Toggle theme">
+                        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
                     </button>
+
+                    {/* Mobile Toggle (Visible on Mobile) */}
+                    <div className="mobile-controls hide-on-desktop">
+                        <button className="theme-toggle-btn-mobile" onClick={toggleTheme}>
+                            {theme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
+                        </button>
+                        <button className="mobile-toggle-btn" onClick={toggleMenu}>
+                            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                        </button>
+                    </div>
+
                     {/* Mobile Logo for context */}
                     <div className="mobile-logo hide-on-desktop">
                         <Link to="/" className="mobile-brand">
@@ -102,19 +115,21 @@ export default function Header({ cartCount }) {
                     position: sticky;
                     top: 0;
                     z-index: 1000;
-                    background-color: #000;
-                    color: #fff;
+                    background-color: var(--bg-header);
+                    color: var(--header-text);
                     font-family: 'Outfit', sans-serif;
+                    border-bottom: 1px solid var(--border-color);
+                    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
                 }
 
                 /* Top Bar - Marquee */
                 .top-bar {
-                    background-color: #111;
-                    color: #ccc;
+                    background-color: var(--bg-secondary);
+                    color: var(--text-secondary);
                     font-size: 0.75rem;
                     padding: 0.5rem 0;
                     overflow: hidden;
-                    border-bottom: 1px solid #222;
+                    border-bottom: 1px solid var(--border-color);
                 }
                 .marquee-container {
                     width: 100%;
@@ -140,7 +155,7 @@ export default function Header({ cartCount }) {
                     height: 80px;
                     display: flex;
                     align-items: center;
-                    border-bottom: 1px solid #222;
+                    border-bottom: 1px solid var(--border-color);
                     justify-content: center;
                 }
                 .nav-content {
@@ -173,7 +188,7 @@ export default function Header({ cartCount }) {
                     margin-bottom: 4px; 
                 }
                 .brand-tagline {
-                    color: #fff;
+                    color: var(--header-text);
                     font-size: 0.7rem; 
                     text-transform: uppercase;
                     letter-spacing: 0.2em;
@@ -191,7 +206,7 @@ export default function Header({ cartCount }) {
                     width: 100%;
                 }
                 .nav-link {
-                    color: #fff;
+                    color: var(--header-text);
                     font-size: 0.9rem;
                     font-weight: 500;
                     text-transform: uppercase;
@@ -201,16 +216,36 @@ export default function Header({ cartCount }) {
                     white-space: nowrap;
                 }
                 .nav-link:hover {
-                    color: #aaa;
+                    color: var(--accent-color);
                 }
                 .nav-divider {
-                    color: #444;
+                    color: var(--text-secondary);
                     font-size: 0.9rem;
                 }
                 .booking-link {
                     /* Special style for booking if needed, currently same */
                 }
 
+                /* Theme Toggle Button Desktop */
+                .theme-toggle-btn {
+                    position: absolute;
+                    right: 2rem;
+                    background: transparent;
+                    border: 1px solid var(--border-color);
+                    color: var(--header-text);
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 8px;
+                    border-radius: 50%;
+                    transition: all 0.3s ease;
+                }
+                .theme-toggle-btn:hover {
+                    background-color: var(--bg-secondary);
+                    border-color: var(--accent-color);
+                    color: var(--accent-color);
+                }
 
                 /* Utility Classes */
                 .hide-on-mobile {
@@ -220,16 +255,32 @@ export default function Header({ cartCount }) {
                     display: none;
                 }
 
+                /* Mobile Controls */
+                .mobile-controls {
+                    position: absolute;
+                    left: 20px;
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    z-index: 2001; 
+                }
+
                 /* Mobile Toggle */
                 .mobile-toggle-btn {
                     background: none;
                     border: none;
-                    color: #fff;
+                    color: var(--header-text);
                     cursor: pointer;
-                    position: absolute; /* Position absolute to not affect centering if we had other elements, effectively left aligned here */
-                    left: 20px;
-                    z-index: 2001; /* Above overlay */
+                    padding: 0;
                 }
+                .theme-toggle-btn-mobile {
+                    background: none;
+                    border: none;
+                    color: var(--header-text);
+                    cursor: pointer;
+                    padding: 0;
+                }
+                
                 .mobile-logo {
                     position: absolute;
                     right: 20px;
@@ -242,7 +293,7 @@ export default function Header({ cartCount }) {
                     text-decoration: none;
                 }
                 .mobile-tagline {
-                    color: #fff;
+                    color: var(--header-text);
                     font-size: 0.5rem; /* Small for mobile */
                     text-transform: uppercase;
                     letter-spacing: 0.15em;
@@ -263,12 +314,7 @@ export default function Header({ cartCount }) {
                         justify-content: center; /* Center items for mobile too */
                      }
                      .mobile-logo {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                     }
-                     .mobile-brand {
-                        align-items: center;
+                         /* Use flex to align items if needed, but absolute positioning handles it */
                      }
                 }
 
@@ -279,7 +325,7 @@ export default function Header({ cartCount }) {
                     left: 0;
                     width: 100%;
                     height: 100vh;
-                    background: rgba(0,0,0,0.98);
+                    background: var(--bg-header); /* Changed to use theme var */
                     z-index: 2000;
                     display: flex;
                     align-items: center;
@@ -295,7 +341,7 @@ export default function Header({ cartCount }) {
                 .mobile-close-btn {
                      background: none;
                     border: none;
-                    color: #fff;
+                    color: var(--header-text);
                     cursor: pointer;
                     position: absolute;
                     top: 25px; /* Adjust to match header height */
@@ -309,7 +355,7 @@ export default function Header({ cartCount }) {
                     text-align: center;
                 }
                 .mobile-nav-links a {
-                    color: #fff;
+                    color: var(--header-text);
                     font-size: 1.4rem;
                     font-weight: 700;
                     text-transform: uppercase;

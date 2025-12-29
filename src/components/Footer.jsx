@@ -6,14 +6,16 @@ export default function Footer() {
             marginTop: 'auto',
             padding: '2rem',
             textAlign: 'center',
-            borderTop: '1px solid rgba(255,255,255,0.1)',
-            background: 'rgba(15, 23, 42, 0.6)',
-            backdropFilter: 'blur(10px)'
+            borderTop: '1px solid var(--border-color)',
+            background: 'var(--bg-footer)',
+            backdropFilter: 'blur(10px)',
+            color: 'var(--text-secondary)',
+            transition: 'background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease'
         }}>
-            <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', marginBottom: '0.5rem' }}>
+            <p style={{ fontSize: '0.9rem', color: 'inherit', marginBottom: '0.5rem', opacity: 0.8 }}>
                 &copy; {new Date().getFullYear()} United Associates Agencies. All rights reserved.
             </p>
-            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+            <p style={{ fontSize: '0.8rem', color: 'inherit', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.6 }}>
                 Excellence in Optics
             </p>
         </footer>

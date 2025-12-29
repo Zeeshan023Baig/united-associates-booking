@@ -39,7 +39,7 @@ export default function Home({ addToCart, cart }) {
     return (
         <div style={{ paddingBottom: '4rem' }}>
             {/* Full Screen Hero with Dark Premium Gradient */}
-            <div style={{ position: 'relative', minHeight: '85vh', width: '100%', overflow: 'hidden', background: '#0a0a0a' }}>
+            <div style={{ position: 'relative', minHeight: '85vh', width: '100%', overflow: 'hidden', background: 'var(--bg-primary)', transition: 'background-color 0.3s ease' }}>
 
                 {/* Deep Dark Glows */}
                 <div style={{
@@ -94,7 +94,7 @@ export default function Home({ addToCart, cart }) {
                             fontWeight: '800',
                             lineHeight: 1.1,
                             marginBottom: '0.5rem',
-                            color: '#fff',
+                            color: 'var(--text-primary)',
                             letterSpacing: '-0.03em',
                             animation: 'fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s forwards',
                             opacity: 0,
@@ -110,7 +110,7 @@ export default function Home({ addToCart, cart }) {
 
                         <p style={{
                             fontSize: '1.125rem',
-                            color: 'rgba(255, 255, 255, 0.7)',
+                            color: 'var(--text-secondary)',
                             maxWidth: '500px',
                             marginBottom: '1.5rem',
                             lineHeight: 1.6,
@@ -126,8 +126,8 @@ export default function Home({ addToCart, cart }) {
                                 fontSize: '1rem',
                                 padding: '1rem 2.5rem',
                                 borderRadius: '50px',
-                                background: '#fff',
-                                color: '#000',
+                                background: 'var(--button-bg-hero)',
+                                color: 'var(--button-text-hero)',
                                 border: 'none',
                                 fontWeight: '700',
                                 cursor: 'pointer',
@@ -228,7 +228,7 @@ export default function Home({ addToCart, cart }) {
                         cursor: 'pointer',
                         animation: 'bounce 2s infinite',
                         opacity: 0.6,
-                        color: '#fff', // White arrow
+                        color: 'var(--text-primary)', // Arrow color
                         zIndex: 10
                     }}
                 >
@@ -280,7 +280,7 @@ export default function Home({ addToCart, cart }) {
                         ].map((review, i) => (
                             <div key={i} className="glass-panel" style={{ padding: '2rem' }}>
                                 <div style={{ color: '#fbbf24', marginBottom: '1rem' }}>{"★".repeat(review.rating)}</div>
-                                <p style={{ fontStyle: 'italic', marginBottom: '1.5rem', color: '#e5e5e5' }}>"{review.text}"</p>
+                                <p style={{ fontStyle: 'italic', marginBottom: '1.5rem', color: 'var(--text-primary)' }}>"{review.text}"</p>
                                 <div>
                                     <div style={{ fontWeight: 'bold' }}>{review.name}</div>
                                     <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{review.role}</div>

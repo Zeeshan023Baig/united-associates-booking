@@ -5,16 +5,31 @@
 }
 
 :root {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --accent-color: #38bdf8;
-  --accent-hover: #0ea5e9;
-  --glass-bg: rgba(30, 41, 59, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  /* New Palette */
+  --color-silver: #C0C0C0;
+  --color-metallic: #A9A9A9;
+  /* Darker grey for metallic feel */
+  --color-white: #FFFFFF;
+  --color-light-grey: #F5F5F5;
+  --color-soft-blue-grey: #B0C4DE;
+
+  /* Semantic Variables - Light Theme */
+  --bg-primary: #F5F5F5;
+  --bg-secondary: #FFFFFF;
+  --text-primary: #1F2937;
+  /* Dark slate for readability */
+  --text-secondary: #4B5563;
+  /* Grey for secondary text */
+  --accent-color: #778899;
+  /* Light Slate Grey to match Blue-Grey theme */
+  --accent-hover: #5c6b7f;
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(176, 196, 222, 0.3);
+  /* Soft blue-grey tint */
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
