@@ -60,19 +60,15 @@ export default function Brands() {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
                 {brands.map((brand, index) => (
-                    <div key={index} style={{
-                        background: 'rgba(30, 41, 59, 0.4)',
-                        padding: '2rem',
-                        borderRadius: '0.75rem',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                    <div key={index} className="glass-panel" style={{
                         transition: 'transform 0.2s ease',
                         cursor: 'default'
                     }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1rem' }}>
-                            <h2 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#fff', margin: 0 }}>{brand.name}</h2>
-                            <span style={{ fontSize: '0.85rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{brand.origin}</span>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: '600', margin: 0 }}>{brand.name}</h2>
+                            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{brand.origin}</span>
                         </div>
-                        <p style={{ lineHeight: '1.6', fontSize: '1rem', color: '#eee' }}>
+                        <p style={{ lineHeight: '1.6', fontSize: '1rem' }}>
                             {brand.description}
                         </p>
                     </div>

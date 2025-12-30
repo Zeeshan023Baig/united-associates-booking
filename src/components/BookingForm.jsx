@@ -215,7 +215,7 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                         <ShoppingBag size={48} color="#38bdf8" />
                     </div>
 
-                    <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', background: 'linear-gradient(to right, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', background: 'linear-gradient(to right, var(--text-primary), var(--text-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                         Your Collection Awaits
                     </h2>
 

@@ -200,9 +200,9 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                         onMouseOver={e => e.currentTarget.style.transform = 'translateY(-5px)'}
                         onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
                     >
-                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#38bdf8' }}> Products</h2>
+                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--accent-color)' }}> Products</h2>
                         <p style={{ color: 'var(--text-secondary)' }}>Explore our curated collection of eyewear frames.</p>
-                        <div style={{ marginTop: '2rem', display: 'inline-flex', alignItems: 'center', color: '#38bdf8' }}>
+                        <div style={{ marginTop: '2rem', display: 'inline-flex', alignItems: 'center', color: 'var(--accent-color)' }}>
                             Browse Collection <ChevronRight size={20} />
                         </div>
                     </div>
@@ -215,9 +215,9 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                         onMouseOver={e => e.currentTarget.style.transform = 'translateY(-5px)'}
                         onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
                     >
-                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#a78bfa' }}>Lenses</h2>
+                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--accent-color)' }}>Lenses</h2>
                         <p style={{ color: 'var(--text-secondary)' }}>Advanced optical solutions for every vision need.</p>
-                        <div style={{ marginTop: '2rem', display: 'inline-flex', alignItems: 'center', color: '#a78bfa' }}>
+                        <div style={{ marginTop: '2rem', display: 'inline-flex', alignItems: 'center', color: 'var(--accent-color)' }}>
                             View Options <ChevronRight size={20} />
                         </div>
                     </div>

@@ -1,21 +1,19 @@
 import React from 'react';
-import { Phone } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 export default function WhatsAppWidget() {
-    // Replace with actual number
-    const phoneNumber = "+919444058453"; // Added + for international calling format if needed, or keep as is. The user had 91... which acts as country code. 
-    // User had "919444058453". `tel:919444058453` might work locally, but `+91` is safer. 
-    // The previous code had `wa.me/919444058453`. 
-    // I will use `+919444058453` for the tel link.
+    const phoneNumber = "919444058453";
 
     return (
         <a
-            href={`tel:${phoneNumber}`}
+            href={`https://wa.me/${phoneNumber}`}
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
                 position: 'fixed',
                 bottom: '2rem',
                 right: '2rem',
-                backgroundColor: '#25D366', // Keep green or change to a standard phone color? Green is standard for "Call" too.
+                backgroundColor: '#25D366',
                 color: 'white',
                 borderRadius: '50%',
                 width: '60px',
@@ -31,9 +29,9 @@ export default function WhatsAppWidget() {
             }}
             onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
             onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-            title="Call Us"
+            title="Chat on WhatsApp"
         >
-            <Phone size={32} />
+            <MessageCircle size={32} />
         </a>
     );
 }

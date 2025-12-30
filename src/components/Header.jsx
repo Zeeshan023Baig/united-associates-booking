@@ -46,7 +46,12 @@ export default function Header({ cartCount }) {
                     {/* Left: Logo & Tagline */}
                     <div className="nav-left hide-on-mobile">
                         <Link to="/" className="nav-brand">
-                            <img src="/logo_uaa.png" alt="United Associates Agencies" className="brand-logo" />
+                            <img
+                                src={theme === 'light' ? "/uaa_logo_light.jpg" : "/logo_uaa.png"}
+                                alt="United Associates Agencies"
+                                className="brand-logo"
+                                style={{ height: theme === 'light' ? '60px' : '50px', objectFit: 'contain' }}
+                            />
                             <span className="brand-tagline">Your Vision, Elevated.</span>
                         </Link>
                     </div>
@@ -66,22 +71,32 @@ export default function Header({ cartCount }) {
                         <Link to="/booking" className="nav-link booking-link">
                             Booking Request ({cartCount || 0})
                         </Link>
+
+                        {/* Theme Toggle After Booking Request */}
+                        <button
+                            onClick={toggleTheme}
+                            aria-label="Toggle theme"
+                            style={{
+                                background: 'transparent',
+                                border: 'none',
+                                cursor: 'pointer',
+                                marginLeft: '1.5rem',
+                                color: 'var(--header-text)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                opacity: 0.8,
+                                transition: 'opacity 0.2s'
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.opacity = '1'}
+                            onMouseOut={(e) => e.currentTarget.style.opacity = '0.8'}
+                        >
+                            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+                        </button>
                     </div>
 
-                    {/* Toggle Button */}
-                    <button className="theme-toggle-btn hide-on-mobile" onClick={toggleTheme} aria-label="Toggle theme">
-                        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-                    </button>
+                    {/* Toggle Button Removed */}
 
-                    {/* Mobile Toggle (Visible on Mobile) */}
-                    <div className="mobile-controls hide-on-desktop">
-                        <button className="theme-toggle-btn-mobile" onClick={toggleTheme}>
-                            {theme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
-                        </button>
-                        <button className="mobile-toggle-btn" onClick={toggleMenu}>
-                            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-                        </button>
-                    </div>
+                    {/* Mobile Toggle Removed */}
 
                     {/* Mobile Logo for context */}
                     <div className="mobile-logo hide-on-desktop">

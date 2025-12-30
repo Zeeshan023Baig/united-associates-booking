@@ -4,38 +4,34 @@
   font-weight: 400;
 
   /* Theme Variables - Light Mode Default */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9f9f9;
-  --bg-header: #ffffff;
-  --bg-footer: #f1f5f9;
-  /* Slate 100 */
-  --text-primary: #213547;
-  --text-secondary: #64748b;
-  /* Slate 500 */
+  --bg-primary: #F3F4F6;
+  /* Soothing off-white to reduce glare */
+  --bg-secondary: #FFFFFF;
+  /* Pure white for cards/surfaces */
+  --bg-header: rgba(243, 244, 246, 0.85);
+  --bg-footer: #E5E7EB;
+  /* Slightly darker than bg-primary */
+
+  --text-primary: #1F2937;
+  /* Gray 800 - softer than pure black */
+  --text-secondary: #4B5563;
+  /* Gray 600 */
+
   --accent-color: #646cff;
-  --border-color: #e2e8f0;
-  /* Slate 200 */
-  --header-text: #213547;
+  --border-color: #E5E7EB;
+  --header-text: #1F2937;
 
-  /* Hero & Interactive Specifics */
-  --button-bg-hero: #0f172a;
-  --button-text-hero: #ffffff;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --card-bg: #ffffff;
-
-  color-scheme: light;
-  color: var(--text-primary);
-  background-color: var(--bg-primary);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Glass Variables */
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --input-bg: rgba(255, 255, 255, 0.9);
+  --input-text: #1F2937;
 }
 
 [data-theme='dark'] {
   --bg-primary: #0a0a0a;
-  --bg-secondary: #1a1a1a;
+  --bg-secondary: #0f172a;
+  /* Slightly lighter than black for variety */
   --bg-header: #000000;
   --bg-footer: rgba(15, 23, 42, 0.6);
   --text-primary: rgba(255, 255, 255, 0.87);
@@ -49,6 +45,12 @@
   --button-text-hero: #000000;
   --shadow-color: rgba(0, 0, 0, 0.5);
   --card-bg: #1a1a1a;
+
+  /* Glass Variables Dark */
+  --glass-bg: rgba(30, 41, 59, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(15, 23, 42, 0.6);
+  --input-text: #ffffff;
 
   color-scheme: dark;
 }
@@ -72,12 +74,37 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+  /* Prevent horizontal scroll */
+}
+
+#root {
+  width: 100%;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
   color: var(--text-primary);
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+p {
+  line-height: 1.6;
+  color: var(--text-secondary);
 }
 
 button {
@@ -102,19 +129,120 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Container */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Glass Panel */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--input-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.5rem;
+  color: var(--input-text);
+  font-family: inherit;
+  transition: border-color 0.2s, background 0.3s, color 0.3s;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.btn-outline:hover {
+  background: var(--bg-secondary);
+  border-color: var(--accent-color);
+}
+
+/* Badge */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Utilities */
+.text-center {
+  text-align: center;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
 @media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-
-  a:hover {
-    color: #747bff;
-  }
-
-  button {
-    background-color: #f9f9f9;
-  }
+  /* This block is redundant if we rely on data-theme specific classes, 
+     but kept for fallback if JS fails. Note: ThemeProvider sets data-theme. */
 }
 
 /* Scroll Animation Utilities */

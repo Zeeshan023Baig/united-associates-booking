@@ -11,7 +11,7 @@ import StoreLocator from './components/StoreLocator'
 import AboutUs from './components/AboutUs'
 import WhyUs from './components/WhyUs'
 import Brands from './components/Brands'
-import './styles/index.css'
+// import './styles/index.css' // Removed to use unified src/index.css
 import WhatsAppWidget from './components/WhatsAppWidget'
 import Footer from './components/Footer'
 
