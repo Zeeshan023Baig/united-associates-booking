@@ -94,9 +94,15 @@ export default function Header({ cartCount }) {
                         </button>
                     </div>
 
-                    {/* Toggle Button Removed */}
-
-                    {/* Mobile Toggle Removed */}
+                    {/* Mobile Controls (Visible ONLY on Mobile) */}
+                    <div className="mobile-controls hide-on-desktop">
+                        <button className="theme-toggle-btn-mobile" onClick={toggleTheme}>
+                            {theme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
+                        </button>
+                        <button className="mobile-toggle-btn" onClick={toggleMenu}>
+                            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                        </button>
+                    </div>
 
                     {/* Mobile Logo for context */}
                     <div className="mobile-logo hide-on-desktop">
@@ -274,7 +280,7 @@ export default function Header({ cartCount }) {
                 .mobile-controls {
                     position: absolute;
                     left: 20px;
-                    display: flex;
+                    display: none; /* Hidden by default on desktop */
                     align-items: center;
                     gap: 15px;
                     z-index: 2001; 
@@ -324,6 +330,9 @@ export default function Header({ cartCount }) {
                      }
                      .hide-on-desktop {
                         display: block;
+                     }
+                     .mobile-controls {
+                        display: flex; /* Visible on mobile */
                      }
                      .nav-content {
                         justify-content: center; /* Center items for mobile too */
