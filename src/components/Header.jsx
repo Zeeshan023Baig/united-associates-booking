@@ -304,30 +304,31 @@ export default function Header({ cartCount }) {
                 
                 .mobile-logo {
                     position: absolute;
-                    left: 50%;
-                    transform: translateX(-50%);
+                    right: 20px;
+                    left: auto;
+                    transform: none;
                     z-index: 2001;
                     display: flex;
-                    justify-content: center;
-                    width: 100%;
-                    pointer-events: none; /* Let clicks pass through if needed, but link needs clicks */
+                    justify-content: flex-end;
+                    width: auto;
+                    pointer-events: none;
                 }
                 .mobile-brand {
                     display: flex;
                     flex-direction: column;
-                    align-items: center; /* Center align items */
+                    align-items: center; /* Center logo relative to tagline */
                     text-decoration: none;
-                    pointer-events: auto; /* Re-enable clicks */
+                    pointer-events: auto;
                 }
                 .mobile-tagline {
                     color: var(--header-text);
-                    font-size: 0.5rem; /* Small for mobile */
+                    font-size: 0.5rem;
                     text-transform: uppercase;
                     letter-spacing: 0.15em;
                     font-weight: 500;
                     margin-top: 2px;
-                    opacity: 0.9;
-                    text-align: center;
+                    opacity: 1; /* Increased opacity for clarity */
+                    text-align: right;
                 }
 
                 /* Responsive */
@@ -339,13 +340,10 @@ export default function Header({ cartCount }) {
                         display: block;
                      }
                      .mobile-controls {
-                        display: flex; /* Visible on mobile */
+                        display: flex;
                      }
                      .nav-content {
-                        justify-content: center; /* Center items for mobile too */
-                     }
-                     .mobile-logo {
-                         /* Use flex to align items if needed, but absolute positioning handles it */
+                        justify-content: center;
                      }
                 }
 
@@ -356,7 +354,7 @@ export default function Header({ cartCount }) {
                     left: 0;
                     width: 100%;
                     height: 100vh;
-                    background: var(--bg-header); /* Changed to use theme var */
+                    background: var(--bg-header);
                     z-index: 2000;
                     display: flex;
                     align-items: center;
@@ -364,32 +362,39 @@ export default function Header({ cartCount }) {
                     opacity: 0;
                     pointer-events: none;
                     transition: opacity 0.3s ease;
+                    backdrop-filter: blur(10px); /* Added blur for cleaner look */
                 }
                 .mobile-nav-overlay.open {
                     opacity: 1;
                     pointer-events: auto;
                 }
                 .mobile-close-btn {
-                    display: none; /* Hide duplicate close button */
+                    display: none;
                 }
-                    position: absolute;
-                    top: 25px; /* Adjust to match header height */
-                    left: 20px;
-                    z-index: 2002; /* Above everything inside */
-                }
+                
                 .mobile-nav-links {
                     display: flex;
                     flex-direction: column;
-                    gap: 2rem;
+                    gap: 2.5rem; /* Increased gap */
                     text-align: center;
+                    width: 100%;
+                    padding: 2rem;
+                    box-sizing: border-box;
                 }
                 .mobile-nav-links a {
                     color: var(--header-text);
-                    font-size: 1.4rem;
-                    font-weight: 700;
+                    font-size: 1.5rem; /* Larger font */
+                    font-weight: 800;
                     text-transform: uppercase;
-                    letter-spacing: 0.1em;
+                    letter-spacing: 0.15em;
                     text-decoration: none;
+                    transition: all 0.2s ease;
+                    opacity: 0.8;
+                }
+                .mobile-nav-links a:hover {
+                    color: var(--accent-color);
+                    opacity: 1;
+                    transform: scale(1.05);
                 }
             `}</style>
         </header>
