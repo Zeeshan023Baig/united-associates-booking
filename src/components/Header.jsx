@@ -283,7 +283,7 @@ export default function Header({ cartCount }) {
                     display: none; /* Hidden by default on desktop */
                     align-items: center;
                     gap: 15px;
-                    z-index: 2001; 
+                    z-index: 2002; /* Higher than overlay so it remains clickable */
                 }
 
                 /* Mobile Toggle */
@@ -304,14 +304,20 @@ export default function Header({ cartCount }) {
                 
                 .mobile-logo {
                     position: absolute;
-                    right: 20px;
-                    z-index: 2001; /* Above overlay */
+                    left: 50%;
+                    transform: translateX(-50%);
+                    z-index: 2001;
+                    display: flex;
+                    justify-content: center;
+                    width: 100%;
+                    pointer-events: none; /* Let clicks pass through if needed, but link needs clicks */
                 }
                 .mobile-brand {
                     display: flex;
                     flex-direction: column;
-                    align-items: flex-end;
+                    align-items: center; /* Center align items */
                     text-decoration: none;
+                    pointer-events: auto; /* Re-enable clicks */
                 }
                 .mobile-tagline {
                     color: var(--header-text);
@@ -321,6 +327,7 @@ export default function Header({ cartCount }) {
                     font-weight: 500;
                     margin-top: 2px;
                     opacity: 0.9;
+                    text-align: center;
                 }
 
                 /* Responsive */
@@ -363,10 +370,8 @@ export default function Header({ cartCount }) {
                     pointer-events: auto;
                 }
                 .mobile-close-btn {
-                     background: none;
-                    border: none;
-                    color: var(--header-text);
-                    cursor: pointer;
+                    display: none; /* Hide duplicate close button */
+                }
                     position: absolute;
                     top: 25px; /* Adjust to match header height */
                     left: 20px;
