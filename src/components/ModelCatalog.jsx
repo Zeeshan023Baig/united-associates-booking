@@ -313,7 +313,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                                 <button onClick={goBack} className="btn btn-outline" style={{ marginTop: '1rem' }}>Go Back</button>
                             </div>
                         ) : (
-                            <div className="product-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
+                            <div className="product-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem' }}>
                                 {filteredProducts.map(product => {
                                     const isSoldOut = product.stock <= 0;
                                     return (

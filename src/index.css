@@ -257,3 +257,34 @@ button:focus-visible {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .hero-split-layout {
+    flex-direction: column !important;
+    text-align: center !important;
+    padding-top: 4rem !important;
+    /* Spacing from top */
+    gap: 2rem;
+  }
+
+  .hero-split-layout>div {
+    align-items: center !important;
+    padding-right: 0 !important;
+    width: 100% !important;
+  }
+
+  .flex-stack-mobile {
+    flex-direction: column !important;
+  }
+
+  .w-full-mobile {
+    width: 100% !important;
+  }
+
+  /* Catalog Grid Adjustments on Mobile if needed */
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+    /* 2 items per row on mobile */
+  }
+}
