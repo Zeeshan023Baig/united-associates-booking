@@ -279,7 +279,7 @@ export default function Header({ cartCount }) {
                 /* Mobile Controls */
                 .mobile-controls {
                     position: absolute;
-                    left: 20px;
+                    right: 20px; /* Moved to right */
                     display: none; /* Hidden by default on desktop */
                     align-items: center;
                     gap: 15px;
@@ -304,19 +304,19 @@ export default function Header({ cartCount }) {
                 
                 .mobile-logo {
                     position: absolute;
-                    right: 20px;
-                    left: auto;
+                    left: 20px; /* Moved to left */
+                    right: auto;
                     transform: none;
                     z-index: 2001;
                     display: flex;
-                    justify-content: flex-end;
+                    justify-content: flex-start; /* Align start */
                     width: auto;
                     pointer-events: none;
                 }
                 .mobile-brand {
                     display: flex;
                     flex-direction: column;
-                    align-items: center; /* Center logo relative to tagline */
+                    align-items: flex-start; /* Align start */
                     text-decoration: none;
                     pointer-events: auto;
                 }
@@ -328,7 +328,7 @@ export default function Header({ cartCount }) {
                     font-weight: 500;
                     margin-top: 2px;
                     opacity: 1; /* Increased opacity for clarity */
-                    text-align: right;
+                    text-align: left;
                 }
 
                 /* Responsive */
