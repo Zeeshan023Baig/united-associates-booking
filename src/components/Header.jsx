@@ -47,10 +47,14 @@ export default function Header({ cartCount }) {
                     <div className="nav-left hide-on-mobile">
                         <Link to="/" className="nav-brand">
                             <img
-                                src={theme === 'light' ? "/uaa_logo_light.jpg" : "/logo_uaa.png"}
+                                src="/logo_uaa.png"
                                 alt="United Associates Agencies"
                                 className="brand-logo"
-                                style={{ height: theme === 'light' ? '60px' : '50px', objectFit: 'contain' }}
+                                style={{
+                                    height: '50px',
+                                    objectFit: 'contain',
+                                    filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'none'
+                                }}
                             />
                             <span className="brand-tagline">Your Vision, Elevated.</span>
                         </Link>
@@ -312,6 +316,9 @@ export default function Header({ cartCount }) {
                     justify-content: flex-start; /* Align start */
                     width: auto;
                     pointer-events: none;
+                }
+                @media (min-width: 769px) { /* Explicitly hide on desktop */
+                    .mobile-logo { display: none !important; }
                 }
                 .mobile-brand {
                     display: flex;

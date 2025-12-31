@@ -125,6 +125,7 @@ export default function Home({ addToCart, cart }) {
                             style={{
                                 fontSize: '1rem',
                                 padding: '1rem 2.5rem',
+                                marginTop: '3rem', // Moved down
                                 borderRadius: '50px',
                                 background: 'var(--button-bg-hero)',
                                 color: 'var(--button-text-hero)',

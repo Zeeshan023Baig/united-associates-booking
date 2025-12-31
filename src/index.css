@@ -21,6 +21,10 @@
   --border-color: #E5E7EB;
   --header-text: #1F2937;
 
+  --button-bg-hero: #1F2937;
+  /* Dark background for visibility in light mode */
+  --button-text-hero: #FFFFFF;
+
   /* Glass Variables */
   --glass-bg: rgba(255, 255, 255, 0.75);
   --glass-border: rgba(255, 255, 255, 0.5);
