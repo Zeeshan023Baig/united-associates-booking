@@ -117,8 +117,8 @@ export default function Header({ cartCount }) {
                                 alt="UAA"
                                 style={{
                                     height: '40px',
-                                    filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'none',
-                                    borderRadius: theme === 'light' ? '6px' : '0'
+                                    borderRadius: theme === 'light' ? '6px' : '0',
+                                    objectFit: 'contain'
                                 }}
                             />
                             <span className="mobile-tagline">Your Vision, Elevated.</span>
@@ -344,13 +344,13 @@ export default function Header({ cartCount }) {
                     font-weight: 500;
                     margin-top: 2px;
                     opacity: 1; /* Increased opacity for clarity */
-                    text-align: left;
+                    text-align: center; /* Ensure text is centered relative to the stack */
                 }
 
                 /* Responsive */
                 @media (max-width: 768px) {
                      .hide-on-mobile {
-                        display: none;
+                        display: none !important;
                      }
                      .hide-on-desktop {
                         display: block;
