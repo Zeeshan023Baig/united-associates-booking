@@ -47,13 +47,14 @@ export default function Header({ cartCount }) {
                     <div className="nav-left hide-on-mobile">
                         <Link to="/" className="nav-brand">
                             <img
-                                src="/logo_uaa.png"
+                                src={theme === 'light' ? "/logo_light_new.jpg" : "/logo_uaa.png"}
                                 alt="United Associates Agencies"
                                 className="brand-logo"
                                 style={{
                                     height: '50px',
                                     objectFit: 'contain',
-                                    filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'none'
+                                    filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'none',
+                                    borderRadius: theme === 'light' ? '8px' : '0' // Optional: rounded corners for the card-like jpg
                                 }}
                             />
                             <span className="brand-tagline">Your Vision, Elevated.</span>
@@ -111,7 +112,15 @@ export default function Header({ cartCount }) {
                     {/* Mobile Logo for context */}
                     <div className="mobile-logo hide-on-desktop">
                         <Link to="/" className="mobile-brand">
-                            <img src="/logo_uaa.png" alt="UAA" style={{ height: '40px' }} />
+                            <img
+                                src={theme === 'light' ? "/logo_light_new.jpg" : "/logo_uaa.png"}
+                                alt="UAA"
+                                style={{
+                                    height: '40px',
+                                    filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'none',
+                                    borderRadius: theme === 'light' ? '6px' : '0'
+                                }}
+                            />
                             <span className="mobile-tagline">Your Vision, Elevated.</span>
                         </Link>
                     </div>
