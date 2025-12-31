@@ -203,10 +203,11 @@ export default function Header({ cartCount }) {
                     position: relative;
                 }
 
-                /* Left: Logo & Tagline */
+                /* Left: Logo & Tagline (Now aligned to Right per user request) */
                 .nav-left {
                     position: absolute;
-                    left: 2rem;
+                    right: 2rem;
+                    left: auto;
                     display: flex;
                     align-items: center;
                 }
