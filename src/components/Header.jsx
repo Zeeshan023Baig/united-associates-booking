@@ -47,7 +47,7 @@ export default function Header({ cartCount }) {
                     <div className="nav-left hide-on-mobile">
                         <Link to="/" className="nav-brand">
                             <img
-                                src={theme === 'light' ? "/logo_light_new.jpg" : "/logo_uaa.png"}
+                                src={theme === 'light' ? "/logo_light_new.jpg" : "/logo_dark_new.png"}
                                 alt="United Associates Agencies"
                                 className="brand-logo"
                                 style={{
@@ -113,12 +113,13 @@ export default function Header({ cartCount }) {
                     <div className="mobile-logo hide-on-desktop">
                         <Link to="/" className="mobile-brand">
                             <img
-                                src={theme === 'light' ? "/logo_light_new.jpg" : "/logo_uaa.png"}
+                                src={theme === 'light' ? "/logo_light_new.jpg" : "/logo_dark_new.png"}
                                 alt="UAA"
                                 style={{
                                     height: '40px',
                                     borderRadius: theme === 'light' ? '6px' : '0',
-                                    objectFit: 'contain'
+                                    objectFit: 'contain',
+                                    filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'none'
                                 }}
                             />
                             <span className="mobile-tagline">Your Vision, Elevated.</span>
@@ -203,11 +204,10 @@ export default function Header({ cartCount }) {
                     position: relative;
                 }
 
-                /* Left: Logo & Tagline (Now aligned to Right per user request) */
+                /* Left: Logo & Tagline */
                 .nav-left {
                     position: absolute;
-                    right: 2rem;
-                    left: auto;
+                    left: 2rem;
                     display: flex;
                     align-items: center;
                 }
