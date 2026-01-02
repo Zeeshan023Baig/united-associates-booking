@@ -3,6 +3,7 @@ import { useInventory } from '../hooks/useInventory';
 import { db } from '../lib/firebase';
 import { doc, updateDoc, deleteDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp } from 'firebase/firestore';
 import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User, Lock, CheckCircle, XCircle, Upload, Pencil, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import Toast from './Toast';
 
 export default function AdminPanel() {
     const { products, loading: inventoryLoading, error } = useInventory();
@@ -23,6 +24,17 @@ export default function AdminPanel() {
     const updateFileInputRef = React.useRef(null);
     const [updatingImageId, setUpdatingImageId] = useState(null);
     const [editingId, setEditingId] = useState(null);
+
+    // Toast State
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState('success');
+
+    const showNotification = (message, type = 'success') => {
+        setToastMessage(message);
+        setToastType(type);
+        setShowToast(true);
+    };
 
     const handleFileSelect = (e) => {
         const file = e.target.files[0];
@@ -54,7 +66,7 @@ export default function AdminPanel() {
                     await updateDoc(ref, { imageUrl: newImageUrl });
                     setUpdatingImageId(null);
                 } catch (e) {
-                    alert("Error updating image: " + e.message);
+                    showNotification("Error updating image: " + e.message, 'error');
                 }
             };
             reader.readAsDataURL(file);
@@ -125,7 +137,7 @@ export default function AdminPanel() {
             const ref = doc(db, "products", id);
             await updateDoc(ref, { stock: parseInt(newStock) });
         } catch (e) {
-            alert("Error updating stock: " + e.message);
+            showNotification("Error updating stock: " + e.message, 'error');
         } finally {
             setSaving(null);
         }
@@ -136,7 +148,7 @@ export default function AdminPanel() {
         try {
             await deleteDoc(doc(db, "products", id));
         } catch (e) {
-            alert("Error deleting: " + e.message);
+            showNotification("Error deleting: " + e.message, 'error');
         }
     };
 
@@ -151,7 +163,7 @@ export default function AdminPanel() {
             await updateDoc(ref, { status: newStatus });
         } catch (e) {
             console.error("Error updating order status:", e);
-            alert("Failed to update status");
+            showNotification("Failed to update status", 'error');
             // Revert optimistic update
             setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: currentStatus } : o));
         }
@@ -185,7 +197,7 @@ export default function AdminPanel() {
                     description: newItem.description || "No description provided.",
                     features: newItem.features ? (Array.isArray(newItem.features) ? newItem.features : newItem.features.split(',').map(f => f.trim()).filter(f => f)) : [],
                 });
-                alert("Product Updated!");
+                showNotification("Product Updated Successfully!");
             } else {
                 // CREATE NEW
                 await addDoc(collection(db, "products"), {
@@ -197,14 +209,14 @@ export default function AdminPanel() {
                     features: newItem.features ? newItem.features.split(',').map(f => f.trim()).filter(f => f) : [],
                     createdAt: serverTimestamp()
                 });
-                alert("Product Added!");
+                showNotification("Product Added Successfully!");
             }
 
             // Reset form
             handleCancelEdit();
 
         } catch (e) {
-            alert("Error saving: " + e.message);
+            showNotification("Error saving: " + e.message, 'error');
         }
     };
 
@@ -659,6 +671,14 @@ export default function AdminPanel() {
                         )}
                     </div>
                 </>
+            )}
+
+            {showToast && (
+                <Toast
+                    message={toastMessage}
+                    type={toastType}
+                    onClose={() => setShowToast(false)}
+                />
             )}
         </div>
     );
