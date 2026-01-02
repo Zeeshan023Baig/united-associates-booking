@@ -53,7 +53,6 @@ export default function Header({ cartCount }) {
                                 style={{
                                     height: '50px',
                                     objectFit: 'contain',
-                                    filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'none',
                                     borderRadius: theme === 'light' ? '8px' : '0' // Optional: rounded corners for the card-like jpg
                                 }}
                             />
@@ -118,8 +117,7 @@ export default function Header({ cartCount }) {
                                 style={{
                                     height: '40px',
                                     borderRadius: theme === 'light' ? '6px' : '0',
-                                    objectFit: 'contain',
-                                    filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'none'
+                                    objectFit: 'contain'
                                 }}
                             />
                             <span className="mobile-tagline">Your Vision, Elevated.</span>
