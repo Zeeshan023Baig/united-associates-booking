@@ -331,7 +331,7 @@ export default function Header({ cartCount }) {
                 .mobile-brand {
                     display: flex;
                     flex-direction: column;
-                    align-items: flex-start; /* Align start */
+                    align-items: center; /* Align center */
                     text-decoration: none;
                     pointer-events: auto;
                 }
