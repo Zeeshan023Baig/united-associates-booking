@@ -72,8 +72,10 @@ export default function Header({ cartCount }) {
                         <span className="nav-divider">|</span>
                         <Link to="/contact" className="nav-link">Contact</Link>
                         <span className="nav-divider">|</span>
-                        <Link to="/booking" className="nav-link booking-link">
-                            Booking Request ({cartCount || 0})
+                        <a href="https://uaastore.vercel.app/catalog" className="nav-link" target="_blank" rel="noopener noreferrer">Booking Request</a>
+                        <span className="nav-divider">|</span>
+                        <Link to="/cart" className="nav-link booking-link">
+                            Cart ({cartCount || 0})
                         </Link>
 
                         {/* Theme Toggle After Booking Request */}
@@ -138,14 +140,15 @@ export default function Header({ cartCount }) {
                     <Link to="/brands" onClick={closeMenu}>Brands</Link>
                     <Link to="/why-us" onClick={closeMenu}>Why Us</Link>
                     <Link to="/contact" onClick={closeMenu}>Contact</Link>
-                    <Link to="/booking" onClick={closeMenu}>Booking Request</Link>
+                    <Link to="/cart" onClick={closeMenu}>Cart</Link>
                 </div>
             </div>
 
             <style>{`
                 /* Header Container */
+                /* Header Position Fix: Relative so it scrolls away */
                 .site-header {
-                    position: sticky;
+                    position: relative; 
                     top: 0;
                     z-index: 1000;
                     background-color: var(--bg-header);

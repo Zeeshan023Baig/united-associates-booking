@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Home from './components/Home'
 import ModelCatalog from './components/ModelCatalog'
-import BookingForm from './components/BookingForm'
+import Cart from './components/Cart'
 import Confirmation from './components/Confirmation'
 import AdminPanel from './components/AdminPanel'
 import ProductDetails from './components/ProductDetails'
@@ -84,8 +84,8 @@ function App() {
             <Route path="/catalog" element={<ModelCatalog addToCart={addToCart} cart={cart} />} />
             <Route path="/brands" element={<Brands />} />
             <Route path="/why-us" element={<WhyUs />} />
-            <Route path="/booking" element={
-              <BookingForm
+            <Route path="/cart" element={
+              <Cart
                 cart={cart}
                 updateQuantity={updateQuantity}
                 removeFromCart={removeFromCart}
