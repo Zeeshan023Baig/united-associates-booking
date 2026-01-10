@@ -375,14 +375,22 @@ const Admin = () => {
 
     // Fetch Orders 
     useEffect(() => {
+        setLoadingOrders(true);
         const q = query(collection(db, "orders"), orderBy("date", "desc"));
+        console.log("Setting up orders listener...");
+
         const unsubscribe = onSnapshot(q, (snapshot) => {
+            console.log("Snapshot received! Docs count:", snapshot.docs.length);
             const ordersData = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
             setOrders(ordersData);
             setLoadingOrders(false);
+        }, (error) => {
+            console.error("Firestore Error:", error);
+            setLoadingOrders(false);
+            // Optionally set an error state to show in UI
         });
         return () => unsubscribe();
     }, []);
