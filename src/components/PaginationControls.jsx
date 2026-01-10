@@ -21,30 +21,58 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
     if (totalPages <= 1) return null;
 
     return (
-        <div className="flex justify-center gap-2 mt-6 pb-6">
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '1.5rem', paddingBottom: '1.5rem' }}>
             <button
                 onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="px-3 py-1 bg-surface border border-border text-secondary disabled:opacity-50 rounded-sm hover:bg-accent hover:text-primary transition-colors text-sm"
+                className="admin-btn"
+                style={{
+                    padding: '0.25rem 0.75rem',
+                    backgroundColor: currentPage === 1 ? 'rgba(0,0,0,0.1)' : 'var(--bg-secondary)',
+                    border: '1px solid var(--border-color)',
+                    color: 'var(--text-secondary)',
+                    borderRadius: '4px',
+                    cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                    fontSize: '0.875rem',
+                    opacity: currentPage === 1 ? 0.5 : 1
+                }}
             >
                 Previous
             </button>
-            <div className="flex items-center gap-2">
-                <span className="text-secondary text-sm">Page</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Page</span>
                 <input
                     type="number"
-                    className="w-12 bg-white dark:bg-black/20 border border-border p-1 text-center text-slate-900 dark:text-white rounded-sm text-sm"
+                    style={{
+                        width: '3rem',
+                        backgroundColor: 'var(--bg-primary)',
+                        border: '1px solid var(--border-color)',
+                        padding: '0.25rem',
+                        textAlign: 'center',
+                        color: 'var(--text-secondary)',
+                        borderRadius: '4px',
+                        fontSize: '0.875rem'
+                    }}
                     value={inputPage}
                     onChange={(e) => setInputPage(e.target.value)}
                     onBlur={handleSubmit}
                     onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
                 />
-                <span className="text-secondary text-sm">of {totalPages}</span>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>of {totalPages}</span>
             </div>
             <button
                 onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 bg-surface border border-border text-secondary disabled:opacity-50 rounded-sm hover:bg-accent hover:text-primary transition-colors text-sm"
+                style={{
+                    padding: '0.25rem 0.75rem',
+                    backgroundColor: currentPage === totalPages ? 'rgba(0,0,0,0.1)' : 'var(--bg-secondary)',
+                    border: '1px solid var(--border-color)',
+                    color: 'var(--text-secondary)',
+                    borderRadius: '4px',
+                    cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                    fontSize: '0.875rem',
+                    opacity: currentPage === totalPages ? 0.5 : 1
+                }}
             >
                 Next
             </button>
