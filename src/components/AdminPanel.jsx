@@ -1,685 +1,599 @@
-import React, { useState, useEffect } from 'react';
-import { useInventory } from '../hooks/useInventory';
+import { useState, useEffect } from 'react';
+import { useProducts } from '../context/ProductContext';
 import { db } from '../lib/firebase';
-import { doc, updateDoc, deleteDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp } from 'firebase/firestore';
-import { Plus, Trash2, Save, RefreshCw, ShoppingBag, User, Lock, CheckCircle, XCircle, Upload, Pencil, X, ChevronLeft, ChevronRight } from 'lucide-react';
-import Toast from './Toast';
+import { collection, query, orderBy, onSnapshot, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { Package, Plus, Loader, CheckCircle, Download, Edit2, X, Trash2 } from 'lucide-react';
+import PaginationControls from '../components/PaginationControls';
 
-export default function AdminPanel() {
-    const { products, loading: inventoryLoading, error } = useInventory();
-
-    // Auth State
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loginError, setLoginError] = useState('');
-
-    const [newItem, setNewItem] = useState({
-        name: '', brand: '', price: '', stock: 100, imageUrl: '', description: '', features: '',
-        category: 'brand', origin: 'international',
-        faceShape: 'oval', frameShape: 'wayfarer', size: 'medium'
-    });
-    const [saving, setSaving] = useState(null);
-    const fileInputRef = React.useRef(null);
-    const updateFileInputRef = React.useRef(null);
-    const [updatingImageId, setUpdatingImageId] = useState(null);
-    const [editingId, setEditingId] = useState(null);
-
-    // Toast State
-    const [showToast, setShowToast] = useState(false);
-    const [toastMessage, setToastMessage] = useState('');
-    const [toastType, setToastType] = useState('success');
-
-    const showNotification = (message, type = 'success') => {
-        setToastMessage(message);
-        setToastType(type);
-        setShowToast(true);
-    };
-
-    const handleFileSelect = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setNewItem(prev => ({ ...prev, imageUrl: reader.result }));
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handleUpdateImageClick = (id) => {
-        setUpdatingImageId(id);
-        if (updateFileInputRef.current) {
-            updateFileInputRef.current.value = ''; // Reset file input
-            updateFileInputRef.current.click();
-        }
-    };
-
-    const handleUpdateFileSelect = (e) => {
-        const file = e.target.files[0];
-        if (file && updatingImageId) {
-            const reader = new FileReader();
-            reader.onloadend = async () => {
-                const newImageUrl = reader.result;
-                try {
-                    const ref = doc(db, "products", updatingImageId);
-                    await updateDoc(ref, { imageUrl: newImageUrl });
-                    setUpdatingImageId(null);
-                } catch (e) {
-                    showNotification("Error updating image: " + e.message, 'error');
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const [orders, setOrders] = useState([]);
-    const [ordersLoading, setOrdersLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('orders'); // 'inventory' or 'orders'
-    const [currentPage, setCurrentPage] = useState(1);
-    const [currentInventoryPage, setCurrentInventoryPage] = useState(1);
-    const itemsPerPage = 10;
-
-    const [fetchError, setFetchError] = useState(null);
-
-    const fetchOrders = async () => {
-        setOrdersLoading(true);
-        setFetchError(null);
-        try {
-            // Debug: Temporarily removed orderBy to rule out index issues
-            const q = collection(db, "bookings");
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.empty) {
-                console.log("No orders found in 'bookings' collection.");
-            }
-
-            const ordersData = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-
-            // Sort client-side for now
-            ordersData.sort((a, b) => {
-                const dateA = a.createdAt?.seconds || 0;
-                const dateB = b.createdAt?.seconds || 0;
-                return dateB - dateA;
-            });
-
-            setOrders(ordersData);
-        } catch (error) {
-            console.error("Error fetching orders:", error);
-            setFetchError("Failed to load orders: " + error.message);
-        } finally {
-            setOrdersLoading(false);
-        }
-    };
-
+const StockInput = ({ initialStock, onUpdate }) => {
+    // ... (StockInput code remains same)
+    const [value, setValue] = useState(initialStock);
+    const [status, setStatus] = useState('idle'); // idle, saving, saved, error
 
     useEffect(() => {
-        if (!isAuthenticated) return;
-        fetchOrders();
-    }, [isAuthenticated]);
+        setValue(initialStock);
+    }, [initialStock]);
 
-    const handleLogin = (e) => {
-        e.preventDefault();
-        setLoginError('');
-        if (email === 'unitedassociates.official@gmail.com' && password === 'United14@chennai') {
-            setIsAuthenticated(true);
-        } else {
-            setLoginError('Invalid credentials. Please try again.');
+    useEffect(() => {
+        if (parseInt(value) === parseInt(initialStock)) {
+            setStatus('idle');
+            return;
         }
-    };
 
-    const handleUpdateStock = async (id, newStock) => {
-        setSaving(id);
-        try {
-            const ref = doc(db, "products", id);
-            await updateDoc(ref, { stock: parseInt(newStock) });
-        } catch (e) {
-            showNotification("Error updating stock: " + e.message, 'error');
-        } finally {
-            setSaving(null);
+        if (value === '' || isNaN(parseInt(value))) {
+            return; // Don't auto-save invalid/empty input
         }
-    };
 
-    const handleDelete = async (id) => {
-        if (!confirm("Are you sure you want to delete this product?")) return;
-        try {
-            await deleteDoc(doc(db, "products", id));
-        } catch (e) {
-            showNotification("Error deleting: " + e.message, 'error');
-        }
-    };
+        setStatus('saving');
+        const timeoutId = setTimeout(async () => {
+            try {
+                const stockVal = parseInt(value);
+                if (isNaN(stockVal)) return;
 
-    const handleToggleOrderStatus = async (orderId, currentStatus) => {
-        const newStatus = currentStatus === 'completed' ? 'pending' : 'completed';
-
-        // Optimistic UI update
-        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
-
-        try {
-            const ref = doc(db, "bookings", orderId);
-            await updateDoc(ref, { status: newStatus });
-        } catch (e) {
-            console.error("Error updating order status:", e);
-            showNotification("Failed to update status", 'error');
-            // Revert optimistic update
-            setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: currentStatus } : o));
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!newItem.name || !newItem.price) return;
-
-        try {
-            // Process Image URL: Allow local paths or full URLs
-            let finalImageUrl = newItem.imageUrl;
-            if (finalImageUrl && !finalImageUrl.startsWith('http') && !finalImageUrl.startsWith('data:')) {
-                // It's likely a local file path. Ensure it starts with '/'
-                if (!finalImageUrl.startsWith('/')) {
-                    finalImageUrl = '/' + finalImageUrl;
+                const result = await onUpdate(stockVal);
+                if (result.success) {
+                    setStatus('saved');
+                    setTimeout(() => setStatus('idle'), 2000);
+                } else {
+                    setStatus('error');
                 }
-            } else if (!finalImageUrl && !editingId) {
-                // Default placeholder if empty and creating new
-                finalImageUrl = `https://placehold.co/600x400/1e293b/38bdf8?text=${encodeURIComponent(newItem.name)}`;
+            } catch (error) {
+                setStatus('error');
             }
+        }, 800);
 
-            if (editingId) {
-                // UPDATE EXISTING
-                const ref = doc(db, "products", editingId);
-                await updateDoc(ref, {
-                    ...newItem,
-                    price: parseFloat(newItem.price),
-                    stock: parseInt(newItem.stock),
-                    imageUrl: finalImageUrl,
-                    description: newItem.description || "No description provided.",
-                    features: newItem.features ? (Array.isArray(newItem.features) ? newItem.features : newItem.features.split(',').map(f => f.trim()).filter(f => f)) : [],
-                });
-                showNotification("Product Updated Successfully!");
-            } else {
-                // CREATE NEW
-                await addDoc(collection(db, "products"), {
-                    ...newItem,
-                    price: parseFloat(newItem.price),
-                    stock: parseInt(newItem.stock),
-                    imageUrl: finalImageUrl,
-                    description: newItem.description || "No description provided.",
-                    features: newItem.features ? newItem.features.split(',').map(f => f.trim()).filter(f => f) : [],
-                    createdAt: serverTimestamp()
-                });
-                showNotification("Product Added Successfully!");
-            }
+        return () => clearTimeout(timeoutId);
+    }, [value, initialStock, onUpdate]);
 
-            // Reset form
-            handleCancelEdit();
+    return (
+        <div className="flex items-center gap-2 relative">
+            <input
+                type="number"
+                className={`w-20 bg-white dark:bg-black/20 border p-1 text-center text-slate-900 dark:text-white rounded-sm transition-colors ${status === 'error' ? 'border-red-500' : 'border-border'}`}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+            />
+            {status === 'saving' && <Loader className="w-3 h-3 text-accent animate-spin absolute -right-6" />}
+            {status === 'saved' && <CheckCircle className="w-3 h-3 text-green-400 absolute -right-6 animate-in fade-in" />}
+        </div>
+    );
+};
+const Admin = () => {
+    const { products, addProduct, restockProduct, importCatalog, updateProduct } = useProducts();
+    const [activeTab, setActiveTab] = useState('inventory');
+    const [orders, setOrders] = useState([]);
+    const [loadingOrders, setLoadingOrders] = useState(true);
 
-        } catch (e) {
-            showNotification("Error saving: " + e.message, 'error');
-        }
-    };
+    // Pagination State
+    const ITEMS_PER_PAGE = 12;
+    const [inventoryPage, setInventoryPage] = useState(1);
+    const [ordersPage, setOrdersPage] = useState(1);
 
-    const handleEdit = (product) => {
-        setEditingId(product.firebaseId);
-        setNewItem({
-            name: product.name || '',
-            brand: product.brand || '',
-            price: product.price || '',
-            stock: product.stock || 100,
-            imageUrl: product.imageUrl || '',
-            description: product.description || '',
-            features: product.features ? (Array.isArray(product.features) ? product.features.join(', ') : product.features) : '',
-            category: product.category || 'brand',
-            origin: product.origin || 'international',
-            faceShape: product.faceShape || 'oval',
-            frameShape: product.frameShape || 'wayfarer',
-            size: product.size || 'medium'
+    // Edit Mode State
+    const [editingProduct, setEditingProduct] = useState(null);
+
+    // New Product State
+    const [newProduct, setNewProduct] = useState({
+        name: '',
+        category: 'Essentials',
+        price: '',
+        stock: '0',
+        image: '',
+        description: ''
+    });
+    const [imageFile, setImageFile] = useState(null);
+    const [isAdding, setIsAdding] = useState(false);
+
+    const categories = ['Essentials', 'Luxuries', 'Groceries', 'Lifestyle', 'Electronics'];
+
+    // Handle initial form population for editing
+    const handleEditClick = (product) => {
+        setEditingProduct(product);
+        setNewProduct({
+            name: product.name,
+            price: product.price,
+            category: product.category,
+            image: product.image,
+            stock: product.stock,
+            description: product.description || ''
         });
+        // Scroll to form
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleCancelEdit = () => {
-        setEditingId(null);
-        setNewItem({
-            name: '', brand: '', price: '', stock: 100, imageUrl: '', description: '', features: '',
-            category: 'brand', origin: 'international',
-            faceShape: 'oval', frameShape: 'wayfarer', size: 'medium'
+        setEditingProduct(null);
+        setNewProduct({
+            name: '',
+            price: '',
+            category: 'Essentials',
+            image: '',
+            stock: '0',
+            description: ''
+        });
+        setImageFile(null);
+    };
+
+    // Stock Edit State
+    // Fetch Orders
+    useEffect(() => {
+        const q = query(collection(db, "orders"), orderBy("date", "desc"));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const ordersData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setOrders(ordersData);
+            setLoadingOrders(false);
+        });
+        return () => unsubscribe();
+    }, []);
+
+    const handleImageUpload = (file) => {
+        // ... (handleImageUpload code remains same)
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    // Resize image to max 800px width/height to keep size small for Firestore
+                    const MAX_WIDTH = 800;
+                    const MAX_HEIGHT = 800;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Compress to JPEG at 0.7 quality
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    resolve(dataUrl);
+                };
+            };
+            reader.onerror = (error) => reject(error);
         });
     };
 
-    if (!isAuthenticated) {
-        return (
-            <div className="container" style={{ paddingTop: '8rem', paddingBottom: '4rem', display: 'flex', justifyContent: 'center' }}>
-                <div className="glass-panel" style={{ width: '100%', maxWidth: '400px', padding: '2.5rem' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                        <div style={{ width: '60px', height: '60px', background: 'rgba(56, 189, 248, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
-                            <Lock size={30} className="text-accent" style={{ color: '#38bdf8' }} />
-                        </div>
-                        <h2>Admin Access</h2>
-                        <p>Please enter your credentials</p>
-                    </div>
+    const handleImportCatalog = async () => {
+        if (window.confirm("This will add 43 default products to your inventory. Are you sure?")) {
+            const result = await importCatalog();
+            if (result.success) {
+                alert("Catalog imported successfully! Please refresh if items don't appear immediately.");
+            } else {
+                alert("Import failed: " + result.error);
+            }
+        }
+    };
 
-                    <form onSubmit={handleLogin}>
-                        <div className="form-group">
-                            <label className="form-label">Email</label>
-                            <input
-                                type="email"
-                                className="form-input"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="admin@example.com"
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label">Password</label>
-                            <input
-                                type="password"
-                                className="form-input"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="••••••••"
-                                required
-                            />
-                        </div>
-                        {loginError && (
-                            <div style={{ color: '#f87171', fontSize: '0.9rem', marginBottom: '1rem', textAlign: 'center' }}>
-                                {loginError}
-                            </div>
-                        )}
-                        <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
-                            Login
-                        </button>
-                    </form>
-                </div>
-            </div>
-        );
-    }
+    const handleProductSubmit = async (e) => {
+        e.preventDefault();
+        setIsAdding(true);
 
-    if (inventoryLoading) return <div className="container" style={{ paddingTop: '4rem' }}>Loading Admin...</div>;
+        try {
+            let imageUrl = newProduct.image;
+            if (imageFile) {
+                try {
+                    // Convert file to Base64 string (Free, no Storage bucket needed)
+                    imageUrl = await handleImageUpload(imageFile);
+                } catch (error) {
+                    alert('Error processing image: ' + error.message);
+                    setIsAdding(false);
+                    return;
+                }
+            } else if (!imageUrl) {
+                // Use a default placeholder if no image provided at all
+                imageUrl = 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=800&q=80';
+            }
 
+            // Check if string is too large (Firestore limit is 1MB)
+            if (imageUrl.length > 1000000) {
+                alert("Image is too large. Please look for a smaller image.");
+                setIsAdding(false);
+                return;
+            }
 
+            // Basic validation
+            if (!newProduct.name || !newProduct.price) {
+                alert("Name and Price are required");
+                setIsAdding(false);
+                return;
+            }
+
+            if (editingProduct) {
+                // Update existing
+                const result = await updateProduct(editingProduct.id, {
+                    ...newProduct,
+                    image: imageUrl || 'https://placehold.co/400'
+                });
+                if (result.success) {
+                    alert("Product updated successfully!");
+                    handleCancelEdit();
+                } else {
+                    alert("Failed to update product: " + result.error);
+                }
+            } else {
+                // Add new
+                const result = await addProduct({
+                    ...newProduct,
+                    image: imageUrl || 'https://placehold.co/400'
+                });
+
+                if (result.success) {
+                    alert("Product added successfully!");
+                    setNewProduct({ name: '', price: '', category: 'Essentials', image: '', stock: '0', description: '' });
+                    setImageFile(null);
+                } else {
+                    alert("Failed to add product: " + result.error);
+                }
+            }
+        } catch (error) {
+            alert('Error handling product: ' + error.message);
+        } finally {
+            setIsAdding(false);
+        }
+    };
+
+    const handleToggleStatus = async (id, currentStatus) => {
+        const newStatus = currentStatus === 'fulfilled' ? 'pending' : 'fulfilled';
+        try {
+            await updateDoc(doc(db, "orders", id), {
+                status: newStatus
+            });
+        } catch (error) {
+            alert('Error updating order status: ' + error.message);
+        }
+    };
+
+    const handleDeleteOrder = async (orderId) => {
+        if (window.confirm("Are you sure you want to delete this order PERMANENTLY? This cannot be undone.")) {
+            try {
+                await deleteDoc(doc(db, "orders", orderId));
+            } catch (error) {
+                alert("Error deleting order: " + error.message);
+            }
+        }
+    };
+
+    const handleExportOrders = () => {
+        if (orders.length === 0) {
+            alert("No orders to export.");
+            return;
+        }
+
+        // Define CSV headers
+        const headers = ["Date", "Time", "Order ID", "Customer Name", "Phone", "Email", "Item Name", "Quantity", "Unit Price", "Order Total", "Status"];
+
+        // Map orders to CSV rows (flattening items)
+        const rows = orders.flatMap(order => {
+            const date = new Date(order.date).toLocaleDateString();
+            const time = new Date(order.date).toLocaleTimeString();
+
+            // Escape quotes and commas for CSV format
+            const escape = (str) => `"${String(str || '').replace(/"/g, '""')}"`;
+
+            return order.items.map(item => [
+                escape(date),
+                escape(time),
+                escape(order.id),
+                escape(order.customer?.name),
+                escape(order.customer?.phone),
+                escape(order.customer?.email),
+                escape(item.name),
+                escape(item.quantity),
+                escape(item.price || 0),
+                escape(order.total),
+                escape(order.status)
+            ].join(","));
+        });
+
+        // Combine headers and rows
+        const csvContent = [headers.join(","), ...rows].join("\n");
+
+        // Create download link
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `orders_export_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    const handleExportSingleOrder = (order) => {
+        // Define CSV headers
+        const headers = ["Date", "Time", "Order ID", "Customer Name", "Phone", "Email", "Item Name", "Quantity", "Unit Price", "Order Total", "Status", "Approval"];
+
+        const date = new Date(order.date).toLocaleDateString();
+        const time = new Date(order.date).toLocaleTimeString();
+
+        // Escape quotes and commas for CSV format
+        const escape = (str) => `"${String(str || '').replace(/"/g, '""')}"`;
+
+        const rows = order.items.map(item => [
+            escape(date),
+            escape(time),
+            escape(order.id),
+            escape(order.customer?.name),
+            escape(order.customer?.phone),
+            escape(order.customer?.email),
+            escape(item.name),
+            escape(item.quantity),
+            escape(item.price || 0),
+            escape(order.total),
+            escape(order.status),
+            escape(order.approvalStatus || 'Pending')
+        ].join(","));
+
+        // Combine headers and rows
+        const csvContent = [headers.join(","), ...rows].join("\n");
+
+        // Create download link
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `order_${order.id}_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     return (
-        <div className="container" style={{ paddingTop: '6rem', paddingBottom: '4rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h1>Admin Dashboard</h1>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+        <div className="space-y-8">
+            <header className="flex items-center justify-between border-b border-border pb-6">
+                <h1 className="text-3xl font-serif text-secondary">Store Management</h1>
+                <div className="flex gap-4">
                     <button
                         onClick={() => setActiveTab('inventory')}
-                        className={`btn ${activeTab === 'inventory' ? 'btn-primary' : 'btn-outline'}`}
+                        className={`px-4 py-2 rounded-sm transition-colors ${activeTab === 'inventory' ? 'bg-accent text-primary font-bold' : 'text-muted hover:text-secondary'}`}
                     >
                         Inventory
                     </button>
                     <button
                         onClick={() => setActiveTab('orders')}
-                        className={`btn ${activeTab === 'orders' ? 'btn-primary' : 'btn-outline'}`}
+                        className={`px-4 py-2 rounded-sm transition-colors ${activeTab === 'orders' ? 'bg-accent text-primary font-bold' : 'text-muted hover:text-secondary'}`}
                     >
-                        Orders ({orders.length})
+                        Order History
                     </button>
                 </div>
-            </div>
+            </header>
 
-            {activeTab === 'orders' ? (
-                <div className="glass-panel" style={{ overflowX: 'auto' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                        <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <ShoppingBag size={20} /> Recent Sales
-                        </h3>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            {fetchError && <span style={{ color: '#f87171', fontSize: '0.8rem' }}>{fetchError}</span>}
-                            <button onClick={fetchOrders} className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', gap: '0.4rem' }}>
-                                <RefreshCw size={14} className={ordersLoading ? 'spin' : ''} /> Refresh List
-                            </button>
+            {activeTab === 'inventory' ? (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Add/Edit Product Form */}
+                    <div className="lg:col-span-1">
+                        <div className="bg-surface p-6 sticky top-24 border border-border inverted-theme rounded-md">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-xl font-serif text-secondary">
+                                    {editingProduct ? 'Edit Product' : 'Add New Product'}
+                                </h2>
+                                {editingProduct && (
+                                    <button onClick={handleCancelEdit} className="text-muted hover:text-red-500">
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                )}
+                            </div>
+
+                            <form onSubmit={handleProductSubmit} className="space-y-4">
+                                <input
+                                    placeholder="Product Name"
+                                    className="w-full bg-primary border border-border p-2 text-sm text-secondary rounded-sm placeholder:text-muted"
+                                    value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} required
+                                />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <select
+                                        className="bg-primary border border-border p-2 text-sm text-secondary rounded-sm"
+                                        value={newProduct.category} onChange={e => setNewProduct({ ...newProduct, category: e.target.value })}
+                                    >
+                                        <option value="In-house">In-house</option>
+                                        <option value="International">International</option>
+                                        <option value="Indian">Indian</option>
+                                        <option value="Lenses">Lenses</option>
+                                    </select>
+                                    <input
+                                        type="number" placeholder="Price"
+                                        className="bg-primary border border-border p-2 text-sm text-secondary rounded-sm placeholder:text-muted"
+                                        value={newProduct.price} onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} required
+                                    />
+                                </div>
+                                <input
+                                    type="number" placeholder="Initial Stock"
+                                    className="w-full bg-primary border border-border p-2 text-sm text-secondary rounded-sm placeholder:text-muted"
+                                    value={newProduct.stock} onChange={e => setNewProduct({ ...newProduct, stock: e.target.value })} required
+                                />
+                                <input
+                                    placeholder="Specs (e.g. Titanium Frame)"
+                                    className="w-full bg-primary border border-border p-2 text-sm text-secondary rounded-sm placeholder:text-muted"
+                                    value={newProduct.specs} onChange={e => setNewProduct({ ...newProduct, specs: e.target.value })}
+                                />
+                                <input
+                                    placeholder="External Link (Optional)"
+                                    className="w-full bg-primary border border-border p-2 text-sm text-secondary rounded-sm placeholder:text-muted"
+                                    value={newProduct.externalLink} onChange={e => setNewProduct({ ...newProduct, externalLink: e.target.value })}
+                                />
+
+                                <div className="space-y-2">
+                                    <label className="text-xs text-muted uppercase">Product Image</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={e => setImageFile(e.target.files[0])}
+                                        className="w-full text-xs text-muted file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-secondary hover:file:bg-surface"
+                                    />
+                                    <p className="text-[10px] text-muted">Or use URL (optional)</p>
+                                    <input
+                                        placeholder="Image URL (backup)"
+                                        className="w-full bg-primary border border-border p-2 text-sm text-secondary rounded-sm placeholder:text-muted"
+                                        value={newProduct.image} onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
+                                    />
+                                </div>
+
+                                <button type="submit" disabled={isAdding} className={`w-full py-2 ${editingProduct ? 'bg-accent text-primary' : 'bg-surface text-secondary'} hover:bg-opacity-90 transition-colors font-bold uppercase text-sm border border-border`}>
+                                    {isAdding ? (editingProduct ? 'Updating...' : 'Adding...') : (editingProduct ? 'Update Product' : 'Add Product')}
+                                </button>
+                            </form>
                         </div>
                     </div>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                        <thead>
-                            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                                <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Status</th>
-                                <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Date</th>
-                                <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Customer</th>
-                                <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Items</th>
-                                <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
 
-                            {orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(order => {
-                                const isCompleted = order.status === 'completed';
-                                return (
-                                    <tr key={order.id} style={{
-                                        borderBottom: '1px solid rgba(255,255,255,0.05)',
-                                        opacity: isCompleted ? 0.6 : 1
-                                    }}>
-                                        <td style={{ padding: '1rem' }}>
-                                            <button
-                                                onClick={() => handleToggleOrderStatus(order.id, order.status)}
-                                                className={`badge ${isCompleted ? 'badge-success' : 'badge-warning'}`}
-                                                style={{ border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-                                                title="Toggle Status"
-                                            >
-                                                {isCompleted ? <CheckCircle size={14} /> : <div style={{ width: 14, height: 14, border: '2px solid currentColor', borderRadius: '50%' }}></div>}
-                                                {isCompleted ? 'Done' : 'Pending'}
-                                            </button>
-                                        </td>
-                                        <td style={{ padding: '1rem', whiteSpace: 'nowrap', textDecoration: isCompleted ? 'line-through' : 'none' }}>
-                                            {order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleDateString('en-GB') : 'N/A'}
-                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                                                {order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleTimeString() : ''}
-                                            </div>
-                                        </td>
-                                        <td style={{ padding: '1rem', textDecoration: isCompleted ? 'line-through' : 'none' }}>
-                                            <div style={{ fontWeight: 600 }}>{order.name}</div>
-                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{order.email}</div>
-                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{order.phone}</div>
-                                        </td>
-                                        <td style={{ padding: '1rem', textDecoration: isCompleted ? 'line-through' : 'none' }}>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                                                {order.items?.map((item, idx) => (
-                                                    <div key={idx} style={{ fontSize: '0.9rem' }}>
-                                                        <span style={{ color: isCompleted ? 'inherit' : '#38bdf8' }}>{item.quantity}x</span> {item.name}
+                    {/* Product List */}
+                    <div className="lg:col-span-2 space-y-4">
+                        {products.slice((inventoryPage - 1) * ITEMS_PER_PAGE, inventoryPage * ITEMS_PER_PAGE).map(product => (
+                            <div key={product.id} className="flex items-center gap-4 bg-surface p-4 border border-border rounded-sm">
+                                <img src={product.image} className="w-16 h-16 object-cover rounded-sm" alt={product.name} />
+                                <div className="flex-grow">
+                                    <h3 className="font-bold text-secondary">{product.name}</h3>
+                                    <p className="text-xs text-muted">{product.category} • ₹{product.price}</p>
+                                </div>
+                                <div className="flex flex-col items-end gap-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs text-muted uppercase">Stock:</span>
+                                        <StockInput
+                                            initialStock={product.stock}
+                                            onUpdate={(newStock) => restockProduct(product.id, newStock)}
+                                        />
+                                    </div>
+                                    <button
+                                        onClick={() => handleEditClick(product)}
+                                        className="flex items-center gap-1 text-xs text-muted hover:text-accent transition-colors"
+                                    >
+                                        <Edit2 className="w-3 h-3" /> Edit Details
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Inventory Pagination Controls */}
+                        <PaginationControls
+                            currentPage={inventoryPage}
+                            totalPages={Math.ceil(products.length / ITEMS_PER_PAGE)}
+                            onPageChange={setInventoryPage}
+                        />
+                    </div>
+                </div>
+            ) : (
+                <div className="space-y-4">
+                    <div className="flex justify-end">
+                        <button
+                            onClick={handleExportOrders}
+                            className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-sm transition-colors text-xs font-bold uppercase tracking-widest"
+                        >
+                            <Download className="w-4 h-4" /> Export All CSV
+                        </button>
+                    </div>
+
+                    {loadingOrders ? (
+                        <div className="text-center py-12"><Loader className="w-8 h-8 animate-spin mx-auto text-accent" /></div>
+                    ) : orders.length === 0 ? (
+                        <div className="text-center py-12 text-muted">No orders yet.</div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left text-sm text-secondary">
+                                <thead className="text-muted uppercase text-xs border-b border-border">
+                                    <tr>
+                                        <th className="pb-4">Date</th>
+                                        <th className="pb-4">Customer</th>
+                                        <th className="pb-4">Items</th>
+                                        <th className="pb-4">Order Approval</th>
+                                        <th className="pb-4">Delivery Status</th>
+                                        <th className="pb-4 text-right">Total</th>
+                                        <th className="pb-4 text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-border">
+                                    {orders.slice((ordersPage - 1) * ITEMS_PER_PAGE, ordersPage * ITEMS_PER_PAGE).map(order => (
+                                        <tr key={order.id} className="hover:bg-surface transition-colors">
+                                            <td className="py-4">
+                                                {new Date(order.date).toLocaleDateString()} <br />
+                                                <span className="text-xs opacity-50">{new Date(order.date).toLocaleTimeString()}</span>
+                                            </td>
+                                            <td className="py-4">
+                                                <span className="text-secondary block font-bold">{order.customer?.name}</span>
+                                                <span className="text-xs block">{order.customer?.phone}</span>
+                                                <span className="text-xs block">{order.customer?.email}</span>
+                                            </td>
+                                            <td className="py-4">
+                                                {order.items.map(item => (
+                                                    <div key={item.id} className={`text-secondary ${order.status === 'fulfilled' ? 'line-through opacity-50' : ''}`}>
+                                                        {item.quantity}x {item.name}
                                                     </div>
                                                 ))}
-                                            </div>
-                                        </td>
-                                        <td style={{ padding: '1rem', fontWeight: 'bold', textDecoration: isCompleted ? 'line-through' : 'none' }}>
-                                            ₹{order.totalPrice?.toLocaleString()}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                            {orders.length === 0 && (
-                                <tr>
-                                    <td colSpan="5" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                                        No orders found yet.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                                            </td>
+                                            <td className="py-4">
+                                                <span className={`px-3 py-1 rounded-sm text-xs font-bold border uppercase tracking-widest ${order.approvalStatus === 'Approved by Boss'
+                                                    ? 'bg-black text-green-400 border-green-400 shadow-[0_0_10px_rgba(74,222,128,0.3)]'
+                                                    : 'bg-green-100 text-green-800 border-green-200'
+                                                    }`}>
+                                                    {order.approvalStatus || 'PENDING'}
+                                                </span>
+                                            </td>
+                                            <td className="py-4">
+                                                <button
+                                                    onClick={() => handleToggleStatus(order.id, order.status)}
+                                                    className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border transition-colors ${order.status === 'fulfilled'
+                                                        ? 'bg-black border-green-500 text-green-400 hover:bg-green-900/30 shadow-[0_0_5px_rgba(74,222,128,0.3)]'
+                                                        : 'bg-black border-yellow-500 text-yellow-400 hover:bg-yellow-900/30 shadow-[0_0_5px_rgba(250,204,21,0.3)]'
+                                                        }`}
+                                                >
+                                                    {order.status === 'fulfilled' ? <CheckCircle className="w-3 h-3" /> : <Package className="w-3 h-3" />}
+                                                    {order.status === 'fulfilled' ? 'Fulfilled' : 'Pending'}
+                                                </button>
+                                            </td>
+                                            <td className={`py-4 text-right font-bold ${order.status === 'fulfilled' ? 'text-muted line-through decoration-muted' : 'text-accent'}`}>
+                                                ₹{order.total}
+                                            </td>
+                                            <td className="py-4 text-center">
+                                                <button
+                                                    onClick={() => handleExportSingleOrder(order)}
+                                                    className="p-2 text-muted hover:text-accent hover:bg-surface rounded-full transition-colors mx-auto"
+                                                    title="Export Order to CSV"
+                                                >
+                                                    <Download className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteOrder(order.id)}
+                                                    className="p-2 text-muted hover:text-red-500 hover:bg-surface rounded-full transition-colors"
+                                                    title="Delete Order"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
 
-                    {/* Pagination Controls */}
-                    {orders.length > itemsPerPage && (
-                        <div style={{ padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                            <button
-                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                                disabled={currentPage === 1}
-                                className="btn btn-outline"
-                                style={{ padding: '0.5rem', opacity: currentPage === 1 ? 0.5 : 1 }}
-                            >
-                                <ChevronLeft size={20} />
-                            </button>
-                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                                Page {currentPage} of {Math.ceil(orders.length / itemsPerPage)}
-                            </span>
-                            <button
-                                onClick={() => setCurrentPage(p => Math.min(Math.ceil(orders.length / itemsPerPage), p + 1))}
-                                disabled={currentPage >= Math.ceil(orders.length / itemsPerPage)}
-                                className="btn btn-outline"
-                                style={{ padding: '0.5rem', opacity: currentPage >= Math.ceil(orders.length / itemsPerPage) ? 0.5 : 1 }}
-                            >
-                                <ChevronRight size={20} />
-                            </button>
+                            {/* Orders Pagination Controls */}
+                            <PaginationControls
+                                currentPage={ordersPage}
+                                totalPages={Math.ceil(orders.length / ITEMS_PER_PAGE)}
+                                onPageChange={setOrdersPage}
+                            />
                         </div>
                     )}
                 </div>
-            ) : (
-                <>
-                    {/* Add New Product Form */}
-                    <div className="glass-panel" style={{ marginBottom: '3rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                            <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                {editingId ? <Pencil size={20} /> : <Plus size={20} />}
-                                {editingId ? 'Edit Product' : 'Add New Product'}
-                            </h3>
-                            {editingId && (
-                                <button onClick={handleCancelEdit} className="btn btn-outline" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                                    <X size={16} /> Cancel Edit
-                                </button>
-                            )}
-                        </div>
-                        <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', alignItems: 'end' }}>
-                            <div className="form-group">
-                                <label className="form-label">Category</label>
-                                <select className="form-input"
-                                    value={newItem.category}
-                                    onChange={e => setNewItem({ ...newItem, category: e.target.value })}
-                                >
-                                    <option value="brand">Brand (Frame)</option>
-                                    <option value="lens">Lens</option>
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label">Origin</label>
-                                <select className="form-input"
-                                    value={newItem.origin}
-                                    onChange={e => setNewItem({ ...newItem, origin: e.target.value })}
-                                >
-                                    <option value="international">International</option>
-                                    <option value="indian">Indian</option>
-                                    <option value="in-house">In-House</option>
-                                </select>
-                            </div>
-
-                            {/* New Filter Fields */}
-                            <div className="form-group">
-                                <label className="form-label">Frame Shape</label>
-                                <select className="form-input"
-                                    value={newItem.frameShape}
-                                    onChange={e => setNewItem({ ...newItem, frameShape: e.target.value })}
-                                >
-                                    <option value="wayfarer">Wayfarer</option>
-                                    <option value="aviator">Aviator</option>
-                                    <option value="round">Round</option>
-                                    <option value="cat-eye">Cat Eye</option>
-                                    <option value="rectangle">Rectangle</option>
-                                    <option value="oval">Oval</option>
-                                    <option value="round">Round</option>
-                                    <option value="square">Square</option>
-                                    <option value="heart">Heart</option>
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label">Size</label>
-                                <select className="form-input"
-                                    value={newItem.size}
-                                    onChange={e => setNewItem({ ...newItem, size: e.target.value })}
-                                >
-                                    <option value="Extra small (below 42mm)"> ExtraSmall (below 42mm)</option>
-                                    <option value="small 42-48mm">Small (42-48mm)</option>
-                                    <option value="medium (49-52mm)">Medium (49-52mm)</option>
-                                    <option value="large (53-58mm)">Large (53-58mm)</option>
-                                    <option value="Extra large (59mm and above)">ExtraLarge (59mm and above)</option>
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label">Brand Name</label>
-                                <input className="form-input" placeholder="e.g. Ray-Ban Hexagonal" required
-                                    value={newItem.name} onChange={e => setNewItem({ ...newItem, name: e.target.value })} />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label">Price (₹)</label>
-                                <input className="form-input" type="number" placeholder="12000" required
-                                    value={newItem.price} onChange={e => setNewItem({ ...newItem, price: e.target.value })} />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label">Initial Stock</label>
-                                <input className="form-input" type="number" placeholder="100" required
-                                    value={newItem.stock} onChange={e => setNewItem({ ...newItem, stock: e.target.value })} />
-                            </div>
-                            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                                <label className="form-label">Image URL (Optional)</label>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <input className="form-input" placeholder="https://..., assets/..., or select file"
-                                        value={newItem.imageUrl} onChange={e => setNewItem({ ...newItem, imageUrl: e.target.value })}
-                                        style={{ flex: 1 }}
-                                    />
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        style={{ display: 'none' }}
-                                        accept="image/*"
-                                        onChange={handleFileSelect}
-                                    />
-                                    <button
-                                        type="button"
-                                        className="btn btn-outline"
-                                        onClick={() => fileInputRef.current.click()}
-                                        title="Upload from Desktop"
-                                        style={{ padding: '0.6rem 1rem' }}
-                                    >
-                                        <Plus size={20} />
-                                    </button>
-                                </div>
-                                {newItem.imageUrl && (
-                                    <div style={{ marginTop: '0.5rem', width: '100px', height: '100px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.2)' }}>
-                                        <img
-                                            src={newItem.imageUrl}
-                                            alt="Preview"
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                                <label className="form-label">Description</label>
-                                <textarea className="form-input" placeholder="Product details..." rows="3"
-                                    value={newItem.description} onChange={e => setNewItem({ ...newItem, description: e.target.value })} />
-                            </div>
-                            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                                <label className="form-label">Features (comma separated)</label>
-                                <input className="form-input" placeholder="Polarized, UV Protection, Hard Case"
-                                    value={newItem.features} onChange={e => setNewItem({ ...newItem, features: e.target.value })} />
-                            </div>
-                            <button type="submit" className="btn btn-primary" style={{ gridColumn: '1 / -1' }}>
-                                {editingId ? 'Update Product' : 'Add Product'}
-                            </button>
-                        </form>
-                    </div>
-
-                    {/* Hidden input for updating images */}
-                    <input
-                        type="file"
-                        ref={updateFileInputRef}
-                        style={{ display: 'none' }}
-                        accept="image/*"
-                        onChange={handleUpdateFileSelect}
-                    />
-
-                    {/* Inventory Table */}
-                    <div className="glass-panel" style={{ overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                            <thead>
-                                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                                    <th style={{ padding: '1rem' }}>Image</th>
-                                    <th style={{ padding: '1rem' }}>Product</th>
-                                    <th style={{ padding: '1rem' }}>Type</th>
-                                    <th style={{ padding: '1rem' }}>Price</th>
-                                    <th style={{ padding: '1rem' }}>Stock Level</th>
-                                    <th style={{ padding: '1rem' }}>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {products.slice((currentInventoryPage - 1) * itemsPerPage, currentInventoryPage * itemsPerPage).map(product => (
-                                    <tr key={product.firebaseId} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <td style={{ padding: '1rem' }}>
-                                            <div style={{ position: 'relative', width: '50px', height: '50px' }}>
-                                                <div style={{ width: '100%', height: '100%', background: '#000', borderRadius: '4px', overflow: 'hidden' }}>
-                                                    <img src={product.imageUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
-                                                </div>
-                                                <button
-                                                    onClick={() => handleUpdateImageClick(product.firebaseId)}
-                                                    className="btn-outline"
-                                                    style={{
-                                                        position: 'absolute', bottom: -10, right: -10,
-                                                        padding: '4px', background: 'var(--background)',
-                                                        border: '1px solid var(--border)', borderRadius: '50%',
-                                                        cursor: 'pointer', zIndex: 10,
-                                                        display: 'flex', alignItems: 'center', justifyContent: 'center'
-                                                    }}
-                                                    title="Change Image"
-                                                >
-                                                    <Upload size={12} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td style={{ padding: '1rem' }}>
-                                            <div style={{ fontWeight: 'bold' }}>{product.name}</div>
-                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{product.brand}</div>
-                                        </td>
-                                        <td style={{ padding: '1rem' }}>
-                                            <div style={{ fontSize: '0.8rem', textTransform: 'capitalize' }}>
-                                                {product.origin || 'N/A'} <br />
-                                                <span style={{ color: 'var(--text-secondary)' }}>{product.category || 'N/A'}</span>
-                                            </div>
-                                        </td>
-                                        <td style={{ padding: '1rem' }}>₹{product.price}</td>
-                                        <td style={{ padding: '1rem' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                <input
-                                                    type="number"
-                                                    className="form-input"
-                                                    style={{ width: '80px', padding: '0.25rem' }}
-                                                    defaultValue={product.stock}
-                                                    onBlur={(e) => {
-                                                        if (parseInt(e.target.value) !== product.stock) {
-                                                            handleUpdateStock(product.firebaseId, e.target.value);
-                                                        }
-                                                    }}
-                                                />
-                                                {saving === product.firebaseId && <RefreshCw className="spin" size={16} />}
-                                            </div>
-                                        </td>
-                                        <td style={{ padding: '1rem' }}>
-                                            <button onClick={() => handleDelete(product.firebaseId)} className="btn btn-outline" style={{ border: 'none', color: '#f87171' }} title="Delete">
-                                                <Trash2 size={18} />
-                                            </button>
-                                            <button onClick={() => handleEdit(product)} className="btn btn-outline" style={{ border: 'none', color: '#38bdf8' }} title="Edit">
-                                                <Pencil size={18} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
-                        {/* Inventory Pagination Controls */}
-                        {products.length > itemsPerPage && (
-                            <div style={{ padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                                <button
-                                    onClick={() => setCurrentInventoryPage(p => Math.max(1, p - 1))}
-                                    disabled={currentInventoryPage === 1}
-                                    className="btn btn-outline"
-                                    style={{ padding: '0.5rem', opacity: currentInventoryPage === 1 ? 0.5 : 1 }}
-                                >
-                                    <ChevronLeft size={20} />
-                                </button>
-                                <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                                    Page {currentInventoryPage} of {Math.ceil(products.length / itemsPerPage)}
-                                </span>
-                                <button
-                                    onClick={() => setCurrentInventoryPage(p => Math.min(Math.ceil(products.length / itemsPerPage), p + 1))}
-                                    disabled={currentInventoryPage >= Math.ceil(products.length / itemsPerPage)}
-                                    className="btn btn-outline"
-                                    style={{ padding: '0.5rem', opacity: currentInventoryPage >= Math.ceil(products.length / itemsPerPage) ? 0.5 : 1 }}
-                                >
-                                    <ChevronRight size={20} />
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </>
-            )}
-
-            {showToast && (
-                <Toast
-                    message={toastMessage}
-                    type={toastType}
-                    onClose={() => setShowToast(false)}
-                />
-            )}
-        </div>
+            )
+            }
+        </div >
     );
-}
+};
+
+export default Admin;
