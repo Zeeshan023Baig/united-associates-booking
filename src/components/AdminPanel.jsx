@@ -258,8 +258,35 @@ const AdminStyles = `
     color: var(--accent-color);
 }
 
+
 .action-btn.delete:hover {
     color: #ef4444;
+}
+
+/* Dark Mode Card Specifics */
+.dark-mode-card {
+    background-color: #111827;
+    color: #f9fafb;
+    border: 1px solid #374151;
+}
+
+.dark-mode-card .text-secondary {
+    color: #f9fafb !important;
+}
+
+.dark-mode-card .admin-input,
+.dark-mode-card .admin-select {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+}
+
+.dark-mode-card .admin-input::placeholder {
+    color: #9ca3af;
+}
+
+.dark-mode-card .file-instruction {
+    color: #9ca3af;
 }
 `;
 
@@ -492,11 +519,11 @@ const Admin = () => {
             {activeTab === 'inventory' ? (
                 <div className="inventory-grid">
                     {/* Add/Edit Product Form */}
-                    <div className="admin-card">
+                    <div className="admin-card dark-mode-card">
                         <div className="flex justify-between items-center mb-6" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-                            <h2 className="text-xl font-serif text-secondary" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+                            <h2 className="text-xl font-serif text-secondary" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
                             {editingProduct && (
-                                <button onClick={handleCancelEdit} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'red' }}>
+                                <button onClick={handleCancelEdit} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444' }}>
                                     <X className="w-4 h-4" />
                                 </button>
                             )}
@@ -529,39 +556,50 @@ const Admin = () => {
                                     value={newProduct.price} onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} required
                                 />
                             </div>
-                            <input
-                                type="number" placeholder="Initial Stock"
-                                className="admin-input"
-                                value={newProduct.stock} onChange={e => setNewProduct({ ...newProduct, stock: e.target.value })} required
-                            />
-                            <input
-                                placeholder="Specs (e.g. Titanium Frame)"
-                                className="admin-input"
-                                value={newProduct.specs} onChange={e => setNewProduct({ ...newProduct, specs: e.target.value })}
-                            />
+
+                            {/* Compacted Row: Stock & Specs */}
+                            <div className="form-row">
+                                <input
+                                    type="number" placeholder="Initial Stock"
+                                    className="admin-input"
+                                    value={newProduct.stock} onChange={e => setNewProduct({ ...newProduct, stock: e.target.value })} required
+                                />
+                                <input
+                                    placeholder="Specs (Titanium Frame)"
+                                    className="admin-input"
+                                    value={newProduct.specs} onChange={e => setNewProduct({ ...newProduct, specs: e.target.value })}
+                                />
+                            </div>
+
                             <input
                                 placeholder="External Link (Optional)"
                                 className="admin-input"
                                 value={newProduct.externalLink} onChange={e => setNewProduct({ ...newProduct, externalLink: e.target.value })}
                             />
 
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                                <label className="file-input uppercase" style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>Product Image</label>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem', border: '1px dashed #374151', borderRadius: '4px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <label className="uppercase file-instruction" style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>Product Image</label>
+                                    <span style={{ fontSize: '0.7rem', color: '#9ca3af' }}>File or URL</span>
+                                </div>
+                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={e => setImageFile(e.target.files[0])}
+                                        className="admin-input"
+                                        style={{ fontSize: '0.8rem' }}
+                                    />
+                                </div>
                                 <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={e => setImageFile(e.target.files[0])}
-                                    className="admin-input"
-                                />
-                                <p style={{ fontSize: '0.7rem', opacity: 0.7 }}>Or use URL (optional)</p>
-                                <input
-                                    placeholder="Image URL (backup)"
+                                    placeholder="Or paste Image URL"
                                     className="admin-input"
                                     value={newProduct.image} onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
+                                    style={{ fontSize: '0.8rem' }}
                                 />
                             </div>
 
-                            <button type="submit" disabled={isAdding} className={`submit-btn ${editingProduct ? 'primary' : ''}`} style={{ backgroundColor: editingProduct ? 'var(--accent-color)' : 'var(--bg-secondary)', color: editingProduct ? 'white' : 'var(--text-secondary)' }}>
+                            <button type="submit" disabled={isAdding} className={`submit-btn ${editingProduct ? 'primary' : ''}`} style={{ backgroundColor: editingProduct ? 'var(--accent-color)' : '#3b82f6', color: 'white', border: 'none' }}>
                                 {isAdding ? (editingProduct ? 'Updating...' : 'Adding...') : (editingProduct ? 'Update Product' : 'Add Product')}
                             </button>
                         </form>
