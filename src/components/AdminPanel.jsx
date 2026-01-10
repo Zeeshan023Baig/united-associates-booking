@@ -1,3 +1,10 @@
+import { useState, useEffect } from 'react';
+import { useProducts } from '../context/ProductContext';
+import { db } from '../lib/firebase';
+import { collection, query, orderBy, onSnapshot, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { Package, Plus, Loader, CheckCircle, Download, Edit2, X, Trash2, Lock } from 'lucide-react';
+import PaginationControls from '../components/PaginationControls';
+
 const AdminStyles = `
 /* Admin Panel Styles */
 .admin-container {
