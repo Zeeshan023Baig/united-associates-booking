@@ -264,7 +264,43 @@ const AdminStyles = `
 `;
 
 const StockInput = ({ initialStock, onUpdate }) => {
-    // ... logic remains same
+    const [value, setValue] = useState(initialStock);
+    const [status, setStatus] = useState('idle'); // idle, saving, saved, error
+
+    useEffect(() => {
+        setValue(initialStock);
+    }, [initialStock]);
+
+    useEffect(() => {
+        if (parseInt(value) === parseInt(initialStock)) {
+            setStatus('idle');
+            return;
+        }
+
+        if (value === '' || isNaN(parseInt(value))) {
+            return; // Don't auto-save invalid/empty input
+        }
+
+        setStatus('saving');
+        const timeoutId = setTimeout(async () => {
+            try {
+                const stockVal = parseInt(value);
+                if (isNaN(stockVal)) return;
+
+                const result = await onUpdate(stockVal);
+                if (result.success) {
+                    setStatus('saved');
+                    setTimeout(() => setStatus('idle'), 2000);
+                } else {
+                    setStatus('error');
+                }
+            } catch (error) {
+                setStatus('error');
+            }
+        }, 800);
+
+        return () => clearTimeout(timeoutId);
+    }, [value, initialStock, onUpdate]);
     return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', position: 'relative' }}>
             <input
