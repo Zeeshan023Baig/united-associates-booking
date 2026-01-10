@@ -1,6 +1,260 @@
-import './AdminPanel.css';
+const AdminStyles = `
+/* Admin Panel Styles */
+.admin-container {
+    padding-bottom: 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
 
-// ... imports remain same
+/* Header */
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.admin-title {
+    font-size: 2rem;
+    font-family: serif;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 1rem;
+}
+
+.tab-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.tab-btn.inactive {
+    background-color: transparent;
+    color: var(--text-secondary);
+}
+
+.tab-btn.inactive:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Inventory Layout */
+.inventory-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .inventory-grid {
+        grid-template-columns: 350px 1fr;
+    }
+}
+
+/* Forms */
+.admin-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.admin-input, .admin-select {
+    width: 100%;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.admin-input:focus {
+    outline: 2px solid var(--accent-color);
+    border-color: transparent;
+}
+
+.file-input {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+}
+
+.submit-btn.primary {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+}
+
+/* Product List */
+.product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--bg-secondary);
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.product-img {
+    width: 4rem;
+    height: 4rem;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.product-info {
+    flex-grow: 1;
+}
+
+.product-name {
+    font-weight: bold;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.product-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    margin: 0;
+}
+
+/* Orders Table */
+.table-container {
+    overflow-x: auto;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    min-width: 800px;
+}
+
+.admin-table th {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem;
+    text-align: left;
+}
+
+.admin-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top;
+}
+
+.admin-table tr:hover {
+    background-color: var(--bg-primary);
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+}
+
+.status-fulfilled {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border-color: #16a34a;
+}
+
+.status-pending {
+    background-color: #fefce8;
+    color: #ca8a04;
+    border-color: #ca8a04;
+}
+
+.approval-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border: 1px solid;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.action-btn {
+    padding: 0.5rem;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    background-color: var(--bg-primary);
+    color: var(--accent-color);
+}
+
+.action-btn.delete:hover {
+    color: #ef4444;
+}
+`;
 
 const StockInput = ({ initialStock, onUpdate }) => {
     // ... logic remains same
@@ -173,6 +427,7 @@ const Admin = () => {
 
     return (
         <div className="admin-container">
+            <style>{AdminStyles}</style>
             <header className="admin-header">
                 <h1 className="admin-title">Store Management</h1>
                 <div className="admin-tabs">
