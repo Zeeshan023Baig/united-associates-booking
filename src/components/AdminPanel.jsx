@@ -92,6 +92,20 @@ const Admin = () => {
 
     const categories = ['Essentials', 'Luxuries', 'Groceries', 'Lifestyle', 'Electronics'];
 
+    // Fetch Orders - Moved to top to avoid Hook violation
+    useEffect(() => {
+        const q = query(collection(db, "orders"), orderBy("date", "desc"));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const ordersData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setOrders(ordersData);
+            setLoadingOrders(false);
+        });
+        return () => unsubscribe();
+    }, []);
+
     // Handle Login
     const handleLogin = (e) => {
         e.preventDefault();
@@ -265,19 +279,6 @@ const Admin = () => {
     };
 
     // Stock Edit State
-    // Fetch Orders
-    useEffect(() => {
-        const q = query(collection(db, "orders"), orderBy("date", "desc"));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            const ordersData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            setOrders(ordersData);
-            setLoadingOrders(false);
-        });
-        return () => unsubscribe();
-    }, []);
 
     const handleImageUpload = (file) => {
         // ... (handleImageUpload code remains same)
