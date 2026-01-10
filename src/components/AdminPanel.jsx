@@ -152,7 +152,7 @@ const Admin = () => {
         );
     }
 
-    const categories = ['Essentials', 'Luxuries', 'Groceries', 'Lifestyle', 'Electronics'];
+
 
     // Handle initial form population for editing
     const handleEditClick = (product) => {
