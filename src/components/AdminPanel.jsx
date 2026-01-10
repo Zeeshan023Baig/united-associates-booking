@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useProducts } from '../context/ProductContext';
 import { db } from '../lib/firebase';
 import { collection, query, orderBy, onSnapshot, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { Package, Plus, Loader, CheckCircle, Download, Edit2, X, Trash2 } from 'lucide-react';
+import { Package, Plus, Loader, CheckCircle, Download, Edit2, X, Trash2, Lock } from 'lucide-react';
 import PaginationControls from '../components/PaginationControls';
 
 const StockInput = ({ initialStock, onUpdate }) => {
@@ -63,6 +63,71 @@ const Admin = () => {
     const [activeTab, setActiveTab] = useState('inventory');
     const [orders, setOrders] = useState([]);
     const [loadingOrders, setLoadingOrders] = useState(true);
+
+    // Auth State
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [loginEmail, setLoginEmail] = useState('');
+    const [loginPassword, setLoginPassword] = useState('');
+    const [loginError, setLoginError] = useState('');
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        setLoginError('');
+        if (loginEmail === 'unitedassociates.official@gmail.com' && loginPassword === 'United14@chennai') {
+            setIsAuthenticated(true);
+        } else {
+            setLoginError('Invalid credentials. Please try again.');
+        }
+    };
+
+    if (!isAuthenticated) {
+        return (
+            <div className="container mx-auto pt-32 pb-16 flex justify-center px-4">
+                <div className="bg-surface border border-border p-10 rounded-lg shadow-lg w-full max-w-md backdrop-blur-md">
+                    <div className="text-center mb-8">
+                        <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Lock size={32} className="text-accent" />
+                        </div>
+                        <h2 className="text-2xl font-serif text-secondary mb-2">Admin Access</h2>
+                        <p className="text-muted text-sm">Please enter your credentials</p>
+                    </div>
+
+                    <form onSubmit={handleLogin} className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="text-xs uppercase font-bold text-muted tracking-wide">Email</label>
+                            <input
+                                type="email"
+                                className="w-full bg-primary border border-border p-3 text-secondary rounded-sm focus:border-accent outline-none transition-colors"
+                                value={loginEmail}
+                                onChange={(e) => setLoginEmail(e.target.value)}
+                                placeholder="admin@example.com"
+                                required
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs uppercase font-bold text-muted tracking-wide">Password</label>
+                            <input
+                                type="password"
+                                className="w-full bg-primary border border-border p-3 text-secondary rounded-sm focus:border-accent outline-none transition-colors"
+                                value={loginPassword}
+                                onChange={(e) => setLoginPassword(e.target.value)}
+                                placeholder="••••••••"
+                                required
+                            />
+                        </div>
+                        {loginError && (
+                            <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-sm p-3 rounded-sm text-center">
+                                {loginError}
+                            </div>
+                        )}
+                        <button type="submit" className="w-full py-3 bg-accent text-primary font-bold uppercase tracking-widest rounded-sm hover:bg-opacity-90 transition-opacity">
+                            Login
+                        </button>
+                    </form>
+                </div>
+            </div>
+        );
+    }
 
     // Pagination State
     const ITEMS_PER_PAGE = 12;
