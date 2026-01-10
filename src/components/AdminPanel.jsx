@@ -663,8 +663,6 @@ const Admin = () => {
 
                     {loadingOrders ? (
                         <div style={{ textAlign: 'center', padding: '3rem' }}><Loader className="w-8 h-8 animate-spin mx-auto text-accent" /></div>
-                    ) : orders.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '3rem', opacity: 0.7 }}>No orders yet.</div>
                     ) : (
                         <div className="table-container fade-in">
                             <div className="flex justify-between items-center mb-4 p-4 border-b border-[var(--border-color)]">
@@ -692,78 +690,85 @@ const Admin = () => {
                                     </button>
                                 </div>
                             </div>
-                            <table className="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Customer</th>
-                                        <th>Items</th>
-                                        <th>Order Approval</th>
-                                        <th>Delivery Status</th>
-                                        <th style={{ textAlign: 'right' }}>Total</th>
-                                        <th style={{ textAlign: 'center' }}>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {orders.slice((ordersPage - 1) * ITEMS_PER_PAGE, ordersPage * ITEMS_PER_PAGE).map(order => (
-                                        <tr key={order.id}>
-                                            <td>
-                                                {new Date(order.date).toLocaleDateString()} <br />
-                                                <span style={{ fontSize: '0.7rem', opacity: 0.7 }}>{new Date(order.date).toLocaleTimeString()}</span>
-                                            </td>
-                                            <td>
-                                                <span style={{ display: 'block', fontWeight: 'bold' }}>{order.customer?.name}</span>
-                                                <span style={{ display: 'block', fontSize: '0.8rem' }}>{order.customer?.phone}</span>
-                                                <span style={{ display: 'block', fontSize: '0.8rem' }}>{order.customer?.email}</span>
-                                            </td>
-                                            <td>
-                                                {order.items.map(item => (
-                                                    <div key={item.id} style={{ textDecoration: order.status === 'fulfilled' ? 'line-through' : 'none', opacity: order.status === 'fulfilled' ? 0.5 : 1 }}>
-                                                        {item.quantity}x {item.name}
-                                                    </div>
-                                                ))}
-                                            </td>
-                                            <td>
-                                                <span className="approval-badge" style={{
-                                                    backgroundColor: order.approvalStatus === 'Approved by Boss' ? '#f0fdf4' : '#fefce8',
-                                                    color: order.approvalStatus === 'Approved by Boss' ? '#16a34a' : '#ca8a04',
-                                                    borderColor: order.approvalStatus === 'Approved by Boss' ? '#16a34a' : '#ca8a04'
-                                                }}>
-                                                    {order.approvalStatus || 'PENDING'}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <button
-                                                    onClick={() => handleToggleStatus(order.id, order.status)}
-                                                    className={`status-badge ${order.status === 'fulfilled' ? 'status-fulfilled' : 'status-pending'}`}
-                                                    style={{ cursor: 'pointer' }}
-                                                >
-                                                    {order.status === 'fulfilled' ? <CheckCircle className="w-3 h-3" /> : <Package className="w-3 h-3" />}
-                                                    {order.status === 'fulfilled' ? 'Fulfilled' : 'Pending'}
-                                                </button>
-                                            </td>
-                                            <td style={{ textAlign: 'right', fontWeight: 'bold', color: order.status === 'fulfilled' ? 'gray' : 'var(--accent-color)' }}>
-                                                ₹{order.total}
-                                            </td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                <button onClick={() => handleExportSingleOrder(order)} className="action-btn" title="Export CSV">
-                                                    <Download className="w-4 h-4" />
-                                                </button>
-                                                <button onClick={() => handleDeleteOrder(order.id)} className="action-btn delete" title="Delete">
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
 
-                            {/* Orders Pagination Controls */}
-                            <PaginationControls
-                                currentPage={ordersPage}
-                                totalPages={Math.ceil(orders.length / ITEMS_PER_PAGE)}
-                                onPageChange={setOrdersPage}
-                            />
+                            {orders.length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: '3rem', opacity: 0.7 }}>No orders yet.</div>
+                            ) : (
+                                <>
+                                    <table className="admin-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Customer</th>
+                                                <th>Items</th>
+                                                <th>Order Approval</th>
+                                                <th>Delivery Status</th>
+                                                <th style={{ textAlign: 'right' }}>Total</th>
+                                                <th style={{ textAlign: 'center' }}>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {orders.slice((ordersPage - 1) * ITEMS_PER_PAGE, ordersPage * ITEMS_PER_PAGE).map(order => (
+                                                <tr key={order.id}>
+                                                    <td>
+                                                        {new Date(order.date).toLocaleDateString()} <br />
+                                                        <span style={{ fontSize: '0.7rem', opacity: 0.7 }}>{new Date(order.date).toLocaleTimeString()}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span style={{ display: 'block', fontWeight: 'bold' }}>{order.customer?.name}</span>
+                                                        <span style={{ display: 'block', fontSize: '0.8rem' }}>{order.customer?.phone}</span>
+                                                        <span style={{ display: 'block', fontSize: '0.8rem' }}>{order.customer?.email}</span>
+                                                    </td>
+                                                    <td>
+                                                        {order.items.map(item => (
+                                                            <div key={item.id} style={{ textDecoration: order.status === 'fulfilled' ? 'line-through' : 'none', opacity: order.status === 'fulfilled' ? 0.5 : 1 }}>
+                                                                {item.quantity}x {item.name}
+                                                            </div>
+                                                        ))}
+                                                    </td>
+                                                    <td>
+                                                        <span className="approval-badge" style={{
+                                                            backgroundColor: order.approvalStatus === 'Approved by Boss' ? '#f0fdf4' : '#fefce8',
+                                                            color: order.approvalStatus === 'Approved by Boss' ? '#16a34a' : '#ca8a04',
+                                                            borderColor: order.approvalStatus === 'Approved by Boss' ? '#16a34a' : '#ca8a04'
+                                                        }}>
+                                                            {order.approvalStatus || 'PENDING'}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            onClick={() => handleToggleStatus(order.id, order.status)}
+                                                            className={`status-badge ${order.status === 'fulfilled' ? 'status-fulfilled' : 'status-pending'}`}
+                                                            style={{ cursor: 'pointer' }}
+                                                        >
+                                                            {order.status === 'fulfilled' ? <CheckCircle className="w-3 h-3" /> : <Package className="w-3 h-3" />}
+                                                            {order.status === 'fulfilled' ? 'Fulfilled' : 'Pending'}
+                                                        </button>
+                                                    </td>
+                                                    <td style={{ textAlign: 'right', fontWeight: 'bold', color: order.status === 'fulfilled' ? 'gray' : 'var(--accent-color)' }}>
+                                                        ₹{order.total}
+                                                    </td>
+                                                    <td style={{ textAlign: 'center' }}>
+                                                        <button onClick={() => handleExportSingleOrder(order)} className="action-btn" title="Export CSV">
+                                                            <Download className="w-4 h-4" />
+                                                        </button>
+                                                        <button onClick={() => handleDeleteOrder(order.id)} className="action-btn delete" title="Delete">
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+
+                                    {/* Orders Pagination Controls */}
+                                    <PaginationControls
+                                        currentPage={ordersPage}
+                                        totalPages={Math.ceil(orders.length / ITEMS_PER_PAGE)}
+                                        onPageChange={setOrdersPage}
+                                    />
+                                </>
+                            )}
                         </div>
                     )}
                 </div>
