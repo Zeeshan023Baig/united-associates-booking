@@ -70,6 +70,29 @@ const Admin = () => {
     const [loginPassword, setLoginPassword] = useState('');
     const [loginError, setLoginError] = useState('');
 
+    // Pagination State
+    const ITEMS_PER_PAGE = 12;
+    const [inventoryPage, setInventoryPage] = useState(1);
+    const [ordersPage, setOrdersPage] = useState(1);
+
+    // Edit Mode State
+    const [editingProduct, setEditingProduct] = useState(null);
+
+    // New Product State
+    const [newProduct, setNewProduct] = useState({
+        name: '',
+        category: 'Essentials',
+        price: '',
+        stock: '0',
+        image: '',
+        description: ''
+    });
+    const [imageFile, setImageFile] = useState(null);
+    const [isAdding, setIsAdding] = useState(false);
+
+    const categories = ['Essentials', 'Luxuries', 'Groceries', 'Lifestyle', 'Electronics'];
+
+    // Handle Login
     const handleLogin = (e) => {
         e.preventDefault();
         setLoginError('');
@@ -128,26 +151,6 @@ const Admin = () => {
             </div>
         );
     }
-
-    // Pagination State
-    const ITEMS_PER_PAGE = 12;
-    const [inventoryPage, setInventoryPage] = useState(1);
-    const [ordersPage, setOrdersPage] = useState(1);
-
-    // Edit Mode State
-    const [editingProduct, setEditingProduct] = useState(null);
-
-    // New Product State
-    const [newProduct, setNewProduct] = useState({
-        name: '',
-        category: 'Essentials',
-        price: '',
-        stock: '0',
-        image: '',
-        description: ''
-    });
-    const [imageFile, setImageFile] = useState(null);
-    const [isAdding, setIsAdding] = useState(false);
 
     const categories = ['Essentials', 'Luxuries', 'Groceries', 'Lifestyle', 'Electronics'];
 
