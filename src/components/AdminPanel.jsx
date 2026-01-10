@@ -268,6 +268,7 @@ const AdminStyles = `
     background-color: #111827;
     color: #f9fafb;
     border: 1px solid #374151;
+    padding: 1rem; /* Reduced padding */
 }
 
 .dark-mode-card .text-secondary {
@@ -577,26 +578,24 @@ const Admin = () => {
                                 value={newProduct.externalLink} onChange={e => setNewProduct({ ...newProduct, externalLink: e.target.value })}
                             />
 
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem', border: '1px dashed #374151', borderRadius: '4px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <label className="uppercase file-instruction" style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>Product Image</label>
-                                    <span style={{ fontSize: '0.7rem', color: '#9ca3af' }}>File or URL</span>
-                                </div>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                <div style={{ flex: 1 }}>
                                     <input
                                         type="file"
                                         accept="image/*"
                                         onChange={e => setImageFile(e.target.files[0])}
                                         className="admin-input"
-                                        style={{ fontSize: '0.8rem' }}
+                                        style={{ fontSize: '0.8rem', padding: '0.5rem' }}
                                     />
                                 </div>
-                                <input
-                                    placeholder="Or paste Image URL"
-                                    className="admin-input"
-                                    value={newProduct.image} onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
-                                    style={{ fontSize: '0.8rem' }}
-                                />
+                                <div style={{ flex: 1 }}>
+                                    <input
+                                        placeholder="Or paste Image URL"
+                                        className="admin-input"
+                                        value={newProduct.image} onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
+                                        style={{ fontSize: '0.8rem', padding: '0.5rem' }}
+                                    />
+                                </div>
                             </div>
 
                             <button type="submit" disabled={isAdding} className={`submit-btn ${editingProduct ? 'primary' : ''}`} style={{ backgroundColor: editingProduct ? 'var(--accent-color)' : '#3b82f6', color: 'white', border: 'none' }}>
