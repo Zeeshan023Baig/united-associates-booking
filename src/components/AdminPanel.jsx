@@ -9,7 +9,7 @@ const AdminStyles = `
 /* Admin Panel Styles */
 .admin-container {
     padding-bottom: 4rem;
-    padding-top: 4rem; /* Added gap */
+    padding-top: 1rem; /* Reduced gap */
     max-width: 1400px;
     margin: 0 auto;
     padding-right: 1rem;
