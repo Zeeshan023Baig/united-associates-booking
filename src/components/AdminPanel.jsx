@@ -105,8 +105,8 @@ const Admin = () => {
 
     if (!isAuthenticated) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-4">
-                <div className="glass-panel w-full max-w-md flex flex-col">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
+                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 w-full max-w-md flex flex-col rounded-2xl shadow-2xl p-8">
                     <div className="text-center mb-8">
                         <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                             <Lock size={32} className="text-blue-600 dark:text-blue-400" />
@@ -120,7 +120,7 @@ const Admin = () => {
                             <label className="text-xs uppercase font-bold text-gray-500 tracking-wide">Email</label>
                             <input
                                 type="email"
-                                className="form-input"
+                                className="w-full bg-gray-200 dark:bg-gray-700 border-none p-4 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-400 font-medium"
                                 value={loginEmail}
                                 onChange={(e) => setLoginEmail(e.target.value)}
                                 placeholder="admin@example.com"
@@ -131,7 +131,7 @@ const Admin = () => {
                             <label className="text-xs uppercase font-bold text-gray-500 tracking-wide">Password</label>
                             <input
                                 type="password"
-                                className="form-input"
+                                className="w-full bg-gray-200 dark:bg-gray-700 border-none p-4 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-400 font-medium"
                                 value={loginPassword}
                                 onChange={(e) => setLoginPassword(e.target.value)}
                                 placeholder="••••••••"
@@ -139,11 +139,11 @@ const Admin = () => {
                             />
                         </div>
                         {loginError && (
-                            <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-sm p-3 rounded-sm text-center">
+                            <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-sm p-3 rounded-lg text-center">
                                 {loginError}
                             </div>
                         )}
-                        <button type="submit" className="btn btn-primary w-full shadow-lg">
+                        <button type="submit" className="w-full py-4 bg-blue-500 hover:bg-blue-600 text-white font-bold uppercase tracking-widest rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
                             Login
                         </button>
                     </form>
