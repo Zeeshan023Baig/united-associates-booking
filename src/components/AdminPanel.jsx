@@ -105,33 +105,86 @@ const Admin = () => {
 
     if (!isAuthenticated) {
         return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
-                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 w-full max-w-md flex flex-col rounded-2xl shadow-2xl p-8">
-                    <div className="text-center mb-8">
-                        <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Lock size={32} className="text-blue-600 dark:text-blue-400" />
+            <div style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: 9999,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(243, 244, 246, 0.95)', // light gray with opacity
+                backdropFilter: 'blur(5px)'
+            }}>
+                <div style={{
+                    backgroundColor: 'white',
+                    padding: '3rem',
+                    borderRadius: '1rem',
+                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                    width: '100%',
+                    maxWidth: '450px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1.5rem',
+                    textAlign: 'center'
+                }}>
+                    <div className="text-center mb-4">
+                        <div style={{
+                            width: '4rem',
+                            height: '4rem',
+                            margin: '0 auto 1rem auto',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderRadius: '9999px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Lock size={32} color="#2563EB" />
                         </div>
-                        <h2 className="text-2xl font-serif text-gray-900 dark:text-white mb-2">Admin Access</h2>
-                        <p className="text-gray-500 text-sm">Please enter your credentials</p>
+                        <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', fontFamily: 'serif', marginBottom: '0.5rem' }}>Admin Access</h2>
+                        <p style={{ color: '#6B7280', fontSize: '0.875rem' }}>Please enter your credentials</p>
                     </div>
 
-                    <form onSubmit={handleLogin} className="space-y-6">
-                        <div className="space-y-2">
-                            <label className="text-xs uppercase font-bold text-gray-500 tracking-wide">Email</label>
+                    <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        <div style={{ textAlign: 'left' }}>
+                            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', color: '#6B7280', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>
+                                Email
+                            </label>
                             <input
                                 type="email"
-                                className="w-full bg-gray-200 dark:bg-gray-700 border-none p-4 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-400 font-medium"
+                                style={{
+                                    width: '100%',
+                                    padding: '1rem',
+                                    backgroundColor: '#F3F4F6',
+                                    border: 'none',
+                                    borderRadius: '0.5rem',
+                                    fontSize: '1rem',
+                                    color: '#1F2937',
+                                    outline: 'none',
+                                    boxSizing: 'border-box'
+                                }}
                                 value={loginEmail}
                                 onChange={(e) => setLoginEmail(e.target.value)}
                                 placeholder="admin@example.com"
                                 required
                             />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-xs uppercase font-bold text-gray-500 tracking-wide">Password</label>
+                        <div style={{ textAlign: 'left' }}>
+                            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', color: '#6B7280', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>
+                                Password
+                            </label>
                             <input
                                 type="password"
-                                className="w-full bg-gray-200 dark:bg-gray-700 border-none p-4 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-400 font-medium"
+                                style={{
+                                    width: '100%',
+                                    padding: '1rem',
+                                    backgroundColor: '#F3F4F6',
+                                    border: 'none',
+                                    borderRadius: '0.5rem',
+                                    fontSize: '1rem',
+                                    color: '#1F2937',
+                                    outline: 'none',
+                                    boxSizing: 'border-box'
+                                }}
                                 value={loginPassword}
                                 onChange={(e) => setLoginPassword(e.target.value)}
                                 placeholder="••••••••"
@@ -139,15 +192,43 @@ const Admin = () => {
                             />
                         </div>
                         {loginError && (
-                            <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-sm p-3 rounded-lg text-center">
+                            <div style={{
+                                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                border: '1px solid rgba(239, 68, 68, 0.2)',
+                                color: '#EF4444',
+                                fontSize: '0.875rem',
+                                padding: '0.75rem',
+                                borderRadius: '0.5rem',
+                                textAlign: 'center'
+                            }}>
                                 {loginError}
                             </div>
                         )}
-                        <button type="submit" className="w-full py-4 bg-blue-500 hover:bg-blue-600 text-white font-bold uppercase tracking-widest rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+                        <button
+                            type="submit"
+                            style={{
+                                width: '100%',
+                                padding: '1rem',
+                                backgroundColor: '#3B82F6',
+                                color: 'white',
+                                fontWeight: 'bold',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.1em',
+                                borderRadius: '0.5rem',
+                                border: 'none',
+                                cursor: 'pointer',
+                                boxShadow: '0 10px 15px -3px rgba(59, 130, 246, 0.3)',
+                                transition: 'transform 0.1s'
+                            }}
+                            onMouseOver={(e) => e.target.style.transform = 'translateY(-1px)'}
+                            onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+                        >
                             Login
                         </button>
                     </form>
-                    <p className="text-center text-xs text-gray-400 mt-8">United Associates Agencies</p>
+                    <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#9CA3AF', marginTop: '2rem' }}>
+                        United Associates Agencies
+                    </p>
                 </div>
             </div>
         );
