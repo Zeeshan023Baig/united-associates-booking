@@ -147,6 +147,7 @@ const Admin = () => {
                             Login
                         </button>
                     </form>
+                    <p className="text-center text-xs text-gray-400 mt-8">United Associates Agencies</p>
                 </div>
             </div>
         );
