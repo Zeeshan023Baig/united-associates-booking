@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useProducts } from '../context/ProductContext';
 import { db } from '../lib/firebase';
 import { collection, query, orderBy, onSnapshot, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { Package, Plus, Loader, CheckCircle, Download, Edit2, X, Trash2, Lock } from 'lucide-react';
+import { Package, Plus, Loader, CheckCircle, Download, Edit2, X, Trash2, Lock, RefreshCw } from 'lucide-react';
 import PaginationControls from '../components/PaginationControls';
 
 const AdminStyles = `
@@ -360,6 +360,7 @@ const Admin = () => {
     const [inventoryPage, setInventoryPage] = useState(1);
     const [ordersPage, setOrdersPage] = useState(1);
     const [editingProduct, setEditingProduct] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
     const [newProduct, setNewProduct] = useState({
         name: '',
         category: 'Essentials',
@@ -494,6 +495,15 @@ const Admin = () => {
     const handleDeleteOrder = async (orderId) => { /*...*/ };
     const handleExportOrders = () => { /*...*/ };
     const handleExportSingleOrder = (order) => { /*...*/ };
+
+    const handleRefresh = () => {
+        setRefreshing(true);
+        // Since we use onSnapshot, data is already live. 
+        // We simulate a refresh delay to give user visual feedback.
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 1000);
+    };
 
 
     return (
@@ -656,7 +666,32 @@ const Admin = () => {
                     ) : orders.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '3rem', opacity: 0.7 }}>No orders yet.</div>
                     ) : (
-                        <div className="table-container">
+                        <div className="table-container fade-in">
+                            <div className="flex justify-between items-center mb-4 p-4 border-b border-[var(--border-color)]">
+                                <div className="flex items-center gap-3">
+                                    <h2 className="text-xl font-serif text-secondary m-0">Order History</h2>
+                                    <button
+                                        onClick={handleRefresh}
+                                        className="action-btn"
+                                        title="Refresh Orders"
+                                        style={{
+                                            backgroundColor: 'var(--bg-primary)',
+                                            border: '1px solid var(--border-color)',
+                                            padding: '0.4rem',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                    >
+                                        <RefreshCw size={16} className={refreshing ? "animate-spin" : ""} style={{ color: 'var(--text-secondary)' }} />
+                                    </button>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button onClick={handleExportOrders} className="tab-btn inactive" style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1px solid var(--border-color)' }}>
+                                        <Download size={14} /> Export CSV
+                                    </button>
+                                </div>
+                            </div>
                             <table className="admin-table">
                                 <thead>
                                     <tr>
