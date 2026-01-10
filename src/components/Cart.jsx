@@ -10,7 +10,7 @@ export default function Cart({ cart, updateQuantity, removeFromCart }) {
     const handleRedirect = () => {
         if (cart.length === 0) return;
         // Redirect to external store
-        window.location.href = 'https://uaastore.vercel.app/catalog';
+        window.location.href = 'https://uaastore.vercel.app/catalogue';
     };
 
     if (cart.length === 0) {

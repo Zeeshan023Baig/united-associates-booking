@@ -72,7 +72,7 @@ export default function Header({ cartCount }) {
                         <span className="nav-divider">|</span>
                         <Link to="/contact" className="nav-link">Contact</Link>
                         <span className="nav-divider">|</span>
-                        <a href="https://uaastore.vercel.app/catalog" className="nav-link" target="_blank" rel="noopener noreferrer">Booking Request</a>
+                        <a href="https://uaastore.vercel.app/catalogue" className="nav-link" target="_blank" rel="noopener noreferrer">Booking Request</a>
                         <span className="nav-divider">|</span>
                         <Link to="/cart" className="nav-link booking-link">
                             Cart ({cartCount || 0})
