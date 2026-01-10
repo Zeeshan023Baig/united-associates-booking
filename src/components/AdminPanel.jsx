@@ -674,11 +674,11 @@ const Admin = () => {
                     ) : (
                         <div className="table-container fade-in">
                             <div className="flex justify-between items-center mb-4 p-4 border-b border-[var(--border-color)]">
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-4">
                                     <h2 className="text-xl font-serif text-secondary m-0">Order History</h2>
                                     <button
                                         onClick={handleRefresh}
-                                        className="action-btn"
+                                        className="action-btn ml-2"
                                         title="Refresh Orders"
                                         style={{
                                             backgroundColor: 'var(--bg-primary)',
@@ -692,11 +692,7 @@ const Admin = () => {
                                         <RefreshCw size={16} className={refreshing ? "animate-spin" : ""} style={{ color: 'var(--text-secondary)' }} />
                                     </button>
                                 </div>
-                                <div className="flex gap-2">
-                                    <button onClick={handleExportOrders} className="tab-btn inactive" style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1px solid var(--border-color)' }}>
-                                        <Download size={14} /> Export CSV
-                                    </button>
-                                </div>
+                                {/* Removed redundant inner Export button to keep UI clean */}
                             </div>
 
                             {orders.length === 0 ? (
