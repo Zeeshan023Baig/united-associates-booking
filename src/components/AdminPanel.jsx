@@ -105,22 +105,22 @@ const Admin = () => {
 
     if (!isAuthenticated) {
         return (
-            <div className="container mx-auto pt-32 pb-16 flex justify-center px-4">
-                <div className="bg-surface border border-border p-10 rounded-lg shadow-lg w-full max-w-md backdrop-blur-md">
+            <div className="min-h-screen flex items-center justify-center p-4">
+                <div className="glass-panel w-full max-w-md flex flex-col">
                     <div className="text-center mb-8">
-                        <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Lock size={32} className="text-accent" />
+                        <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Lock size={32} className="text-blue-600 dark:text-blue-400" />
                         </div>
-                        <h2 className="text-2xl font-serif text-secondary mb-2">Admin Access</h2>
-                        <p className="text-muted text-sm">Please enter your credentials</p>
+                        <h2 className="text-2xl font-serif text-gray-900 dark:text-white mb-2">Admin Access</h2>
+                        <p className="text-gray-500 text-sm">Please enter your credentials</p>
                     </div>
 
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div className="space-y-2">
-                            <label className="text-xs uppercase font-bold text-muted tracking-wide">Email</label>
+                            <label className="text-xs uppercase font-bold text-gray-500 tracking-wide">Email</label>
                             <input
                                 type="email"
-                                className="w-full bg-primary border border-border p-3 text-secondary rounded-sm focus:border-accent outline-none transition-colors"
+                                className="form-input"
                                 value={loginEmail}
                                 onChange={(e) => setLoginEmail(e.target.value)}
                                 placeholder="admin@example.com"
@@ -128,10 +128,10 @@ const Admin = () => {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-xs uppercase font-bold text-muted tracking-wide">Password</label>
+                            <label className="text-xs uppercase font-bold text-gray-500 tracking-wide">Password</label>
                             <input
                                 type="password"
-                                className="w-full bg-primary border border-border p-3 text-secondary rounded-sm focus:border-accent outline-none transition-colors"
+                                className="form-input"
                                 value={loginPassword}
                                 onChange={(e) => setLoginPassword(e.target.value)}
                                 placeholder="••••••••"
@@ -143,7 +143,7 @@ const Admin = () => {
                                 {loginError}
                             </div>
                         )}
-                        <button type="submit" className="w-full py-3 bg-accent text-primary font-bold uppercase tracking-widest rounded-sm hover:bg-opacity-90 transition-opacity">
+                        <button type="submit" className="btn btn-primary w-full shadow-lg">
                             Login
                         </button>
                     </form>
