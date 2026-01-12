@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDt73jiw7T1KldzzL8T9QtM3IeLUJhp3cs",
@@ -15,24 +15,17 @@ const db = getFirestore(app);
 
 async function check() {
     try {
-        const productsRef = collection(db, "products");
         const bookingsRef = collection(db, "bookings");
+        const bookingsSnapshot = await getDocs(query(bookingsRef, orderBy("createdAt", "desc"), limit(5)));
 
-        // Using getDocs because aggregation queries might require specific index or permissions sometimes, but getDocs is robust for small data
-        const productsSnapshot = await getDocs(productsRef);
-        const bookingsSnapshot = await getDocs(bookingsRef);
-
-        console.log(`Total Stocks (Products): ${productsSnapshot.size}`);
-        console.log(`Total Bookings (Bought): ${bookingsSnapshot.size}`);
-
-        console.log("--- Product Stock Levels ---");
-        productsSnapshot.forEach(doc => {
+        console.log(`\n--- Recent Bookings (Total: ${bookingsSnapshot.size} fetched) ---`);
+        bookingsSnapshot.forEach(doc => {
             const d = doc.data();
-            console.log(`- ${d.name}: ${d.stock} in stock`);
+            const date = d.createdAt ? new Date(d.createdAt.seconds * 1000).toLocaleString() : 'N/A';
+            console.log(`[${date}] ${d.name} - ₹${d.totalPrice} (${d.status})`);
         });
-
-    } catch (error) {
-        console.error("Error connecting to DB:", error);
+    } catch (e) {
+        console.error(e);
     }
 }
 

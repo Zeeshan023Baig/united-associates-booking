@@ -170,7 +170,7 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
             };
 
             try {
-                await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', emailParams, '67tQVXleuagb_m66p');
+                await emailjs.send('service_siw244i', 'template_6984agq', emailParams, 'YpgIawHtCtJ1-mbWw');
                 console.log("Email sent successfully!");
             } catch (emailErr) {
                 console.error("Email failed to send:", emailErr);
