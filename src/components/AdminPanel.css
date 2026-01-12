@@ -5,8 +5,42 @@
    - Global Dark Mode -> Admin Panel uses LIGHT variables.
 */
 
+/* Admin Panel Redesign Styles */
+/* 
+   Logic: "Standard" with Scoped Override
+   - Global Light Mode -> Admin Panel is LIGHT.
+   - Global Dark Mode -> Admin Panel is DARK.
+   - EXCEPTION: "Add New Product" Card is ALWAYS DARK (or Dark in Light Mode).
+*/
+
 .admin-wrapper {
-    /* DEFAULT (Global Light Mode) -> Admin is DARK */
+    /* DEFAULT (Global Light Mode) -> Admin is LIGHT */
+    --bg-primary: #F3F4F6;
+    /* Gray 100 */
+    --bg-secondary: #FFFFFF;
+    /* White */
+    --text-primary: #1F2937;
+    /* Gray 800 */
+    --text-secondary: #4B5563;
+    /* Gray 600 */
+    --accent-color: #0284c7;
+    /* Sky 600 */
+    --border-color: #E5E7EB;
+    /* Gray 200 */
+    --success-color: #16a34a;
+    --warning-color: #ca8a04;
+    --danger-color: #dc2626;
+
+    /* Apply these scoped variables to the container itself */
+    background-color: var(--bg-primary);
+    min-height: 100vh;
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* OVERRIDE (Global Dark Mode) -> Admin becomes DARK */
+:global([data-theme='dark']) .admin-wrapper {
     --bg-primary: rgb(15, 23, 42);
     /* Slate 900 */
     --bg-secondary: rgb(30, 41, 59);
@@ -20,40 +54,49 @@
     --border-color: rgb(51, 65, 85);
     /* Slate 700 */
     --success-color: #16a34a;
-    /* Green 600 */
     --warning-color: #eab308;
-    /* Yellow 500 */
     --danger-color: #ef4444;
-    /* Red 500 */
-
-    /* Apply these scoped variables to the container itself */
-    background-color: var(--bg-primary);
-    min-height: 100vh;
-    color: var(--text-primary);
-    font-family: 'Inter', system-ui, sans-serif;
-    transition: background-color 0.3s, color 0.3s;
 }
 
-/* OVERRIDE (Global Dark Mode) -> Admin becomes LIGHT */
-:global([data-theme='dark']) .admin-wrapper {
-    --bg-primary: #F3F4F6;
-    /* Gray 100 */
-    --bg-secondary: #FFFFFF;
-    /* White */
-    --text-primary: #1F2937;
-    /* Gray 800 */
-    --text-secondary: #4B5563;
-    /* Gray 600 */
-    --accent-color: #0284c7;
-    /* Sky 600 (Darker for light bg) */
-    --border-color: #E5E7EB;
-    /* Gray 200 */
-    --success-color: #16a34a;
-    /* Green 600 */
-    --warning-color: #ca8a04;
-    /* Yellow 600 */
-    --danger-color: #dc2626;
-    /* Red 600 */
+/* 
+   SPECIAL OVERRIDE: "Add New Product" Card
+   Always Dark regardless of global theme, or specifically Dark in Light Mode. 
+   Lets make it ALWAYS DARK based on user preference for "Dark Mode" aesthetics on that card.
+*/
+.admin-card {
+    /* Manually set DARK variables for this scope */
+    --card-bg: rgb(30, 41, 59);
+    /* Slate 800 */
+    --card-text: rgb(248, 250, 252);
+    --card-input-bg: rgb(15, 23, 42);
+    /* Slate 900 */
+    --card-border: rgb(51, 65, 85);
+
+    background-color: var(--card-bg) !important;
+    color: var(--card-text) !important;
+    border-color: var(--card-border) !important;
+}
+
+/* Force inputs inside the card to be Dark too */
+.admin-card .admin-input,
+.admin-card .admin-select,
+.admin-card .title-text {
+    /* Assuming we might add a class for title, or just inherit */
+    background-color: var(--card-input-bg) !important;
+    border-color: var(--card-border) !important;
+    color: var(--card-text) !important;
+}
+
+/* Fix text colors inside the card */
+.admin-card h2,
+.admin-card label,
+.admin-card p {
+    color: var(--card-text) !important;
+}
+
+.admin-card button.submit-btn.primary {
+    /* Keep accent color but ensure visibility */
+    opacity: 1;
 }
 
 .admin-container {
