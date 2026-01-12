@@ -534,9 +534,15 @@ const Admin = () => {
                                                             ))}
                                                         </td>
                                                         <td>
-                                                            <span className={`approval-badge ${order.approvalStatus === 'Approved by Boss' ? 'approval-green' : 'approval-yellow'}`}>
-                                                                {order.approvalStatus || 'PENDING'}
-                                                            </span>
+                                                            {order.source === 'Online Store' ? (
+                                                                <span className="approval-badge approval-green" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderColor: '#3b82f6' }}>
+                                                                    PAID
+                                                                </span>
+                                                            ) : (
+                                                                <span className={`approval-badge ${order.approvalStatus === 'Approved by Boss' ? 'approval-green' : 'approval-yellow'}`}>
+                                                                    {order.approvalStatus || 'PENDING'}
+                                                                </span>
+                                                            )}
                                                         </td>
                                                         <td>
                                                             <button
