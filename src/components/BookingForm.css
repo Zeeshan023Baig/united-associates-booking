@@ -1,0 +1,62 @@
+/* Booking Form Inverted Theme Styles */
+/* 
+   Logic: "Vice Versa"
+   - Global Light Mode -> Booking Form uses DARK variables.
+   - Global Dark Mode -> Booking Form uses LIGHT variables.
+*/
+
+.booking-wrapper {
+    /* DEFAULT (Global Light Mode) -> Booking is DARK */
+    --bg-primary: rgb(15, 23, 42);
+    /* Slate 900 */
+    --bg-secondary: rgb(30, 41, 59);
+    /* Slate 800 */
+    --text-primary: rgb(248, 250, 252);
+    /* Slate 50 */
+    --text-secondary: rgb(148, 163, 184);
+    /* Slate 400 */
+    --accent-color: #38bdf8;
+    /* Sky 400 */
+    --border-color: rgb(51, 65, 85);
+    /* Slate 700 */
+
+    /* Glass Variables for Dark Mode */
+    --glass-bg: rgba(30, 41, 59, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --input-bg: rgba(15, 23, 42, 0.6);
+    --input-text: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+
+    /* Apply these scoped variables to the container itself */
+    background-color: var(--bg-primary);
+    min-height: 90vh;
+    /* Ensure it covers most of the view */
+    color: var(--text-primary);
+    transition: background-color 0.3s, color 0.3s;
+
+    /* Ensure outer padding to look like a distinct section if needed */
+    width: 100%;
+}
+
+/* OVERRIDE (Global Dark Mode) -> Booking becomes LIGHT */
+:global([data-theme='dark']) .booking-wrapper {
+    --bg-primary: #F3F4F6;
+    /* Gray 100 */
+    --bg-secondary: #FFFFFF;
+    /* White */
+    --text-primary: #1F2937;
+    /* Gray 800 */
+    --text-secondary: #4B5563;
+    /* Gray 600 */
+    --accent-color: #0284c7;
+    /* Sky 600 */
+    --border-color: #E5E7EB;
+    /* Gray 200 */
+
+    /* Glass Variables for Light Mode */
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --input-text: #1F2937;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
