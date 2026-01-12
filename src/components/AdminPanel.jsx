@@ -107,7 +107,8 @@ const Admin = () => {
                         email: data.email || data.customer?.email || ''
                     },
                     total: data.totalPrice || data.total || 0,
-                    status: data.status || 'pending'
+                    status: data.status || 'pending',
+                    source: data.source || 'Booking Request' // Default to Booking Request if missing
                 };
             });
             setOrders(ordersData);
@@ -183,16 +184,122 @@ const Admin = () => {
         );
     }
 
-    // ... functions (handleEditClick, handleProductSubmit, etc) remain same ...
-    const handleEditClick = (product) => { /*...*/ setEditingProduct(product); setNewProduct({ ...product }); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-    const handleCancelEdit = () => { setEditingProduct(null); setNewProduct({ name: '', price: '', category: 'Essentials', image: '', stock: '0', description: '' }); setImageFile(null); };
-    const handleImageUpload = (file) => { /*...*/ return new Promise((resolve, reject) => { /*...*/ }); };
-    const handleImportCatalog = async () => { /*...*/ };
-    const handleProductSubmit = async (e) => { /*...*/ };
-    const handleToggleStatus = async (id, currentStatus) => { /*...*/ };
-    const handleDeleteOrder = async (orderId) => { /*...*/ };
-    const handleExportOrders = () => { /*...*/ };
-    const handleExportSingleOrder = (order) => { /*...*/ };
+    const handleEditClick = (product) => {
+        setEditingProduct(product);
+        setNewProduct({ ...product });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleCancelEdit = () => {
+        setEditingProduct(null);
+        setNewProduct({
+            name: '',
+            category: 'Essentials',
+            price: '',
+            stock: '0',
+            image: '',
+            description: ''
+        });
+        setImageFile(null);
+    };
+
+    const handleProductSubmit = async (e) => {
+        e.preventDefault();
+        setIsAdding(true);
+        try {
+            if (editingProduct) {
+                await updateProduct(editingProduct.id, newProduct);
+                setEditingProduct(null);
+            } else {
+                await addProduct(newProduct);
+            }
+            setNewProduct({
+                name: '',
+                category: 'Essentials',
+                price: '',
+                stock: '0',
+                image: '',
+                description: ''
+            });
+            setImageFile(null);
+        } catch (error) {
+            console.error("Error submitting product:", error);
+            alert("Failed to save product");
+        }
+        setIsAdding(false);
+    };
+
+
+    const handleToggleStatus = async (orderId, currentStatus) => {
+        try {
+            const newStatus = currentStatus === 'fulfilled' ? 'pending' : 'fulfilled';
+            await updateDoc(doc(db, "bookings", orderId), {
+                status: newStatus
+            });
+        } catch (error) {
+            console.error("Error updating order status:", error);
+        }
+    };
+
+    const handleDeleteOrder = async (orderId) => {
+        if (window.confirm('Are you sure you want to delete this order?')) {
+            try {
+                await deleteDoc(doc(db, "bookings", orderId));
+            } catch (error) {
+                console.error("Error deleting order:", error);
+            }
+        }
+    };
+
+    const handleExportOrders = () => {
+        const headers = ['Order ID', 'Date', 'Customer Name', 'Phone', 'Email', 'Items', 'Total', 'Status', 'Source'];
+        const csvContent = [
+            headers.join(','),
+            ...orders.map(order => [
+                order.id,
+                new Date(order.date).toLocaleDateString(),
+                `"${order.customer.name}"`,
+                order.customer.phone,
+                order.customer.email,
+                `"${order.items.map(i => `${i.name} (x${i.quantity})`).join('; ')}"`,
+                order.total,
+                order.status,
+                order.source
+            ].join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `orders-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+    };
+
+    const handleExportSingleOrder = (order) => {
+        const headers = ['Order ID', 'Date', 'Customer Name', 'Phone', 'Email', 'Items', 'Total', 'Status', 'Source'];
+        const csvContent = [
+            headers.join(','),
+            [
+                order.id,
+                new Date(order.date).toLocaleDateString(),
+                `"${order.customer.name}"`,
+                order.customer.phone,
+                order.customer.email,
+                `"${order.items.map(i => `${i.name} (x${i.quantity})`).join('; ')}"`,
+                order.total,
+                order.status,
+                order.source
+            ].join(',')
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `order-${order.id}.csv`;
+        a.click();
+    };
 
     const handleRefresh = () => {
         setRefreshing(true);
@@ -403,21 +510,21 @@ const Admin = () => {
                                                             <span style={{ display: 'block', fontWeight: 'bold' }}>{order.customer?.name}</span>
                                                             <span style={{ display: 'block', fontSize: '0.8rem' }}>{order.customer?.phone}</span>
                                                             <span style={{ display: 'block', fontSize: '0.8rem' }}>{order.customer?.email}</span>
+
                                                             {/* Source Badge */}
-                                                            {order.ref === 'booking_request' && (
-                                                                <span style={{
-                                                                    display: 'inline-block',
-                                                                    fontSize: '0.65rem',
-                                                                    padding: '0.1rem 0.4rem',
-                                                                    borderRadius: '4px',
-                                                                    backgroundColor: 'rgba(126, 34, 206, 0.2)',
-                                                                    color: '#d8b4fe',
-                                                                    marginTop: '0.25rem',
-                                                                    border: '1px solid rgba(126, 34, 206, 0.3)'
-                                                                }}>
-                                                                    via Booking Request
-                                                                </span>
-                                                            )}
+                                                            <span style={{
+                                                                display: 'inline-block',
+                                                                fontSize: '0.65rem',
+                                                                padding: '0.1rem 0.4rem',
+                                                                borderRadius: '4px',
+                                                                marginTop: '0.25rem',
+                                                                fontWeight: '600',
+                                                                backgroundColor: order.source === 'Online Store' ? 'rgba(22, 163, 74, 0.1)' : 'rgba(147, 51, 234, 0.1)',
+                                                                color: order.source === 'Online Store' ? '#16a34a' : '#9333ea',
+                                                                border: `1px solid ${order.source === 'Online Store' ? 'rgba(22, 163, 74, 0.2)' : 'rgba(147, 51, 234, 0.2)'}`
+                                                            }}>
+                                                                {order.source === 'Online Store' ? 'Online Store' : 'Booking Request'}
+                                                            </span>
                                                         </td>
                                                         <td>
                                                             {order.items.map(item => (

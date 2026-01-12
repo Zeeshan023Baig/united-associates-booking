@@ -9,8 +9,7 @@ export default function Cart({ cart, updateQuantity, removeFromCart }) {
 
     const handleRedirect = () => {
         if (cart.length === 0) return;
-        // Redirect to external store with source tracking
-        window.location.href = 'https://uaastore.vercel.app/catalogue?ref=booking_request';
+        navigate('/booking');
     };
 
     if (cart.length === 0) {

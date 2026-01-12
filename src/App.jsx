@@ -13,6 +13,7 @@ import WhyUs from './components/WhyUs'
 import Brands from './components/Brands'
 // import './styles/index.css' // Removed to use unified src/index.css
 import WhatsAppWidget from './components/WhatsAppWidget'
+import BookingForm from './components/BookingForm'
 import Footer from './components/Footer'
 
 function App() {
@@ -97,6 +98,14 @@ function App() {
             <Route path="/stores" element={<StoreLocator />} />
             <Route path="/contact" element={<StoreLocator />} />
             <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/booking" element={
+              <BookingForm
+                cart={cart}
+                updateQuantity={updateQuantity}
+                removeFromCart={removeFromCart}
+                clearCart={clearCart}
+              />
+            } />
           </Routes>
         </main>
         <Footer />
