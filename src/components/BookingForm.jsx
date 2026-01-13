@@ -84,8 +84,9 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                     items: cart,
                     totalPrice,
                     createdAt: serverTimestamp(),
-                    status: DEMO_MODE ? 'completed' : 'pending_payment', // Auto-complete if Demo
-                    source: 'Online Store' // Tag so Admin knows it came from here
+                    status: 'pending', // Force pending for Booking Requests
+                    approvalStatus: 'Pending',
+                    source: 'Booking Request' // Tag as Internal Booking Request
                 });
             });
 
