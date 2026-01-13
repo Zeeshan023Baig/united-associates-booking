@@ -1,62 +1,116 @@
-/* Booking Form Inverted Theme Styles */
+/* BookingForm.css */
 /* 
-   Logic: "Vice Versa"
-   - Global Light Mode -> Booking Form uses DARK variables.
-   - Global Dark Mode -> Booking Form uses LIGHT variables.
+   FORCE INVERSION THEME LOGIC (REFINED):
+   - Global Light Mode -> Page Background remains LIGHT.
+   - Global Light Mode -> "Boxes" (Glass Panels) become DARK.
+   
+   - Global Dark Mode -> Page Background remains DARK.
+   - Global Dark Mode -> "Boxes" (Glass Panels) become LIGHT.
 */
 
+/* ==========================================================================
+   STATE 1: GLOBAL LIGHT MODE (Default) 
+   ========================================================================== */
 .booking-wrapper {
-    /* DEFAULT (Global Light Mode) -> Booking is DARK */
-    --bg-primary: rgb(15, 23, 42);
-    /* Slate 900 */
-    --bg-secondary: rgb(30, 41, 59);
-    /* Slate 800 */
-    --text-primary: rgb(248, 250, 252);
-    /* Slate 50 */
-    --text-secondary: rgb(148, 163, 184);
-    /* Slate 400 */
-    --accent-color: #38bdf8;
-    /* Sky 400 */
-    --border-color: rgb(51, 65, 85);
-    /* Slate 700 */
-
-    /* Glass Variables for Dark Mode */
-    --glass-bg: rgba(30, 41, 59, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --input-bg: rgba(15, 23, 42, 0.6);
-    --input-text: #ffffff;
-    --shadow-color: rgba(0, 0, 0, 0.5);
-
-    /* Apply these scoped variables to the container itself */
-    background-color: var(--bg-primary);
+    /* 1. Page Background: Keep it Transparent/Inherited so it matches the App (Light) */
+    background-color: transparent !important;
+    color: inherit;
+    /* inherit default text color for outside containers */
     min-height: 90vh;
-    /* Ensure it covers most of the view */
-    color: var(--text-primary);
-    transition: background-color 0.3s, color 0.3s;
-
-    /* Ensure outer padding to look like a distinct section if needed */
     width: 100%;
+
+    /* DEFINING THEME VARIABLES FOR THE *INSIDE* OF THE BOXES */
 }
 
-/* OVERRIDE (Global Dark Mode) -> Booking becomes LIGHT */
-:global([data-theme='dark']) .booking-wrapper {
-    --bg-primary: #F3F4F6;
-    /* Gray 100 */
-    --bg-secondary: #FFFFFF;
-    /* White */
-    --text-primary: #1F2937;
-    /* Gray 800 */
-    --text-secondary: #4B5563;
-    /* Gray 600 */
-    --accent-color: #0284c7;
-    /* Sky 600 */
-    --border-color: #E5E7EB;
-    /* Gray 200 */
+/* 
+   Target ONLY the "Boxes" (Glass Panels) inside the wrapper in Light Mode 
+   These should be DARK.
+*/
+.booking-wrapper .glass-panel {
+    /* Force Dark Background for the Box */
+    background-color: rgb(15, 23, 42) !important;
+    /* Dark Slate */
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
 
-    /* Glass Variables for Light Mode */
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.5);
-    --input-bg: rgba(255, 255, 255, 0.9);
-    --input-text: #1F2937;
-    --shadow-color: rgba(0, 0, 0, 0.1);
+    /* Force Text inside the Box to be White */
+    color: rgb(248, 250, 252) !important;
+}
+
+/* Force Text Elements inside the Dark Box to be Light */
+.booking-wrapper .glass-panel h2,
+.booking-wrapper .glass-panel h3,
+.booking-wrapper .glass-panel label,
+.booking-wrapper .glass-panel div {
+    color: rgb(248, 250, 252);
+}
+
+.booking-wrapper .glass-panel p,
+.booking-wrapper .glass-panel small,
+.booking-wrapper .glass-panel span {
+    color: rgb(148, 163, 184);
+    /* Muted Text */
+}
+
+/* Force Inputs inside the Dark Box */
+.booking-wrapper .glass-panel .form-input {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    /* Darker Slate */
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.booking-wrapper .glass-panel .form-input::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+
+/* ==========================================================================
+   STATE 2: GLOBAL DARK MODE 
+   ========================================================================== */
+:global([data-theme='dark']) .booking-wrapper {
+    /* Page Background: Keep it Transparent/Inherited (Dark) */
+    background-color: transparent !important;
+}
+
+/* 
+   Target ONLY the "Boxes" (Glass Panels) inside the wrapper in Dark Mode 
+   These should be LIGHT (White).
+*/
+:global([data-theme='dark']) .booking-wrapper .glass-panel {
+    /* Force Light Background for the Box */
+    background-color: #FFFFFF !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+
+    /* Force Text inside the Box to be Dark */
+    color: #1F2937 !important;
+}
+
+/* Force Text Elements inside the Light Box */
+:global([data-theme='dark']) .booking-wrapper .glass-panel h2,
+:global([data-theme='dark']) .booking-wrapper .glass-panel h3,
+:global([data-theme='dark']) .booking-wrapper .glass-panel label,
+:global([data-theme='dark']) .booking-wrapper .glass-panel div {
+    color: #111827;
+    /* Dark Gray */
+}
+
+:global([data-theme='dark']) .booking-wrapper .glass-panel p,
+:global([data-theme='dark']) .booking-wrapper .glass-panel small,
+:global([data-theme='dark']) .booking-wrapper .glass-panel span {
+    color: #4B5563;
+    /* Medium Gray */
+}
+
+/* Force Inputs inside the Light Box */
+:global([data-theme='dark']) .booking-wrapper .glass-panel .form-input {
+    background-color: #F9FAFB !important;
+    /* Very Light Gray */
+    color: #111827 !important;
+    border: 1px solid #D1D5DB !important;
+}
+
+:global([data-theme='dark']) .booking-wrapper .glass-panel .form-input::placeholder {
+    color: #9CA3AF !important;
 }

@@ -519,11 +519,14 @@ const Admin = () => {
                                                                 borderRadius: '4px',
                                                                 marginTop: '0.25rem',
                                                                 fontWeight: '600',
-                                                                backgroundColor: order.source === 'Online Store' ? 'rgba(22, 163, 74, 0.1)' : 'rgba(147, 51, 234, 0.1)',
-                                                                color: order.source === 'Online Store' ? '#16a34a' : '#9333ea',
-                                                                border: `1px solid ${order.source === 'Online Store' ? 'rgba(22, 163, 74, 0.2)' : 'rgba(147, 51, 234, 0.2)'}`
+                                                                backgroundColor: order.source === 'Online Store' ? 'rgba(22, 163, 74, 0.1)' :
+                                                                    order.source === 'Retailer' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(147, 51, 234, 0.1)',
+                                                                color: order.source === 'Online Store' ? '#16a34a' :
+                                                                    order.source === 'Retailer' ? '#3b82f6' : '#9333ea',
+                                                                border: `1px solid ${order.source === 'Online Store' ? 'rgba(22, 163, 74, 0.2)' :
+                                                                    order.source === 'Retailer' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(147, 51, 234, 0.2)'}`
                                                             }}>
-                                                                {order.source === 'Online Store' ? 'Online Store' : 'Booking Request'}
+                                                                {order.source || 'Booking Request'}
                                                             </span>
                                                         </td>
                                                         <td>
