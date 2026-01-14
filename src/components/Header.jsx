@@ -208,7 +208,7 @@ export default function Header({ cartCount }) {
                 /* Left: Logo & Tagline */
                 .nav-left {
                     position: absolute;
-                    left: 1rem;
+                    left: 0.5rem;
                     display: flex;
                     align-items: center;
                 }
