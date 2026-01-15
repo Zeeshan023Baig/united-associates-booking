@@ -237,11 +237,11 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                             <ShoppingBag size={48} color="#38bdf8" />
                         </div>
 
-                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', background: 'linear-gradient(to right, var(--text-primary), var(--text-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#ffffff' }}>
                             Your Collection Awaits
                         </h2>
 
-                        <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '400px', margin: '0 auto 2.5rem auto', lineHeight: '1.6' }}>
+                        <p style={{ fontSize: '1.2rem', color: 'rgba(255, 255, 255, 0.7)', maxWidth: '400px', margin: '0 auto 2.5rem auto', lineHeight: '1.6' }}>
                             Your booking request is currently empty. Explore our premium catalog to find your next signature look.
                         </p>
 
@@ -249,9 +249,9 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                             Discover Catalog
                         </button>
 
-                        <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '2rem', justifyContent: 'center', opacity: 0.6 }}>
-                            <span style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Authentication Guaranteed</span>
-                            <span style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Premium Fulfillment</span>
+                        <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', gap: '2rem', justifyContent: 'center', opacity: 0.8 }}>
+                            <span style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.6)' }}>Authentication Guaranteed</span>
+                            <span style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.6)' }}>Premium Fulfillment</span>
                         </div>
                     </div>
                 </div>
