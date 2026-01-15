@@ -45,36 +45,36 @@ export default function Confirmation() {
                             <CheckCircle size={48} color="#4ade80" />
                         </div>
 
-                        <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', fontWeight: 800 }}>Order Confirmed!</h1>
-                        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto 2rem auto' }}>
+                        <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', fontWeight: 800, color: '#ffffff' }}>Order Confirmed!</h1>
+                        <p style={{ fontSize: '1.25rem', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto 2rem auto' }}>
                             Thank you for purchasing with <span style={{ color: '#38bdf8', fontWeight: 600 }}>United Associates Agencies</span>.
                         </p>
 
-                        {/* Order Details: Removed hardcoded dark bg, let glass variables handle it */}
-                        <div style={{ textAlign: 'left', background: 'var(--glass-bg)', padding: '2rem', borderRadius: '1rem', marginBottom: '2.5rem', border: '1px solid var(--glass-border)' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--glass-border)' }}>
+                        {/* Order Details: High contrast for dark mode */}
+                        <div style={{ textAlign: 'left', background: 'rgba(255, 255, 255, 0.03)', padding: '2rem', borderRadius: '1rem', marginBottom: '2.5rem', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
                                 <div>
-                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Order Reference</div>
-                                    <div style={{ fontFamily: 'monospace', fontSize: '1.1rem', marginTop: '0.2rem' }}>#{booking.id.slice(0, 8).toUpperCase()}</div>
+                                    <div style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.6)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Order Reference</div>
+                                    <div style={{ fontFamily: 'monospace', fontSize: '1.1rem', marginTop: '0.2rem', color: '#ffffff' }}>#{booking.id.slice(0, 8).toUpperCase()}</div>
                                 </div>
                                 <div style={{ textAlign: 'right' }}>
-                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date</div>
-                                    <div style={{ fontSize: '1rem', marginTop: '0.2rem' }}>{new Date().toLocaleDateString()}</div>
+                                    <div style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.6)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date</div>
+                                    <div style={{ fontSize: '1rem', marginTop: '0.2rem', color: '#ffffff' }}>{new Date().toLocaleDateString()}</div>
                                 </div>
                             </div>
 
-                            <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Items Ordered</h3>
+                            <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#ffffff' }}>Items Ordered</h3>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                 {booking.items.map((item, idx) => (
                                     <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1rem' }}>
-                                        <span style={{ color: 'var(--text-secondary)' }}><span style={{ fontWeight: 500 }}>{item.quantity}x</span> {item.name}</span>
-                                        <span>₹{(item.price * item.quantity).toLocaleString()}</span>
+                                        <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}><span style={{ fontWeight: 500, color: '#ffffff' }}>{item.quantity}x</span> {item.name}</span>
+                                        <span style={{ color: '#ffffff' }}>₹{(item.price * item.quantity).toLocaleString()}</span>
                                     </div>
                                 ))}
                             </div>
 
-                            <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontSize: '1.2rem', fontWeight: 500 }}>Total Amount</span>
+                            <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: '1.2rem', fontWeight: 500, color: '#ffffff' }}>Total Amount</span>
                                 <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#38bdf8' }}>₹{booking.totalPrice.toLocaleString()}</span>
                             </div>
                         </div>
