@@ -55,24 +55,61 @@ const brands = [
 
 export default function Brands() {
     return (
-        <div style={{ maxWidth: '1000px', margin: '4rem auto', padding: '0 2rem', fontFamily: "'Outfit', sans-serif" }}>
-            <h1 style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '3rem', textAlign: 'center' }}>Luxury / Premium Brands</h1>
+        <div style={{
+            minHeight: '100vh',
+            backgroundImage: "url('/brands-bg.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed',
+            padding: '6rem 2rem',
+            fontFamily: "'Outfit', sans-serif"
+        }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+                <div style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+                    backdropFilter: 'blur(12px)',
+                    padding: '2rem',
+                    borderRadius: '16px',
+                    marginBottom: '3rem',
+                    textAlign: 'center',
+                    border: '1px solid rgba(255, 255, 255, 0.4)',
+                    boxShadow: '0 10px 30px -5px rgba(0, 0, 0, 0.1)'
+                }}>
+                    <h1 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, color: '#1f2937' }}>Luxury / Premium Brands</h1>
+                </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-                {brands.map((brand, index) => (
-                    <div key={index} className="glass-panel" style={{
-                        transition: 'transform 0.2s ease',
-                        cursor: 'default'
-                    }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1rem' }}>
-                            <h2 style={{ fontSize: '1.5rem', fontWeight: '600', margin: 0 }}>{brand.name}</h2>
-                            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{brand.origin}</span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                    {brands.map((brand, index) => (
+                        <div key={index} className="glass-panel" style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.85)',
+                            backdropFilter: 'blur(12px)',
+                            padding: '2rem',
+                            borderRadius: '16px',
+                            border: '1px solid rgba(255, 255, 255, 0.4)',
+                            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
+                            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                            cursor: 'default',
+                            color: '#1f2937'
+                        }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-5px)';
+                                e.currentTarget.style.boxShadow = '0 20px 40px -5px rgba(0, 0, 0, 0.15)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.1)';
+                            }}
+                        >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1rem', borderBottom: '1px solid rgba(0,0,0,0.1)', paddingBottom: '0.5rem' }}>
+                                <h2 style={{ fontSize: '1.5rem', fontWeight: '700', margin: 0, color: '#111827' }}>{brand.name}</h2>
+                                <span style={{ fontSize: '0.85rem', color: '#4b5563', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>{brand.origin}</span>
+                            </div>
+                            <p style={{ lineHeight: '1.6', fontSize: '1rem', color: '#374151' }}>
+                                {brand.description}
+                            </p>
                         </div>
-                        <p style={{ lineHeight: '1.6', fontSize: '1rem' }}>
-                            {brand.description}
-                        </p>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </div>
     );
