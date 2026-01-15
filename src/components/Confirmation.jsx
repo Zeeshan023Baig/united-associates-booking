@@ -83,7 +83,7 @@ export default function Confirmation() {
                             <Link to="/" className="btn btn-primary" style={{ padding: '0.8rem 2rem', fontSize: '1.1rem' }}>
                                 Return to Home Page
                             </Link>
-                            <Link to="/catalog" className="btn btn-outline" style={{ padding: '0.8rem 2rem', fontSize: '1.1rem' }}>
+                            <Link to="/catalog" className="btn btn-outline" style={{ padding: '0.8rem 2rem', fontSize: '1.1rem', color: '#ffffff', borderColor: '#ffffff' }}>
                                 <ShoppingBag size={20} style={{ marginRight: '0.5rem' }} /> Shop More
                             </Link>
                         </div>
