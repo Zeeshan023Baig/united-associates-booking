@@ -309,6 +309,12 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                                     value={formData.company} onChange={e => setFormData({ ...formData, company: e.target.value })} />
                             </div>
                             <div className="form-group">
+                                <label className="form-label">Location / City</label>
+                                <input required className="form-input"
+                                    placeholder="e.g. Mumbai, Bandra West"
+                                    value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
+                            </div>
+                            <div className="form-group">
                                 <label className="form-label">Email</label>
                                 <input required type="email" className="form-input"
                                     value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />

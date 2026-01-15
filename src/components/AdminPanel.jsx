@@ -252,7 +252,7 @@ const Admin = () => {
     };
 
     const handleExportOrders = () => {
-        const headers = ['Order ID', 'Date', 'Customer Name', 'Phone', 'Email', 'Items', 'Total', 'Status', 'Source'];
+        const headers = ['Order ID', 'Date', 'Customer Name', 'Phone', 'Email', 'Location', 'Items', 'Total', 'Status', 'Source'];
         const csvContent = [
             headers.join(','),
             ...orders.map(order => [
@@ -261,6 +261,7 @@ const Admin = () => {
                 `"${order.customer.name}"`,
                 order.customer.phone,
                 order.customer.email,
+                `"${order.customer.address || ''}"`,
                 `"${order.items.map(i => `${i.name} (x${i.quantity})`).join('; ')}"`,
                 order.total,
                 order.status,
@@ -277,7 +278,7 @@ const Admin = () => {
     };
 
     const handleExportSingleOrder = (order) => {
-        const headers = ['Order ID', 'Date', 'Customer Name', 'Phone', 'Email', 'Items', 'Total', 'Status', 'Source'];
+        const headers = ['Order ID', 'Date', 'Customer Name', 'Phone', 'Email', 'Location', 'Items', 'Total', 'Status', 'Source'];
         const csvContent = [
             headers.join(','),
             [
@@ -286,6 +287,7 @@ const Admin = () => {
                 `"${order.customer.name}"`,
                 order.customer.phone,
                 order.customer.email,
+                `"${order.customer.address || ''}"`,
                 `"${order.items.map(i => `${i.name} (x${i.quantity})`).join('; ')}"`,
                 order.total,
                 order.status,
@@ -510,6 +512,12 @@ const Admin = () => {
                                                             <span style={{ display: 'block', fontWeight: 'bold' }}>{order.customer?.name}</span>
                                                             <span style={{ display: 'block', fontSize: '0.8rem' }}>{order.customer?.phone}</span>
                                                             <span style={{ display: 'block', fontSize: '0.8rem' }}>{order.customer?.email}</span>
+                                                            {order.customer?.company && (
+                                                                <span style={{ display: 'block', fontSize: '0.8rem', fontStyle: 'italic', marginTop: '0.2rem' }}>{order.customer.company}</span>
+                                                            )}
+                                                            {order.customer?.address && (
+                                                                <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>📍 {order.customer.address}</span>
+                                                            )}
 
                                                             {/* Source Badge */}
                                                             <span style={{
