@@ -274,13 +274,13 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                                     <div key={item.firebaseId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.5rem' }}>
                                         <div>
                                             <div style={{ fontWeight: '600' }}>{item.name}</div>
-                                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>₹{item.price} x {item.quantity}</div>
+                                            <div style={{ color: '#ffffff', fontSize: '0.9rem', opacity: 0.8 }}>₹{item.price} x {item.quantity}</div>
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                <button onClick={() => updateQuantity(item.firebaseId, -1)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>-</button>
+                                                <button onClick={() => updateQuantity(item.firebaseId, -1)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', color: '#ffffff', borderColor: 'rgba(255,255,255,0.3)' }}>-</button>
                                                 <span>{item.quantity}</span>
-                                                <button onClick={() => updateQuantity(item.firebaseId, 1)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }}>+</button>
+                                                <button onClick={() => updateQuantity(item.firebaseId, 1)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', color: '#ffffff', borderColor: 'rgba(255,255,255,0.3)' }}>+</button>
                                             </div>
                                             <button onClick={() => removeFromCart(item.firebaseId)} className="btn btn-outline" style={{ color: '#f87171', border: 'none' }}>
                                                 <Trash2 size={18} />
