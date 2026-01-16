@@ -338,9 +338,7 @@ const Admin = () => {
 
                 {activeTab === 'inventory' ? (
                     <div className="inventory-grid">
-                        <div style={{ gridColumn: '1 / -1', padding: '10px', background: '#333', color: 'white' }}>
-                            Debug: Products Count = {products.length}
-                        </div>
+
                         {/* Add/Edit Product Form */}
                         <div className="admin-card">
                             <div className="flex justify-between items-center mb-6" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
@@ -523,14 +521,7 @@ const Admin = () => {
                                                             {order.customer?.address && (
                                                                 <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>📍 {order.customer.address}</span>
                                                             )}
-                                                            {!order.customer?.address && (
-                                                                <details style={{ marginTop: '0.5rem' }}>
-                                                                    <summary style={{ cursor: 'pointer', fontSize: '0.7rem', color: 'red' }}>Debug Data</summary>
-                                                                    <pre style={{ fontSize: '0.6rem', background: '#000', color: '#fff', padding: '0.5rem', overflowX: 'auto', maxWidth: '300px' }}>
-                                                                        {JSON.stringify(order, null, 2)}
-                                                                    </pre>
-                                                                </details>
-                                                            )}
+
 
                                                             {/* Source Badge */}
                                                             <span style={{
