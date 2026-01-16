@@ -105,8 +105,8 @@ const Admin = () => {
                         name: data.name || data.customer?.name || 'Unknown',
                         phone: data.phone || data.customer?.phone || '',
                         email: data.email || data.customer?.email || '',
-                        addressLine1: data.addressLine1 || data.company || '', // Map new field with fallback
-                        address: data.address || data.customer?.address || data.location || data.shippingAddress || data.deliveryAddress || data.fullAddress || ''
+                        addressLine1: data.addressLine1 || data.customer?.addressLine1 || data.company || data.customer?.company || data.customer?.StoreName || '', // Map new field with fallback
+                        address: data.address || data.customer?.address || data.location || data.shippingAddress || data.deliveryAddress || data.fullAddress || data.customer?.branch || ''
                     },
                     total: data.totalPrice || data.total || 0,
                     status: data.status || 'pending',
