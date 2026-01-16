@@ -193,7 +193,7 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                 // For the receipt, we want to send TO the customer.
                 const customerReceiptParams = {
                     ...emailParams,
-                    to_email: formData.email, // Send TO the customer
+                    to_email: `${formData.email}, unitedassociates.official@gmail.com`, // Send to Customer AND Admin
                     to_name: formData.name      // Personalized greeting
                 };
 
