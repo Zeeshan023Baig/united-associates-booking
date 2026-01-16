@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../lib/firebase';
 import { collection, addDoc, runTransaction, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 
@@ -14,11 +14,12 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
     const [bookingError, setBookingError] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
-        company: '',
+        addressLine1: '',
         email: '',
         phone: '',
-        address: ''
+        address: '' // This will store the formatted address from Google Maps
     });
+    const autoCompleteRef = useRef(null);
 
     const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
     const totalPrice = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
@@ -41,6 +42,12 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
         const emailRegex = /^[a-z][a-z0-9._%+-]*@[a-z]+\.[a-z]{2,}$/;
         if (!emailRegex.test(formData.email)) {
             setBookingError("Invalid email: Must start with a lowercase letter, contain no numbers after '@', and end with a valid domain (e.g. .com).");
+            return;
+        }
+
+        // Validate Address is not empty (Autocomplete handles the selection enforcement visually/logically, but here we ensure it's present)
+        if (!formData.address || formData.address.length < 5) {
+            setBookingError("Please select a valid location from the dropdown suggestions.");
             return;
         }
 
@@ -215,7 +222,42 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
         }
     }
 
-    /* ... render ... */
+
+
+    // Initialize Google Maps Autocomplete
+    useEffect(() => {
+        if (!window.google || !window.google.maps || !window.google.maps.places) {
+            console.error("Google Maps API not loaded");
+            return;
+        }
+
+        const input = document.getElementById('location-input');
+        if (!input) return;
+
+        const autocomplete = new window.google.maps.places.Autocomplete(input, {
+            types: ['(cities)'], // Restrict to cities/regions or use 'geocode' for full addresses
+            // componentRestrictions: { country: "in" } // Optional: Restrict to India
+        });
+
+        autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+            console.log("Place selected:", place);
+
+            if (!place.geometry) {
+                // User entered name of a Place that was not suggested and pressed the Enter key, or the Place Details request failed.
+                setBookingError("No details available for input: '" + place.name + "'");
+                return;
+            }
+
+            // Update formData with the formatted address or name
+            setFormData(prev => ({ ...prev, address: place.formatted_address || place.name }));
+            setBookingError(null);
+        });
+
+        // Cleanup not strictly necessary for simple component but good practice to clear listeners if needed
+        // google.maps.event.clearInstanceListeners(input);
+
+    }, []);
 
     // Returning the button part specifically to update text
     /*
@@ -305,15 +347,21 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                                     value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
                             </div>
                             <div className="form-group">
-                                <label className="form-label">Company/Agency Name</label>
+                                <label className="form-label">Address Line 1</label>
                                 <input required className="form-input"
-                                    value={formData.company} onChange={e => setFormData({ ...formData, company: e.target.value })} />
+                                    placeholder="Flat / House No / Building"
+                                    value={formData.addressLine1} onChange={e => setFormData({ ...formData, addressLine1: e.target.value })} />
                             </div>
                             <div className="form-group">
                                 <label className="form-label">Location / City</label>
-                                <input required className="form-input"
-                                    placeholder="e.g. Mumbai, Bandra West"
-                                    value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
+                                <input
+                                    id="location-input"
+                                    required
+                                    className="form-input"
+                                    placeholder="Search your city..."
+                                    value={formData.address}
+                                    onChange={e => setFormData({ ...formData, address: e.target.value })}
+                                />
                             </div>
                             <div className="form-group">
                                 <label className="form-label">Email</label>
