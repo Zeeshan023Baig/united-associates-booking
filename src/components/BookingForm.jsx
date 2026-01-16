@@ -186,19 +186,22 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                 await emailjs.send('service_siw244i', 'template_6984agq', emailParams, 'YpgIawHtCtJ1-mbWw');
                 console.log("Admin Email sent.");
 
-                // 2. Send Customer Receipt (Online Customer)
-                // We reuse the same params but the template might use them differently
-                // Ensure the template uses 'customer_email' as the 'Reply To' or similar if needed.
-                // However, EmailJS 'to_email' in params usually requires the template to map it specifically.
-                // For the receipt, we want to send TO the customer.
+                // 2. Send Customer Receipt to CUSTOMER
                 const customerReceiptParams = {
                     ...emailParams,
-                    to_email: `${formData.email}, unitedassociates.official@gmail.com`, // Send to Customer AND Admin
-                    to_name: formData.name      // Personalized greeting
+                    to_email: formData.email,
+                    to_name: formData.name
                 };
-
                 await emailjs.send('service_siw244i', 'template_gjreihx', customerReceiptParams, 'YpgIawHtCtJ1-mbWw');
-                console.log("Customer Receipt sent.");
+                console.log("Customer Receipt sent to customer.");
+
+                // 3. Send Customer Receipt Copy to ADMIN
+                const adminReceiptParams = {
+                    ...customerReceiptParams,
+                    to_email: 'unitedassociates.official@gmail.com'
+                };
+                await emailjs.send('service_siw244i', 'template_gjreihx', adminReceiptParams, 'YpgIawHtCtJ1-mbWw');
+                console.log("Customer Receipt copy sent to admin.");
 
             } catch (emailErr) {
                 console.error("Email failed to send:", emailErr);
