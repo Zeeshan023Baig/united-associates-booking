@@ -9,12 +9,23 @@ import './AdminPanel.css';
 const StockInput = ({ initialStock, onUpdate }) => {
     const [value, setValue] = useState(initialStock);
     const [status, setStatus] = useState('idle'); // idle, saving, saved, error
+    const isSyncing = useRef(false);
 
+    // Sync state with props
     useEffect(() => {
+        isSyncing.current = true;
         setValue(initialStock);
     }, [initialStock]);
 
+    // Auto-save logic
     useEffect(() => {
+        // If we just synced from props, don't trigger save
+        if (isSyncing.current) {
+            isSyncing.current = false;
+            return;
+        }
+
+        // Standard check
         if (parseInt(value) === parseInt(initialStock)) {
             setStatus('idle');
             return;
@@ -44,14 +55,17 @@ const StockInput = ({ initialStock, onUpdate }) => {
 
         return () => clearTimeout(timeoutId);
     }, [value, initialStock, onUpdate]);
+
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', position: 'relative' }}>
+        <div className="flex items-center gap-2 relative">
             <input
                 type="number"
-                className={`admin-input ${status === 'error' ? 'border-red-500' : ''}`}
-                style={{ width: '5rem', padding: '0.25rem', textAlign: 'center' }}
+                className={`w-20 bg-white dark:bg-black/20 border p-1 text-center text-slate-900 dark:text-white rounded-sm transition-colors ${status === 'error' ? 'border-red-500' : 'border-border'}`}
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={(e) => {
+                    isSyncing.current = false; // User interaction
+                    setValue(e.target.value);
+                }}
             />
             {status === 'saving' && <Loader className="w-3 h-3 text-accent animate-spin absolute -right-6" />}
             {status === 'saved' && <CheckCircle className="w-3 h-3 text-green-400 absolute -right-6 animate-in fade-in" />}
