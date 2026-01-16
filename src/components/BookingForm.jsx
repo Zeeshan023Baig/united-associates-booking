@@ -161,7 +161,7 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
             clearCart();
 
             // Send Email Notification
-            const itemDetails = cart.map(item => `${item.name} (x${item.quantity}) - ₹${item.price}`).join('\n');
+            const itemDetails = cart.map(item => `${item.name} (x${item.quantity}) - ₹${item.price}`).join('\n') + `\n\nDelivery Location: ${formData.address}`;
             const emailParams = {
                 to_email: 'unitedassociates.official@gmail.com', // Updated Admin email
                 customer_name: formData.name,

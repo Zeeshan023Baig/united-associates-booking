@@ -104,7 +104,8 @@ const Admin = () => {
                     customer: {
                         name: data.name || data.customer?.name || 'Unknown',
                         phone: data.phone || data.customer?.phone || '',
-                        email: data.email || data.customer?.email || ''
+                        email: data.email || data.customer?.email || '',
+                        address: data.address || data.customer?.address || ''
                     },
                     total: data.totalPrice || data.total || 0,
                     status: data.status || 'pending',
