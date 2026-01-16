@@ -520,6 +520,14 @@ const Admin = () => {
                                                             {order.customer?.address && (
                                                                 <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>📍 {order.customer.address}</span>
                                                             )}
+                                                            {!order.customer?.address && (
+                                                                <details style={{ marginTop: '0.5rem' }}>
+                                                                    <summary style={{ cursor: 'pointer', fontSize: '0.7rem', color: 'red' }}>Debug Data</summary>
+                                                                    <pre style={{ fontSize: '0.6rem', background: '#000', color: '#fff', padding: '0.5rem', overflowX: 'auto', maxWidth: '300px' }}>
+                                                                        {JSON.stringify(order, null, 2)}
+                                                                    </pre>
+                                                                </details>
+                                                            )}
 
                                                             {/* Source Badge */}
                                                             <span style={{
