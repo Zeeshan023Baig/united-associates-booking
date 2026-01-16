@@ -22,6 +22,13 @@
     /* DEFINING THEME VARIABLES FOR THE *INSIDE* OF THE BOXES */
 }
 
+#location-input {
+    background-repeat: no-repeat !important;
+    background-position: right 10px center !important;
+    background-size: 20px !important;
+    /* Constrain size */
+}
+
 /* 
    Target ONLY the "Boxes" (Glass Panels) inside the wrapper in Light Mode 
    These should be DARK.
@@ -58,6 +65,9 @@
     /* Darker Slate */
     color: #ffffff !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background-repeat: no-repeat !important;
+    background-position: right 10px center !important;
+    background-size: contain !important;
 }
 
 .booking-wrapper .glass-panel .form-input::placeholder {
@@ -109,8 +119,74 @@
     /* Very Light Gray */
     color: #111827 !important;
     border: 1px solid #D1D5DB !important;
+    background-repeat: no-repeat !important;
+    background-position: right 10px center !important;
 }
 
 :global([data-theme='dark']) .booking-wrapper .glass-panel .form-input::placeholder {
     color: #9CA3AF !important;
+}
+
+/* Google Maps Autocomplete Dropdown - Global Overrides */
+.pac-container {
+    z-index: 9999 !important;
+    /* Ensure it sits on top of everything including modals/glass panels */
+    border-radius: 0.5rem;
+    margin-top: 5px;
+    font-family: inherit;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Light Mode (Default) - Dropdown Style */
+.pac-container {
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0;
+}
+
+.pac-item {
+    padding: 10px;
+    cursor: pointer;
+    border-top: 1px solid #f1f5f9;
+}
+
+.pac-item:hover {
+    background-color: #f8fafc;
+}
+
+.pac-item-query {
+    color: #0f172a;
+    font-size: 14px;
+}
+
+.pac-item span {
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* Dark Mode - Dropdown Style */
+:global([data-theme='dark']) .pac-container {
+    background-color: #1e293b !important;
+    /* Dark Slate to match simplified dark theme */
+    border: 1px solid #334155;
+}
+
+:global([data-theme='dark']) .pac-item {
+    border-top: 1px solid #334155;
+}
+
+:global([data-theme='dark']) .pac-item:hover {
+    background-color: #334155;
+}
+
+:global([data-theme='dark']) .pac-item-query {
+    color: #f8fafc;
+}
+
+:global([data-theme='dark']) .pac-item span {
+    color: #94a3b8;
+}
+
+/* Hide the "Powered by Google" logo if it interferes differently, but generally keep it for compliance */
+.pac-logo::after {
+    display: none;
 }

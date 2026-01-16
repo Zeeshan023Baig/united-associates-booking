@@ -93,7 +93,7 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                     createdAt: serverTimestamp(),
                     status: 'pending', // Force pending for Booking Requests
                     approvalStatus: 'Pending',
-                    source: 'Booking Request' // Tag as Internal Booking Request
+                    source: 'Online Store' // Tag as Online Store Order
                 });
             });
 
@@ -389,8 +389,7 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
 
                             {bookingError && (
                                 <div style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#fca5a5', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1rem', border: '1px solid #f87171' }}>
-                                    {bookingError} <br />
-                                    <small>Tip: Check your Firestore Database Rules.</small>
+                                    {bookingError}
                                 </div>
                             )}
 

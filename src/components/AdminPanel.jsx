@@ -105,6 +105,7 @@ const Admin = () => {
                         name: data.name || data.customer?.name || 'Unknown',
                         phone: data.phone || data.customer?.phone || '',
                         email: data.email || data.customer?.email || '',
+                        addressLine1: data.addressLine1 || data.company || '', // Map new field with fallback
                         address: data.address || data.customer?.address || ''
                     },
                     total: data.totalPrice || data.total || 0,
@@ -513,8 +514,8 @@ const Admin = () => {
                                                             <span style={{ display: 'block', fontWeight: 'bold' }}>{order.customer?.name}</span>
                                                             <span style={{ display: 'block', fontSize: '0.8rem' }}>{order.customer?.phone}</span>
                                                             <span style={{ display: 'block', fontSize: '0.8rem' }}>{order.customer?.email}</span>
-                                                            {order.customer?.company && (
-                                                                <span style={{ display: 'block', fontSize: '0.8rem', fontStyle: 'italic', marginTop: '0.2rem' }}>{order.customer.company}</span>
+                                                            {(order.customer?.addressLine1 || order.customer?.company) && (
+                                                                <span style={{ display: 'block', fontSize: '0.8rem', fontStyle: 'italic', marginTop: '0.2rem' }}>{order.customer.addressLine1 || order.customer.company}</span>
                                                             )}
                                                             {order.customer?.address && (
                                                                 <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>📍 {order.customer.address}</span>
