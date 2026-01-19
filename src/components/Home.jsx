@@ -277,7 +277,6 @@ export default function Home({ addToCart, cart }) {
                         {[
                             { name: "Aditya R.", role: "Architect", text: "The most comfortable frames I've ever worn. The lens clarity is unmatched.", rating: 5 },
                             { name: "Priya S.", role: "Designer", text: "Absolutely love the aesthetic. Fits my face shape perfectly and feels premium.", rating: 4.5 },
-                            { name: "Aditya R.", role: "Architect", text: "The most comfortable frames I've ever worn. The lens clarity is unmatched.", rating: 5 },
                             { name: "Isha Sabreen.", role: "Data Scientist", text: "Significant reduction in eye strain. A must-have for anyone staring at screens all day.", rating: 5 },
                             { name: "Riyan Baig.", role: "Architect", text: "I used to get headaches after 8 hours of Designing. These blue light blockers are stylish and actually work. My sleep has improved significantly.", rating: 5 }
                         ].map((review, i) => (
