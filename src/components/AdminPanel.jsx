@@ -298,10 +298,13 @@ const Admin = () => {
     const handleDeleteProduct = async (productId) => {
         if (window.confirm("Are you sure you want to delete this product? This action cannot be undone.")) {
             try {
-                await deleteProduct(productId);
+                const result = await deleteProduct(productId);
+                if (!result.success) {
+                    alert("Failed to delete product: " + result.error);
+                }
             } catch (error) {
                 console.error("Error deleting product:", error);
-                alert("Failed to delete product.");
+                alert("Failed to delete product due to an unexpected error.");
             }
         }
     };

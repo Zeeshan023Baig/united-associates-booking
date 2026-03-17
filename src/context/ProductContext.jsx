@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { db } from '../lib/firebase';
-import { collection, onSnapshot, doc, runTransaction, writeBatch, addDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, onSnapshot, doc, runTransaction, writeBatch, addDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { initialProducts } from '../data/products';
 
 const ProductContext = createContext();
