@@ -57,9 +57,9 @@ export default function Cart({ cart, updateQuantity, removeFromCart }) {
                         <div key={item.firebaseId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.5rem' }}>
                             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                 {/* Optional: Add Image if available */}
-                                {item.imageUrl && (
+                                {(item.imageUrl || item.image) && (
                                     <div style={{ width: '60px', height: '60px', borderRadius: '4px', overflow: 'hidden' }}>
-                                        <img src={item.imageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        <img src={item.imageUrl || item.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                     </div>
                                 )}
                                 <div>

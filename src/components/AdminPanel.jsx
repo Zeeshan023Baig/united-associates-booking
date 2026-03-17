@@ -207,7 +207,19 @@ const Admin = () => {
 
     const handleEditClick = (product) => {
         setEditingProduct(product);
-        setNewProduct({ ...product });
+        setNewProduct({
+            name: product.name || '',
+            brand: product.brand || '',
+            category: product.category || 'brand',
+            origin: product.origin || 'in-house',
+            price: product.price || '',
+            stock: product.stock || '0',
+            imageUrl: product.imageUrl || product.image || '',
+            description: product.description || '',
+            faceShape: product.faceShape || '',
+            frameShape: product.frameShape || '',
+            size: product.size || ''
+        });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -475,11 +487,20 @@ const Admin = () => {
                                     </select>
                                 </div>
 
-                                <input
-                                    placeholder="External Link (Optional)"
-                                    className="admin-input"
-                                    value={newProduct.externalLink} onChange={e => setNewProduct({ ...newProduct, externalLink: e.target.value })}
-                                />
+                                <div className="form-row">
+                                    <input
+                                        placeholder="External Link (Optional)"
+                                        className="admin-input"
+                                        value={newProduct.externalLink || ''} onChange={e => setNewProduct({ ...newProduct, externalLink: e.target.value })}
+                                        style={{ flex: 1 }}
+                                    />
+                                    <input
+                                        placeholder="Description"
+                                        className="admin-input"
+                                        value={newProduct.description || ''} onChange={e => setNewProduct({ ...newProduct, description: e.target.value })}
+                                        style={{ flex: 2 }}
+                                    />
+                                </div>
 
                                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                                     <div style={{ flex: 1 }}>
@@ -511,10 +532,14 @@ const Admin = () => {
                         <div className="product-list">
                             {products.slice((inventoryPage - 1) * ITEMS_PER_PAGE, inventoryPage * ITEMS_PER_PAGE).map(product => (
                                 <div key={product.id} className="product-item">
-                                    <img src={product.imageUrl || product.image} className="product-img" alt={product.name} />
+                                    <img src={product.imageUrl || product.image || 'https://via.placeholder.com/80'} className="product-img" alt={product.name}
+                                        onError={(e) => { e.target.src = 'https://via.placeholder.com/80'; }} />
                                     <div className="product-info">
                                         <h3 className="product-name">{product.name}</h3>
-                                        <p className="product-meta">{product.category} • {product.origin} • ₹{product.price}</p>
+                                        <p className="product-meta">
+                                            <span style={{ color: 'var(--accent-color)', fontWeight: 'bold' }}>{product.brand}</span> •
+                                            {product.category} • {product.origin} • ₹{product.price}
+                                        </p>
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

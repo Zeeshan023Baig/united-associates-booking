@@ -60,7 +60,7 @@ export default function ProductDetails({ addToCart, cart = [] }) {
                         boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
                     }}>
                         <img
-                            src={images[activeImageIndex]}
+                            src={product.imageUrl || product.image || images[activeImageIndex]}
                             alt={product.name}
                             style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                         />

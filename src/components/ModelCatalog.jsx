@@ -136,7 +136,10 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
     }
 
     const filteredProducts = products.filter(p => {
-        const matchCategory = (p.category === selectedCategory || (selectedCategory === 'brand' && p.category !== 'lens')) && p.origin === selectedOrigin;
+        const pCategory = p.category || 'brand';
+        const pOrigin = p.origin || 'in-house';
+
+        const matchCategory = (pCategory === selectedCategory || (selectedCategory === 'brand' && pCategory !== 'lens')) && pOrigin === selectedOrigin;
         if (!matchCategory) return false;
 
         const matchShape = !filters.faceShape || p.faceShape === filters.faceShape || p.frameShape === filters.faceShape;
@@ -324,7 +327,8 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                                             style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0', overflow: 'hidden' }}
                                         >
                                             <div style={{ width: '100%', height: '200px', overflow: 'hidden', background: '#000' }}>
-                                                <img src={product.imageUrl || product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                <img src={product.imageUrl || product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                    onError={(e) => { e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found'; }} />
                                             </div>
                                             <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
                                                 <div style={{ fontSize: '0.8rem', color: 'var(--accent-color)', textTransform: 'uppercase' }}>{product.brand}</div>
