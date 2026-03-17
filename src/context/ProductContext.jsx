@@ -161,6 +161,17 @@ export const ProductProvider = ({ children }) => {
         }
     };
 
+    const deleteProduct = async (productId) => {
+        try {
+            const productRef = doc(db, "products", productId);
+            await deleteDoc(productRef);
+            return { success: true };
+        } catch (error) {
+            console.error("Error deleting product: ", error);
+            return { success: false, error: error.message };
+        }
+    };
+
     const updateOrderItems = async (orderId, newItems) => {
         try {
             await runTransaction(db, async (transaction) => {
@@ -217,7 +228,7 @@ export const ProductProvider = ({ children }) => {
     };
 
     return (
-        <ProductContext.Provider value={{ products, loading, purchaseItems, addProduct, restockProduct, updateProduct, importCatalog, updateOrderItems }}>
+        <ProductContext.Provider value={{ products, loading, purchaseItems, addProduct, restockProduct, updateProduct, deleteProduct, importCatalog, updateOrderItems }}>
             {children}
         </ProductContext.Provider>
     );

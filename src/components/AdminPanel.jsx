@@ -74,7 +74,7 @@ const StockInput = ({ initialStock, onUpdate }) => {
 };
 
 const Admin = () => {
-    const { products, addProduct, restockProduct, importCatalog, updateProduct } = useProducts();
+    const { products, addProduct, restockProduct, importCatalog, updateProduct, deleteProduct } = useProducts();
 
     const [activeTab, setActiveTab] = useState('inventory');
     const [orders, setOrders] = useState([]);
@@ -294,6 +294,17 @@ const Admin = () => {
         setIsAdding(false);
     };
 
+
+    const handleDeleteProduct = async (productId) => {
+        if (window.confirm("Are you sure you want to delete this product? This action cannot be undone.")) {
+            try {
+                await deleteProduct(productId);
+            } catch (error) {
+                console.error("Error deleting product:", error);
+                alert("Failed to delete product.");
+            }
+        }
+    };
 
     const handleToggleStatus = async (orderId, currentStatus) => {
         try {
@@ -555,6 +566,13 @@ const Admin = () => {
                                             style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.8rem' }}
                                         >
                                             <Edit2 className="w-3 h-3" /> Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteProduct(product.id)}
+                                            className="action-btn"
+                                            style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.8rem', color: '#f87171' }}
+                                        >
+                                            <Trash2 className="w-3 h-3" /> Delete
                                         </button>
                                     </div>
                                 </div>
