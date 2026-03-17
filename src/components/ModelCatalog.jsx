@@ -136,7 +136,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
     }
 
     const filteredProducts = products.filter(p => {
-        const matchCategory = p.category === selectedCategory && p.origin === selectedOrigin;
+        const matchCategory = (p.category === selectedCategory || (selectedCategory === 'brand' && p.category !== 'lens')) && p.origin === selectedOrigin;
         if (!matchCategory) return false;
 
         const matchShape = !filters.faceShape || p.faceShape === filters.faceShape || p.frameShape === filters.faceShape;
@@ -158,7 +158,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
 
                 <h1 style={{ margin: 0 }}>
                     {viewMode === 'main' && "United Collections"}
-                    {viewMode === 'subcategory' && (selectedCategory === 'Products' ? "Product" : "Lenses")}
+                    {viewMode === 'subcategory' && (selectedCategory === 'brand' ? "Product Collection" : "Lenses")}
                     {viewMode === 'products' && (selectedOrigin === 'in-house' ? "In-House Collection" : selectedOrigin === 'international' ? "International Collection" : "Indian Collection")}
                 </h1>
 
@@ -324,7 +324,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                                             style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0', overflow: 'hidden' }}
                                         >
                                             <div style={{ width: '100%', height: '200px', overflow: 'hidden', background: '#000' }}>
-                                                <img src={product.imageUrl} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                <img src={product.imageUrl || product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                             </div>
                                             <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
                                                 <div style={{ fontSize: '0.8rem', color: 'var(--accent-color)', textTransform: 'uppercase' }}>{product.brand}</div>
@@ -338,9 +338,9 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                                                     <span style={{ color: product.stock < 10 ? '#f87171' : '#4ade80' }}>
                                                         {product.stock} in stock
                                                     </span>
-                                                    {cart.find(c => c.firebaseId === product.firebaseId)?.quantity > 0 && (
+                                                    {cart.find(c => c.firebaseId === (product.firebaseId || product.id))?.quantity > 0 && (
                                                         <span style={{ color: 'var(--accent-color)' }}>
-                                                            In Cart: {cart.find(c => c.firebaseId === product.firebaseId).quantity}
+                                                            In Cart: {cart.find(c => c.firebaseId === (product.firebaseId || product.id)).quantity}
                                                         </span>
                                                     )}
                                                 </div>

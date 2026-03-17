@@ -90,11 +90,16 @@ const Admin = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [newProduct, setNewProduct] = useState({
         name: '',
-        category: 'Essentials',
+        brand: '',
+        category: 'brand',
+        origin: 'in-house',
         price: '',
         stock: '0',
-        image: '',
-        description: ''
+        imageUrl: '',
+        description: '',
+        faceShape: '',
+        frameShape: '',
+        size: ''
     });
     const [imageFile, setImageFile] = useState(null);
     const [isAdding, setIsAdding] = useState(false);
@@ -210,11 +215,16 @@ const Admin = () => {
         setEditingProduct(null);
         setNewProduct({
             name: '',
-            category: 'Essentials',
+            brand: '',
+            category: 'brand',
+            origin: 'in-house',
             price: '',
             stock: '0',
-            image: '',
-            description: ''
+            imageUrl: '',
+            description: '',
+            faceShape: '',
+            frameShape: '',
+            size: ''
         });
         setImageFile(null);
     };
@@ -223,7 +233,7 @@ const Admin = () => {
         e.preventDefault();
         setIsAdding(true);
         try {
-            let imageUrl = newProduct.image;
+            let finalizedImageUrl = newProduct.imageUrl;
 
             if (imageFile) {
                 const formData = new FormData();
@@ -237,13 +247,13 @@ const Admin = () => {
                 const data = await response.json();
 
                 if (data.success) {
-                    imageUrl = data.data.display_url;
+                    finalizedImageUrl = data.data.display_url;
                 } else {
                     throw new Error("ImgBB Upload Failed: " + data.error.message);
                 }
             }
 
-            const productDataToSave = { ...newProduct, image: imageUrl };
+            const productDataToSave = { ...newProduct, imageUrl: finalizedImageUrl };
 
             if (editingProduct) {
                 await updateProduct(editingProduct.id, productDataToSave);
@@ -253,11 +263,16 @@ const Admin = () => {
             }
             setNewProduct({
                 name: '',
-                category: 'Essentials',
+                brand: '',
+                category: 'brand',
+                origin: 'in-house',
                 price: '',
                 stock: '0',
-                image: '',
-                description: ''
+                imageUrl: '',
+                description: '',
+                faceShape: '',
+                frameShape: '',
+                size: ''
             });
             setImageFile(null);
         } catch (error) {
@@ -393,39 +408,71 @@ const Admin = () => {
                                     value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} required
                                 />
                                 <div className="form-row">
-                                    <select
-                                        className="admin-select"
-                                        value={newProduct.category} onChange={e => setNewProduct({ ...newProduct, category: e.target.value })}
-                                    >
-                                        <option value="Essentials">Essentials</option>
-                                        <option value="Luxuries">Luxuries</option>
-                                        <option value="Groceries">Groceries</option>
-                                        <option value="Lifestyle">Lifestyle</option>
-                                        <option value="Electronics">Electronics</option>
-                                        <option value="In-house">In-house</option>
-                                        <option value="International">International</option>
-                                        <option value="Indian">Indian</option>
-                                        <option value="Lenses">Lenses</option>
-                                    </select>
+                                    <input
+                                        placeholder="Brand Name"
+                                        className="admin-input"
+                                        value={newProduct.brand} onChange={e => setNewProduct({ ...newProduct, brand: e.target.value })} required
+                                    />
                                     <input
                                         type="number" placeholder="Price"
                                         className="admin-input"
                                         value={newProduct.price} onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} required
                                     />
                                 </div>
+                                <div className="form-row">
+                                    <select
+                                        className="admin-select"
+                                        value={newProduct.category} onChange={e => setNewProduct({ ...newProduct, category: e.target.value })}
+                                        title="Category"
+                                    >
+                                        <option value="brand">Brand (Frames/Sunglasses)</option>
+                                        <option value="lens">Lenses</option>
+                                    </select>
+                                    <select
+                                        className="admin-select"
+                                        value={newProduct.origin} onChange={e => setNewProduct({ ...newProduct, origin: e.target.value })}
+                                        title="Collection Origin"
+                                    >
+                                        <option value="in-house">In-house</option>
+                                        <option value="international">International</option>
+                                        <option value="indian">Indian</option>
+                                    </select>
+                                </div>
 
-                                {/* Compacted Row: Stock & Specs */}
+                                {/* Compacted Row: Stock & Filters */}
                                 <div className="form-row">
                                     <input
                                         type="number" placeholder="Initial Stock"
                                         className="admin-input"
                                         value={newProduct.stock} onChange={e => setNewProduct({ ...newProduct, stock: e.target.value })} required
                                     />
-                                    <input
-                                        placeholder="Specs (Titanium Frame)"
-                                        className="admin-input"
-                                        value={newProduct.specs} onChange={e => setNewProduct({ ...newProduct, specs: e.target.value })}
-                                    />
+                                    <select
+                                        className="admin-select"
+                                        value={newProduct.faceShape} onChange={e => setNewProduct({ ...newProduct, faceShape: e.target.value })}
+                                        title="Frame Shape"
+                                    >
+                                        <option value="">No Filter Shape</option>
+                                        <option value="oval">Oval</option>
+                                        <option value="round">Round</option>
+                                        <option value="square">Square</option>
+                                        <option value="heart">Heart</option>
+                                        <option value="wayfarer">Wayfarer</option>
+                                        <option value="aviator">Aviator</option>
+                                        <option value="cat-eye">Cat Eye</option>
+                                        <option value="rectangle">Rectangle</option>
+                                    </select>
+                                    <select
+                                        className="admin-select"
+                                        value={newProduct.size} onChange={e => setNewProduct({ ...newProduct, size: e.target.value })}
+                                        title="Frame Size"
+                                    >
+                                        <option value="">No Filter Size</option>
+                                        <option value="Extra small">Extra Small (Below 42mm)</option>
+                                        <option value="Small">Small (42mm - 48mm)</option>
+                                        <option value="Medium">Medium (49mm - 52mm)</option>
+                                        <option value="Large">Large (53mm - 58mm)</option>
+                                        <option value="Extra large">Extra Large (Above 59mm)</option>
+                                    </select>
                                 </div>
 
                                 <input
@@ -448,7 +495,7 @@ const Admin = () => {
                                         <input
                                             placeholder="Or paste Image URL"
                                             className="admin-input"
-                                            value={newProduct.image} onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
+                                            value={newProduct.imageUrl} onChange={e => setNewProduct({ ...newProduct, imageUrl: e.target.value })}
                                             style={{ fontSize: '0.8rem', padding: '0.5rem' }}
                                         />
                                     </div>
@@ -464,10 +511,10 @@ const Admin = () => {
                         <div className="product-list">
                             {products.slice((inventoryPage - 1) * ITEMS_PER_PAGE, inventoryPage * ITEMS_PER_PAGE).map(product => (
                                 <div key={product.id} className="product-item">
-                                    <img src={product.image} className="product-img" alt={product.name} />
+                                    <img src={product.imageUrl || product.image} className="product-img" alt={product.name} />
                                     <div className="product-info">
                                         <h3 className="product-name">{product.name}</h3>
-                                        <p className="product-meta">{product.category} • ₹{product.price}</p>
+                                        <p className="product-meta">{product.category} • {product.origin} • ₹{product.price}</p>
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
