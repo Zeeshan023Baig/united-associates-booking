@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useProducts } from '../context/ProductContext';
-import { db, storage } from '../lib/firebase';
+import { db } from '../lib/firebase';
 import { collection, query, orderBy, onSnapshot, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Package, Plus, Loader, CheckCircle, Download, Edit2, X, Trash2, Lock, RefreshCw } from 'lucide-react';
 import PaginationControls from '../components/PaginationControls';
 import './AdminPanel.css';
@@ -227,9 +226,21 @@ const Admin = () => {
             let imageUrl = newProduct.image;
 
             if (imageFile) {
-                const imageRef = ref(storage, `products/${Date.now()}_${imageFile.name}`);
-                const snapshot = await uploadBytes(imageRef, imageFile);
-                imageUrl = await getDownloadURL(snapshot.ref);
+                const formData = new FormData();
+                formData.append('image', imageFile);
+
+                const response = await fetch('https://api.imgbb.com/1/upload?key=bc1560dbc9914ec57b41af0970404246', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    imageUrl = data.data.display_url;
+                } else {
+                    throw new Error("ImgBB Upload Failed: " + data.error.message);
+                }
             }
 
             const productDataToSave = { ...newProduct, image: imageUrl };
