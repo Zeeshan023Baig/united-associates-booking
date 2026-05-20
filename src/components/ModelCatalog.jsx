@@ -337,9 +337,9 @@ export default function ModelCatalog({ addToCart, cart = [], updateQuantity, rem
                                                         <div 
                                                             style={{ 
                                                                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
-                                                                border: '2px solid #fbbf24', borderRadius: '50px', padding: '0.5rem 1rem', width: '100%',
-                                                                backgroundColor: 'var(--bg-secondary)',
-                                                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                                                border: '1px solid var(--border-color)', borderRadius: '50px', padding: '0.4rem 1rem', width: '100%',
+                                                                background: 'rgba(255, 255, 255, 0.03)',
+                                                                boxShadow: 'inset 0 0 10px rgba(0,0,0,0.2)'
                                                             }}
                                                             onClick={(e) => e.stopPropagation()}
                                                         >
@@ -353,11 +353,13 @@ export default function ModelCatalog({ addToCart, cart = [], updateQuantity, rem
                                                                         if(updateQuantity) updateQuantity(product.firebaseId || product.id, -1);
                                                                     }
                                                                 }}
-                                                                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-primary)' }}
+                                                                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', transition: 'color 0.2s' }}
+                                                                onMouseOver={e => e.currentTarget.style.color = 'var(--danger-color)'}
+                                                                onMouseOut={e => e.currentTarget.style.color = 'var(--text-secondary)'}
                                                             >
-                                                                {cart.find(c => c.firebaseId === (product.firebaseId || product.id)).quantity === 1 ? <Trash2 size={20} /> : <Minus size={20} />}
+                                                                {cart.find(c => c.firebaseId === (product.firebaseId || product.id)).quantity === 1 ? <Trash2 size={18} /> : <Minus size={18} />}
                                                             </button>
-                                                            <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'var(--text-primary)' }}>
+                                                            <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'var(--accent-color)' }}>
                                                                 {cart.find(c => c.firebaseId === (product.firebaseId || product.id)).quantity}
                                                             </span>
                                                             <button 
@@ -365,29 +367,34 @@ export default function ModelCatalog({ addToCart, cart = [], updateQuantity, rem
                                                                     e.stopPropagation(); 
                                                                     if(updateQuantity) updateQuantity(product.firebaseId || product.id, 1);
                                                                 }}
-                                                                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-primary)' }}
+                                                                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', transition: 'color 0.2s' }}
+                                                                onMouseOver={e => e.currentTarget.style.color = 'var(--success-color)'}
+                                                                onMouseOut={e => e.currentTarget.style.color = 'var(--text-secondary)'}
                                                             >
-                                                                <Plus size={20} />
+                                                                <Plus size={18} />
                                                             </button>
                                                         </div>
                                                     ) : (
                                                         <button
                                                             onClick={(e) => { e.stopPropagation(); addToCart(product); }}
                                                             disabled={isSoldOut}
+                                                            className="btn btn-primary"
                                                             style={{ 
                                                                 width: '100%', 
-                                                                padding: '0.75rem', 
+                                                                padding: '0.65rem', 
                                                                 borderRadius: '50px', 
-                                                                border: '2px solid #fbbf24',
-                                                                background: '#fbbf24',
-                                                                color: '#000',
                                                                 fontWeight: '600',
-                                                                fontSize: '1rem',
+                                                                fontSize: '0.95rem',
                                                                 cursor: isSoldOut ? 'not-allowed' : 'pointer',
                                                                 opacity: isSoldOut ? 0.6 : 1,
-                                                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                gap: '0.5rem',
+                                                                boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
                                                             }}
                                                         >
+                                                            <ShoppingCart size={18} />
                                                             {isSoldOut ? 'Sold Out' : 'Add to Cart'}
                                                         </button>
                                                     )}
