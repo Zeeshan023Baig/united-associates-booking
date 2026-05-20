@@ -24,9 +24,6 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
     const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
     const totalPrice = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
-    // DEMO MODE: Set to true if you want to bypass Razorpay for testing/demo without keys
-    const DEMO_MODE = true;
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (cart.length === 0) return;
@@ -97,38 +94,60 @@ export default function BookingForm({ cart, updateQuantity, removeFromCart, clea
                 });
             });
 
-            // If in DEMO_MODE, bypass Razorpay
-            if (DEMO_MODE) {
-                // Simulate a short delay for realism
-                await new Promise(resolve => setTimeout(resolve, 1500));
+            // 2. Create Order on Backend
+            const orderResponse = await fetch('/api/create-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    amount: totalPrice * 100, // Amount in paise
+                    currency: 'INR',
+                    receipt: bookingId
+                }),
+            });
 
-                // Pretend we got a payment ID
-                const mockPaymentId = "pay_demo_" + Math.random().toString(36).substr(2, 9);
-                await finalizeBooking(bookingId, mockPaymentId);
-                return;
+            const orderData = await orderResponse.json();
+            if (!orderResponse.ok) {
+                throw new Error(orderData.error || 'Failed to create order on backend');
             }
 
-            // 3. Open Razorpay (Only if NOT in Demo Mode)
+            // 3. Open Razorpay 
             const options = {
-                key: "rzp_test_PLACEHOLDER", // REPLACE THIS WITH YOUR RAZORPAY KEY ID
-                amount: totalPrice * 100, // Amount in paise
-                currency: "INR",
-                name: "United Associates",
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID, 
+                amount: orderData.amount,
+                currency: orderData.currency,
+                name: "United Associates Agencies",
                 description: "Purchase of Sunglasses",
                 image: window.location.origin + "/logo_uaa.png",
-                order_id: "",
+                order_id: orderData.order_id,
                 handler: async function (response) {
                     try {
-                        // Update Booking to Paid
-                        const bookingRef = doc(db, "bookings", bookingId);
-                        await updateDoc(bookingRef, {
-                            status: 'completed',
-                            paymentId: response.razorpay_payment_id
+                        // Verify Signature with Backend
+                        const verifyResponse = await fetch('/api/verify-payment', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_signature: response.razorpay_signature,
+                            }),
                         });
+                        
+                        const verifyData = await verifyResponse.json();
+                        
+                        if (verifyResponse.ok && verifyData.success) {
+                            // Update Booking to Paid
+                            const bookingRef = doc(db, "bookings", bookingId);
+                            await updateDoc(bookingRef, {
+                                status: 'completed',
+                                paymentId: response.razorpay_payment_id
+                            });
 
-                        await finalizeBooking(bookingId, response.razorpay_payment_id);
+                            await finalizeBooking(bookingId, response.razorpay_payment_id);
+                        } else {
+                            throw new Error(verifyData.error || "Signature verification failed");
+                        }
                     } catch (err) {
-                        alert("Payment successful but failed to update order: " + err.message);
+                        alert("Payment successful but verification failed: " + err.message);
                     }
                 },
                 prefill: {
