@@ -133,6 +133,11 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
         const matchSize = !filters.size || p.size === filters.size;
 
         return matchShape && matchSize;
+    }).sort((a, b) => {
+        // Put out of stock items at the bottom
+        const aStock = a.stock > 0 ? 1 : 0;
+        const bStock = b.stock > 0 ? 1 : 0;
+        return bStock - aStock;
     });
 
     return (
@@ -311,7 +316,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                                             key={product.id} // use id or firebaseId depending on what useInventory returns. useInventory usually maps doc.id to firebaseId
                                             onClick={() => navigate(`/product/${product.firebaseId || product.id}`)}
                                             className="glass-panel product-card"
-                                            style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0', overflow: 'hidden' }}
+                                            style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0', overflow: 'hidden', opacity: isSoldOut ? 0.6 : 1, filter: isSoldOut ? 'grayscale(0.4)' : 'none' }}
                                         >
                                             <div style={{ width: '100%', height: '200px', overflow: 'hidden', background: '#000' }}>
                                                 <img src={product.imageUrl || product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -324,10 +329,9 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                                                     {product.faceShape && <span style={{ marginRight: '0.5rem' }}>Face: {product.faceShape}</span>}
                                                 </div>
 
-                                                {/* Stock & Cart Status */}
-                                                <div style={{ fontSize: '0.75rem', marginTop: '0.5rem', display: 'flex', gap: '1rem' }}>
-                                                    <span style={{ color: product.stock < 10 ? '#f87171' : '#4ade80' }}>
-                                                        {product.stock} in stock
+                                                <div style={{ fontSize: '0.75rem', marginTop: '0.5rem', display: 'flex', gap: '1rem', fontWeight: isSoldOut ? 'bold' : 'normal' }}>
+                                                    <span style={{ color: isSoldOut ? '#f87171' : (product.stock < 10 ? '#fbbf24' : '#4ade80') }}>
+                                                        {isSoldOut ? 'Out of Stock' : `${product.stock} in stock`}
                                                     </span>
                                                     {cart.find(c => c.firebaseId === (product.firebaseId || product.id))?.quantity > 0 && (
                                                         <span style={{ color: 'var(--accent-color)' }}>
