@@ -543,8 +543,10 @@ const Admin = () => {
                             </form>
                         </div>
 
-                        {/* Inventory Filters */}
-                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+                        {/* Right Column Wrapper for Grid */}
+                        <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                            {/* Inventory Filters */}
+                            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
                             {['all', 'in-house', 'international', 'indian'].map(filter => (
                                 <button
                                     key={filter}
@@ -605,6 +607,7 @@ const Admin = () => {
                                 totalPages={Math.ceil(products.filter(p => inventoryFilter === 'all' || p.origin === inventoryFilter).length / ITEMS_PER_PAGE)}
                                 onPageChange={setInventoryPage}
                             />
+                        </div>
                         </div>
                     </div>
                 ) : (
