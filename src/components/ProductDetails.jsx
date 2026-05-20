@@ -150,13 +150,29 @@ export default function ProductDetails({ addToCart, cart = [], updateQuantity, r
                                 ₹{product.price}
                             </div>
 
-                            {/* Star Rating (decorative) */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                {[1,2,3,4,5].map(s => (
-                                    <Star key={s} size={16} fill={s <= 4 ? '#fbbf24' : 'none'} color='#fbbf24' />
-                                ))}
-                                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>4.6 (12 reviews)</span>
-                            </div>
+                            {/* Size Specs */}
+                            {(product.lensWidth || product.bridgeWidth || product.templeLength || product.frameWidth) && (
+                                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                                    {[
+                                        { label: 'Lens', value: product.lensWidth, unit: 'mm' },
+                                        { label: 'Bridge', value: product.bridgeWidth, unit: 'mm' },
+                                        { label: 'Temple', value: product.templeLength, unit: 'mm' },
+                                        { label: 'Frame', value: product.frameWidth, unit: 'mm' },
+                                    ].filter(s => s.value).map(({ label, value, unit }) => (
+                                        <div key={label} style={{
+                                            display: 'flex', flexDirection: 'column', alignItems: 'center',
+                                            padding: '0.5rem 0.9rem',
+                                            background: 'rgba(99,102,241,0.1)',
+                                            border: '1px solid rgba(99,102,241,0.3)',
+                                            borderRadius: '0.5rem',
+                                            minWidth: '64px'
+                                        }}>
+                                            <span style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-primary)' }}>{value}{unit}</span>
+                                            <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '0.1rem' }}>{label}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
 
                             {/* Description */}
                             {product.description && (
