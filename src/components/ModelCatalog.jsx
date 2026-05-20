@@ -323,15 +323,27 @@ export default function ModelCatalog({ addToCart, cart = [], updateQuantity, rem
                                                     onError={(e) => { e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found'; }} />
                                             </div>
                                             <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1, backgroundColor: 'var(--bg-secondary)' }}>
-                                                <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '500', color: 'var(--text-primary)' }}>{product.name}</h3>
-                                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+                                                {/* Brand */}
+                                                <div style={{ fontSize: '0.8rem', color: 'var(--accent-color)', textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '0.05em' }}>{product.brand}</div>
+                                                
+                                                {/* Title */}
+                                                <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '500', color: 'var(--text-primary)', lineHeight: '1.3' }}>{product.name}</h3>
+                                                
+                                                {/* Price & Stock */}
+                                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginTop: '0.25rem' }}>
                                                     <span style={{ fontSize: '1.6rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>₹{product.price}</span>
-                                                    {product.faceShape && <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>({product.faceShape})</span>}
+                                                    <span style={{ fontSize: '0.8rem', fontWeight: '500', color: isSoldOut ? '#f87171' : (product.stock < 10 ? '#fbbf24' : '#4ade80') }}>
+                                                        {isSoldOut ? 'Out of Stock' : (product.stock < 10 ? 'Low Stock' : 'In Stock')}
+                                                    </span>
                                                 </div>
+
+                                                {/* Details */}
                                                 <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                                                    {product.faceShape && <span style={{ marginRight: '0.5rem' }}>Face: {product.faceShape}</span>}
                                                     FREE delivery <strong>in 3-5 days</strong>
                                                 </div>
 
+                                                {/* Add to Cart Area */}
                                                 <div style={{ marginTop: 'auto', paddingTop: '1rem' }}>
                                                     {cart.find(c => c.firebaseId === (product.firebaseId || product.id))?.quantity > 0 ? (
                                                         <div 
@@ -398,13 +410,6 @@ export default function ModelCatalog({ addToCart, cart = [], updateQuantity, rem
                                                             {isSoldOut ? 'Sold Out' : 'Add to Cart'}
                                                         </button>
                                                     )}
-                                                </div>
-                                                
-                                                <div style={{ fontSize: '0.75rem', marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', fontWeight: isSoldOut ? 'bold' : 'normal' }}>
-                                                    <span style={{ color: isSoldOut ? '#f87171' : (product.stock < 10 ? '#fbbf24' : '#4ade80') }}>
-                                                        {isSoldOut ? 'Out of Stock' : (product.stock < 10 ? 'Low Stock' : 'In Stock')}
-                                                    </span>
-                                                    <span style={{ color: 'var(--accent-color)', textTransform: 'uppercase', fontWeight: 'bold' }}>{product.brand}</span>
                                                 </div>
                                             </div>
                                         </div>
