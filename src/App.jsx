@@ -94,7 +94,7 @@ function App() {
               />
             } />
             <Route path="/confirmation" element={<Confirmation />} />
-            <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} cart={cart} />} />
+            <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} />} />
             <Route path="/stores" element={<StoreLocator />} />
             <Route path="/contact" element={<StoreLocator />} />
             <Route path="/admin" element={<AdminPanel />} />
