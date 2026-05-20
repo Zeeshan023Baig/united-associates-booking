@@ -338,13 +338,9 @@ export default function ModelCatalog({ addToCart, cart = [], updateQuantity, rem
                                                 </div>
 
                                                 {/* Details */}
-                                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                                                    {product.faceShape && <span style={{ marginRight: '0.5rem' }}>Face: {product.faceShape}</span>}
-                                                    FREE delivery <strong>in 3-5 days</strong>
-                                                </div>
+                                                {product.faceShape && <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Face: {product.faceShape}</div>}
 
-                                                {/* Add to Cart Area */}
-                                                <div style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+                                                <div style={{ marginTop: 'auto', paddingTop: '1rem', display: 'flex', justifyContent: 'center' }}>
                                                     {cart.find(c => c.firebaseId === (product.firebaseId || product.id))?.quantity > 0 ? (
                                                         <div 
                                                             style={{ 
