@@ -331,7 +331,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
 
                                                 <div style={{ fontSize: '0.75rem', marginTop: '0.5rem', display: 'flex', gap: '1rem', fontWeight: isSoldOut ? 'bold' : 'normal' }}>
                                                     <span style={{ color: isSoldOut ? '#f87171' : (product.stock < 10 ? '#fbbf24' : '#4ade80') }}>
-                                                        {isSoldOut ? 'Out of Stock' : 'In Stock'}
+                                                        {isSoldOut ? 'Out of Stock' : (product.stock < 10 ? 'Low Stock' : 'In Stock')}
                                                     </span>
                                                     {cart.find(c => c.firebaseId === (product.firebaseId || product.id))?.quantity > 0 && (
                                                         <span style={{ color: 'var(--accent-color)' }}>
