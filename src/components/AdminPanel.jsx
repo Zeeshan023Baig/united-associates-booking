@@ -85,6 +85,7 @@ const Admin = () => {
     const [loginError, setLoginError] = useState('');
     const ITEMS_PER_PAGE = 12;
     const [inventoryPage, setInventoryPage] = useState(1);
+    const [inventoryFilter, setInventoryFilter] = useState('all'); // all, in-house, international, indian
     const [ordersPage, setOrdersPage] = useState(1);
     const [editingProduct, setEditingProduct] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
@@ -542,9 +543,26 @@ const Admin = () => {
                             </form>
                         </div>
 
+                        {/* Inventory Filters */}
+                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+                            {['all', 'in-house', 'international', 'indian'].map(filter => (
+                                <button
+                                    key={filter}
+                                    onClick={() => { setInventoryFilter(filter); setInventoryPage(1); }}
+                                    className={`tab-btn ${inventoryFilter === filter ? 'active' : 'inactive'}`}
+                                    style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', borderRadius: '20px', flexShrink: 0 }}
+                                >
+                                    {filter === 'all' ? 'All Products' : filter === 'indian' ? 'Domestic (Indian)' : filter.charAt(0).toUpperCase() + filter.slice(1)}
+                                </button>
+                            ))}
+                        </div>
+
                         {/* Product List */}
                         <div className="product-list">
-                            {products.slice((inventoryPage - 1) * ITEMS_PER_PAGE, inventoryPage * ITEMS_PER_PAGE).map(product => (
+                            {products
+                                .filter(p => inventoryFilter === 'all' || p.origin === inventoryFilter)
+                                .slice((inventoryPage - 1) * ITEMS_PER_PAGE, inventoryPage * ITEMS_PER_PAGE)
+                                .map(product => (
                                 <div key={product.id} className="product-item">
                                     <img src={product.imageUrl || product.image || 'https://via.placeholder.com/80'} className="product-img" alt={product.name}
                                         onError={(e) => { e.target.src = 'https://via.placeholder.com/80'; }} />
@@ -584,7 +602,7 @@ const Admin = () => {
                             {/* Inventory Pagination Controls */}
                             <PaginationControls
                                 currentPage={inventoryPage}
-                                totalPages={Math.ceil(products.length / ITEMS_PER_PAGE)}
+                                totalPages={Math.ceil(products.filter(p => inventoryFilter === 'all' || p.origin === inventoryFilter).length / ITEMS_PER_PAGE)}
                                 onPageChange={setInventoryPage}
                             />
                         </div>
