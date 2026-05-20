@@ -15,9 +15,9 @@ async function testTransaction() {
   });
 
   try {
-    console.log("1. Creating order for ₹500 (50000 paise)...");
+    console.log("1. Creating order for ₹1 (100 paise)...");
     const order = await razorpay.orders.create({
-      amount: 50000,
+      amount: 100,
       currency: "INR",
       receipt: "test_receipt_123"
     });

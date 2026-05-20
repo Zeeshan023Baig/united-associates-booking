@@ -283,6 +283,10 @@ button:focus-visible {
     .w-full-mobile {
         width: 100% !important;
     }
+    
+    .grid-stack-mobile {
+        grid-template-columns: 1fr !important;
+    }
 
     /* Catalog Grid Adjustments on Mobile if needed */
     .product-grid {

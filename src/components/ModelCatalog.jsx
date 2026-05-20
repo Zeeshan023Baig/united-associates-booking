@@ -41,20 +41,7 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
         sessionStorage.setItem('catalog_state', JSON.stringify(stateToSave));
     }, [viewMode, selectedCategory, selectedOrigin, filters]);
 
-    // Auto-refresh data if version changes
-    useEffect(() => {
-        const checkDataVersion = async () => {
-            const currentVersion = localStorage.getItem('catalog_version');
-            if (currentVersion !== DATA_VERSION) {
-                console.log("New catalog version detected. Refreshing data...");
-                await clearDatabase();
-                await seedDatabase();
-                localStorage.setItem('catalog_version', DATA_VERSION);
-                window.location.reload();
-            }
-        };
-        checkDataVersion();
-    }, []);
+    // Auto-refresh data logic removed to prevent wiping Firebase on new devices
 
     // Handle incoming navigation from Home (Deep Links Override Storage)
     useEffect(() => {
