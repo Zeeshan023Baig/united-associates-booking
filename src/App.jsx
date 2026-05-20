@@ -80,9 +80,9 @@ function App() {
         <Header cartCount={cart.reduce((a, b) => a + b.quantity, 0)} />
         <main style={{ flex: 1 }}>
           <Routes>
-            <Route path="/" element={<Home addToCart={addToCart} cart={cart} />} />
+            <Route path="/" element={<Home addToCart={addToCart} cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} />} />
             <Route path="/about" element={<AboutUs />} />
-            <Route path="/catalog" element={<ModelCatalog addToCart={addToCart} cart={cart} />} />
+            <Route path="/catalog" element={<ModelCatalog addToCart={addToCart} cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} />} />
             <Route path="/brands" element={<Brands />} />
             <Route path="/why-us" element={<WhyUs />} />
             <Route path="/cart" element={

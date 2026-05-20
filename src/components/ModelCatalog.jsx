@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useInventory } from '../hooks/useInventory';
-import { ArrowRight, Star, ShoppingCart, Filter, Search, RotateCcw, AlertCircle, ArrowLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, Star, ShoppingCart, Filter, Search, RotateCcw, AlertCircle, ArrowLeft, ChevronRight, Trash2, Minus, Plus } from 'lucide-react';
 import { DATA_VERSION, clearDatabase, seedDatabase } from '../utils/seed';
 
-export default function ModelCatalog({ addToCart, cart = [] }) {
+export default function ModelCatalog({ addToCart, cart = [], updateQuantity, removeFromCart }) {
     const navigate = useNavigate();
     const location = useLocation();
     const { products, loading, error } = useInventory();
@@ -318,37 +318,86 @@ export default function ModelCatalog({ addToCart, cart = [] }) {
                                             className="glass-panel product-card"
                                             style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0', overflow: 'hidden', opacity: isSoldOut ? 0.6 : 1, filter: isSoldOut ? 'grayscale(0.4)' : 'none' }}
                                         >
-                                            <div style={{ width: '100%', height: '200px', overflow: 'hidden', background: '#000' }}>
+                                            <div style={{ width: '100%', height: '220px', overflow: 'hidden', background: '#000', position: 'relative' }}>
                                                 <img src={product.imageUrl || product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                                     onError={(e) => { e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found'; }} />
                                             </div>
-                                            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
-                                                <div style={{ fontSize: '0.8rem', color: 'var(--accent-color)', textTransform: 'uppercase' }}>{product.brand}</div>
-                                                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{product.name}</h3>
-                                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                                                    {product.faceShape && <span style={{ marginRight: '0.5rem' }}>Face: {product.faceShape}</span>}
+                                            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1, backgroundColor: 'var(--bg-secondary)' }}>
+                                                <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '500', color: 'var(--text-primary)' }}>{product.name}</h3>
+                                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+                                                    <span style={{ fontSize: '1.6rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>₹{product.price}</span>
+                                                    {product.faceShape && <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>({product.faceShape})</span>}
+                                                </div>
+                                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                                                    FREE delivery <strong>in 3-5 days</strong>
                                                 </div>
 
-                                                <div style={{ fontSize: '0.75rem', marginTop: '0.5rem', display: 'flex', gap: '1rem', fontWeight: isSoldOut ? 'bold' : 'normal' }}>
+                                                <div style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+                                                    {cart.find(c => c.firebaseId === (product.firebaseId || product.id))?.quantity > 0 ? (
+                                                        <div 
+                                                            style={{ 
+                                                                display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
+                                                                border: '2px solid #fbbf24', borderRadius: '50px', padding: '0.5rem 1rem', width: '100%',
+                                                                backgroundColor: 'var(--bg-secondary)',
+                                                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                                            }}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            <button 
+                                                                onClick={(e) => { 
+                                                                    e.stopPropagation(); 
+                                                                    const currentQty = cart.find(c => c.firebaseId === (product.firebaseId || product.id)).quantity;
+                                                                    if (currentQty === 1) {
+                                                                        if(removeFromCart) removeFromCart(product.firebaseId || product.id);
+                                                                    } else {
+                                                                        if(updateQuantity) updateQuantity(product.firebaseId || product.id, -1);
+                                                                    }
+                                                                }}
+                                                                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-primary)' }}
+                                                            >
+                                                                {cart.find(c => c.firebaseId === (product.firebaseId || product.id)).quantity === 1 ? <Trash2 size={20} /> : <Minus size={20} />}
+                                                            </button>
+                                                            <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'var(--text-primary)' }}>
+                                                                {cart.find(c => c.firebaseId === (product.firebaseId || product.id)).quantity}
+                                                            </span>
+                                                            <button 
+                                                                onClick={(e) => { 
+                                                                    e.stopPropagation(); 
+                                                                    if(updateQuantity) updateQuantity(product.firebaseId || product.id, 1);
+                                                                }}
+                                                                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-primary)' }}
+                                                            >
+                                                                <Plus size={20} />
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); addToCart(product); }}
+                                                            disabled={isSoldOut}
+                                                            style={{ 
+                                                                width: '100%', 
+                                                                padding: '0.75rem', 
+                                                                borderRadius: '50px', 
+                                                                border: '2px solid #fbbf24',
+                                                                background: '#fbbf24',
+                                                                color: '#000',
+                                                                fontWeight: '600',
+                                                                fontSize: '1rem',
+                                                                cursor: isSoldOut ? 'not-allowed' : 'pointer',
+                                                                opacity: isSoldOut ? 0.6 : 1,
+                                                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                                            }}
+                                                        >
+                                                            {isSoldOut ? 'Sold Out' : 'Add to Cart'}
+                                                        </button>
+                                                    )}
+                                                </div>
+                                                
+                                                <div style={{ fontSize: '0.75rem', marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', fontWeight: isSoldOut ? 'bold' : 'normal' }}>
                                                     <span style={{ color: isSoldOut ? '#f87171' : (product.stock < 10 ? '#fbbf24' : '#4ade80') }}>
                                                         {isSoldOut ? 'Out of Stock' : (product.stock < 10 ? 'Low Stock' : 'In Stock')}
                                                     </span>
-                                                    {cart.find(c => c.firebaseId === (product.firebaseId || product.id))?.quantity > 0 && (
-                                                        <span style={{ color: 'var(--accent-color)' }}>
-                                                            In Cart: {cart.find(c => c.firebaseId === (product.firebaseId || product.id)).quantity}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <div style={{ marginTop: 'auto', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                    <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>₹{product.price}</span>
-                                                    <button
-                                                        onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-                                                        disabled={isSoldOut}
-                                                        className="btn btn-primary"
-                                                        style={{ fontSize: '0.8rem', padding: '0.5rem 1rem' }}
-                                                    >
-                                                        {isSoldOut ? 'Sold Out' : 'Add'}
-                                                    </button>
+                                                    <span style={{ color: 'var(--accent-color)', textTransform: 'uppercase', fontWeight: 'bold' }}>{product.brand}</span>
                                                 </div>
                                             </div>
                                         </div>

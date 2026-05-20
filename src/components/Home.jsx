@@ -3,7 +3,7 @@ import ModelCatalog from './ModelCatalog';
 import FeatureHighlights from './FeatureHighlights';
 import { ChevronDown } from 'lucide-react';
 
-export default function Home({ addToCart, cart }) {
+export default function Home({ addToCart, cart, updateQuantity, removeFromCart }) {
     const catalogRef = useRef(null);
     const videoRef = useRef(null);
 
@@ -244,7 +244,7 @@ export default function Home({ addToCart, cart }) {
 
             {/* Embedded Catalog */}
             <div ref={catalogRef} style={{ paddingTop: '4rem' }} className="fade-in-section">
-                <ModelCatalog addToCart={addToCart} cart={cart} />
+                <ModelCatalog addToCart={addToCart} cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} />
             </div>
 
             {/* NEW: Our Technology Section - Moved after Catalog */}
