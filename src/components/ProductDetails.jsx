@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useInventory } from '../hooks/useInventory';
-import { ArrowLeft, ShoppingCart, Star, Minus, Plus, Heart, ZoomIn } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Star, Minus, Plus, Heart, ZoomIn, Glasses, ShieldCheck, Sun, Eye, Tag, Settings, Activity } from 'lucide-react';
 
 export default function ProductDetails({ addToCart, cart = [], updateQuantity, removeFromCart }) {
     const { id } = useParams();
@@ -258,72 +258,179 @@ export default function ProductDetails({ addToCart, cart = [], updateQuantity, r
                 </div>
 
                 {/* Bottom Info Panels */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-
-                    {/* Size Guide */}
-                    <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '1rem' }}>
-                        <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)', marginTop: 0, marginBottom: '1rem' }}>Size Guide</h3>
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>These measurements help you find the perfect fit.</p>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
-                            {[
-                                { label: 'Lens Width', value: product.lensWidth ? `${product.lensWidth}mm` : '—' },
-                                { label: 'Bridge Width', value: product.bridgeWidth ? `${product.bridgeWidth}mm` : '—' },
-                                { label: 'Temple Length', value: product.templeLength ? `${product.templeLength}mm` : '—' },
-                                { label: 'Frame Width', value: product.frameWidth ? `${product.frameWidth}mm` : '—' },
-                            ].map(({ label, value }) => (
-                                <div key={label} style={{ textAlign: 'center', padding: '0.75rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.5rem', border: '1px solid var(--border-color)' }}>
-                                    <div style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-primary)' }}>{value}</div>
-                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>{label}</div>
+                {product.origin === 'in-house' ? (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                        {/* Frame Details */}
+                        <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '1rem', background: '#11141c' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                                <Glasses size={24} color="#6366f1" />
+                                <div>
+                                    <h3 style={{ fontSize: '1rem', fontWeight: '700', margin: 0, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Frame Details</h3>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Best For Face Shapes */}
-                    <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '1rem' }}>
-                        <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)', marginTop: 0, marginBottom: '0.5rem' }}>Best For Face Shapes</h3>
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>These frame shapes suit you best.</p>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
-                            {allFaceShapes.map(shape => {
-                                const isMatch = faceShapes.some(f => f.toLowerCase() === shape.toLowerCase());
-                                return (
-                                    <div key={shape} style={{
-                                        textAlign: 'center', padding: '0.75rem 0.5rem',
-                                        background: isMatch ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.02)',
-                                        borderRadius: '0.5rem',
-                                        border: isMatch ? '1px solid rgba(99,102,241,0.4)' : '1px solid var(--border-color)',
-                                        opacity: isMatch ? 1 : 0.4
-                                    }}>
-                                        <div style={{ fontSize: '0.8rem', fontWeight: '600', color: isMatch ? '#818cf8' : 'var(--text-secondary)' }}>{shape}</div>
-                                        {isMatch && <div style={{ fontSize: '0.65rem', color: '#818cf8', marginTop: '0.15rem' }}>✓</div>}
+                            </div>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', marginLeft: '2.5rem' }}>Quality you can feel in every detail.</p>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '0.75rem', flexDirection: 'column' }}>
+                                    <ShieldCheck size={20} color="#818cf8" style={{ flexShrink: 0 }} />
+                                    <div>
+                                        <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>Lightweight Frame</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Easy to wear all day</div>
                                     </div>
-                                );
-                            })}
+                                </div>
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '0.75rem', flexDirection: 'column' }}>
+                                    <Settings size={20} color="#818cf8" style={{ flexShrink: 0 }} />
+                                    <div>
+                                        <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>Durable Material</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Strong, premium build</div>
+                                    </div>
+                                </div>
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '0.75rem', flexDirection: 'column' }}>
+                                    <Activity size={20} color="#818cf8" style={{ flexShrink: 0 }} />
+                                    <div>
+                                        <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>Flexible Hinges</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Smooth open & close</div>
+                                    </div>
+                                </div>
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '0.75rem', flexDirection: 'column' }}>
+                                    <Tag size={20} color="#818cf8" style={{ flexShrink: 0 }} />
+                                    <div>
+                                        <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>Premium Finish</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Matte, sleek & stylish</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Lens Protection */}
+                        <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '1rem', background: '#11141c' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                                <ShieldCheck size={24} color="#6366f1" />
+                                <div>
+                                    <h3 style={{ fontSize: '1rem', fontWeight: '700', margin: 0, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Lens Protection</h3>
+                                </div>
+                            </div>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', marginLeft: '2.5rem' }}>Clear vision with all-day protection.</p>
+                            
+                            <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.05)', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                                    <Sun size={20} color="#818cf8" style={{ flexShrink: 0, marginTop: '0.1rem' }} />
+                                    <div>
+                                        <div style={{ fontSize: '0.9rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>UV Protection</div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Blocks harmful UVA/UVB rays</div>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                                    <Eye size={20} color="#818cf8" style={{ flexShrink: 0, marginTop: '0.1rem' }} />
+                                    <div>
+                                        <div style={{ fontSize: '0.9rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>Anti-Glare Coating</div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Reduces glare and reflections</div>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                                    <ShieldCheck size={20} color="#818cf8" style={{ flexShrink: 0, marginTop: '0.1rem' }} />
+                                    <div>
+                                        <div style={{ fontSize: '0.9rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>Scratch Resistant</div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Coated for long-lasting clarity</div>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                                    <ShieldCheck size={20} color="#818cf8" style={{ flexShrink: 0, marginTop: '0.1rem' }} />
+                                    <div>
+                                        <div style={{ fontSize: '0.9rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>Blue Light Filter</div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Reduces digital eye strain</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Why You'll Love It */}
+                        <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '1rem', background: '#11141c' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                                <Heart size={24} color="#6366f1" />
+                                <div>
+                                    <h3 style={{ fontSize: '1rem', fontWeight: '700', margin: 0, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Why You'll Love It</h3>
+                                </div>
+                            </div>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', marginLeft: '2.5rem' }}>Designed for style, made for you.</p>
+
+                            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '1.25rem', marginLeft: '1rem' }}>
+                                {['Timeless, Minimal Design', 'Comfortable for All-Day Wear', 'Unisex Style for Everyone', 'Perfect for Work & Everyday Use'].map((f, i) => (
+                                    <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+                                        <Star size={16} color="#6366f1" style={{ fill: '#6366f1' }} /> {f}
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     </div>
+                ) : (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
 
-                    {/* Why You'll Love It */}
-                    <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '1rem' }}>
-                        <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)', marginTop: 0, marginBottom: '1rem' }}>Why You'll Love It</h3>
-                        {product.features && product.features.length > 0 ? (
-                            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                                {product.features.map((f, i) => (
-                                    <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                                        <span style={{ color: 'var(--accent-color)', fontSize: '1rem' }}>✦</span> {f}
-                                    </li>
+                        {/* Size Guide */}
+                        <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '1rem' }}>
+                            <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)', marginTop: 0, marginBottom: '1rem' }}>Size Guide</h3>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>These measurements help you find the perfect fit.</p>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+                                {[
+                                    { label: 'Lens Width', value: product.lensWidth ? `${product.lensWidth}mm` : '—' },
+                                    { label: 'Bridge Width', value: product.bridgeWidth ? `${product.bridgeWidth}mm` : '—' },
+                                    { label: 'Temple Length', value: product.templeLength ? `${product.templeLength}mm` : '—' },
+                                    { label: 'Frame Width', value: product.frameWidth ? `${product.frameWidth}mm` : '—' },
+                                ].map(({ label, value }) => (
+                                    <div key={label} style={{ textAlign: 'center', padding: '0.75rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.5rem', border: '1px solid var(--border-color)' }}>
+                                        <div style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-primary)' }}>{value}</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>{label}</div>
+                                    </div>
                                 ))}
-                            </ul>
-                        ) : (
-                            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                                {['Lightweight & Comfortable', 'Premium Quality Frames', 'Classic Design, Everyday Style', 'Unisex – For Everyone'].map((f, i) => (
-                                    <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                                        <span style={{ color: 'var(--accent-color)', fontSize: '1rem' }}>✦</span> {f}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+                            </div>
+                        </div>
+
+                        {/* Best For Face Shapes */}
+                        <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '1rem' }}>
+                            <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)', marginTop: 0, marginBottom: '0.5rem' }}>Best For Face Shapes</h3>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>These frame shapes suit you best.</p>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
+                                {allFaceShapes.map(shape => {
+                                    const isMatch = faceShapes.some(f => f.toLowerCase() === shape.toLowerCase());
+                                    return (
+                                        <div key={shape} style={{
+                                            textAlign: 'center', padding: '0.75rem 0.5rem',
+                                            background: isMatch ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.02)',
+                                            borderRadius: '0.5rem',
+                                            border: isMatch ? '1px solid rgba(99,102,241,0.4)' : '1px solid var(--border-color)',
+                                            opacity: isMatch ? 1 : 0.4
+                                        }}>
+                                            <div style={{ fontSize: '0.8rem', fontWeight: '600', color: isMatch ? '#818cf8' : 'var(--text-secondary)' }}>{shape}</div>
+                                            {isMatch && <div style={{ fontSize: '0.65rem', color: '#818cf8', marginTop: '0.15rem' }}>✓</div>}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Why You'll Love It */}
+                        <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '1rem' }}>
+                            <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)', marginTop: 0, marginBottom: '1rem' }}>Why You'll Love It</h3>
+                            {product.features && product.features.length > 0 ? (
+                                <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                    {product.features.map((f, i) => (
+                                        <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+                                            <span style={{ color: 'var(--accent-color)', fontSize: '1rem' }}>✦</span> {f}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                    {['Lightweight & Comfortable', 'Premium Quality Frames', 'Classic Design, Everyday Style', 'Unisex – For Everyone'].map((f, i) => (
+                                        <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+                                            <span style={{ color: 'var(--accent-color)', fontSize: '1rem' }}>✦</span> {f}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* Responsive Styles */}
                 <style>{`

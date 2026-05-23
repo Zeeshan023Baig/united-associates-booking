@@ -4,6 +4,7 @@ import { db } from '../lib/firebase';
 import { collection, query, orderBy, onSnapshot, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { Package, Plus, Loader, CheckCircle, Download, Edit2, X, Trash2, Lock, RefreshCw } from 'lucide-react';
 import PaginationControls from '../components/PaginationControls';
+import ProductMediaManager from '../components/ProductMediaManager';
 import './AdminPanel.css';
 
 const StockInput = ({ initialStock, onUpdate }) => {
@@ -104,6 +105,7 @@ const Admin = () => {
     });
     const [imageFile, setImageFile] = useState(null);
     const [isAdding, setIsAdding] = useState(false);
+    const [galleryImages, setGalleryImages] = useState([]);
     const categories = ['Essentials', 'Luxuries', 'Groceries', 'Lifestyle', 'Electronics'];
 
     // Fetch Orders 
@@ -221,6 +223,17 @@ const Admin = () => {
             frameShape: product.frameShape || '',
             size: product.size || ''
         });
+        // Restore gallery images if the product has them
+        if (product.images && Array.isArray(product.images)) {
+            setGalleryImages(product.images.map((src, i) => ({
+                id: `existing-${i}`,
+                src,
+                isMain: i === 0,
+                name: `Image ${i + 1}`
+            })));
+        } else {
+            setGalleryImages([]);
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -239,6 +252,7 @@ const Admin = () => {
             frameShape: '',
             size: ''
         });
+        setGalleryImages([]);
         setImageFile(null);
     };
 
@@ -517,25 +531,13 @@ const Admin = () => {
                                     />
                                 </div>
 
-                                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                                    <div style={{ flex: 1 }}>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={e => setImageFile(e.target.files[0])}
-                                            className="admin-input"
-                                            style={{ fontSize: '0.8rem', padding: '0.5rem' }}
-                                        />
-                                    </div>
-                                    <div style={{ flex: 1 }}>
-                                        <input
-                                            placeholder="Or paste Image URL"
-                                            className="admin-input"
-                                            value={newProduct.imageUrl} onChange={e => setNewProduct({ ...newProduct, imageUrl: e.target.value })}
-                                            style={{ fontSize: '0.8rem', padding: '0.5rem' }}
-                                        />
-                                    </div>
-                                </div>
+                                {/* Product Media Manager */}
+                                <ProductMediaManager
+                                    imageUrl={newProduct.imageUrl}
+                                    setImageUrl={(url) => setNewProduct(prev => ({ ...prev, imageUrl: url }))}
+                                    galleryImages={galleryImages}
+                                    setGalleryImages={setGalleryImages}
+                                />
 
                                 <button type="submit" disabled={isAdding} className={`submit-btn primary`}>
                                     {isAdding ? (editingProduct ? 'Updating...' : 'Adding...') : (editingProduct ? 'Update Product' : 'Add Product')}
